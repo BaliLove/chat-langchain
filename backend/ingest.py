@@ -4,13 +4,13 @@ import os
 import re
 from typing import Optional
 
-import weaviate
+import pinecone
 from bs4 import BeautifulSoup, SoupStrainer
 from langchain.document_loaders import RecursiveUrlLoader, SitemapLoader
 from langchain.indexes import SQLRecordManager, index
 from langchain.utils.html import PREFIXES_TO_IGNORE_REGEX, SUFFIXES_TO_IGNORE_REGEX
 from langchain_text_splitters import RecursiveCharacterTextSplitter
-from langchain_weaviate import WeaviateVectorStore
+from langchain_pinecone import PineconeVectorStore
 
 from backend.constants import WEAVIATE_DOCS_INDEX_NAME
 from backend.embeddings import get_embeddings_model
@@ -119,77 +119,62 @@ def load_api_docs():
 
 
 def ingest_docs():
-    WEAVIATE_URL = os.environ["WEAVIATE_URL"]
-    WEAVIATE_API_KEY = os.environ["WEAVIATE_API_KEY"]
+    PINECONE_API_KEY = os.environ["PINECONE_API_KEY"]
+    PINECONE_ENVIRONMENT = os.environ["PINECONE_ENVIRONMENT"]
+    PINECONE_INDEX_NAME = os.environ["PINECONE_INDEX_NAME"]
     RECORD_MANAGER_DB_URL = os.environ["RECORD_MANAGER_DB_URL"]
 
     text_splitter = RecursiveCharacterTextSplitter(chunk_size=4000, chunk_overlap=200)
     embedding = get_embeddings_model()
 
-    with weaviate.connect_to_weaviate_cloud(
-        cluster_url=WEAVIATE_URL,
-        auth_credentials=weaviate.classes.init.Auth.api_key(WEAVIATE_API_KEY),
-        skip_init_checks=True,
-    ) as weaviate_client:
-        vectorstore = WeaviateVectorStore(
-            client=weaviate_client,
-            index_name=WEAVIATE_DOCS_INDEX_NAME,
-            text_key="text",
-            embedding=embedding,
-            attributes=["source", "title"],
-        )
+    pinecone.init(api_key=PINECONE_API_KEY, environment=PINECONE_ENVIRONMENT)
+    index = pinecone.Index(PINECONE_INDEX_NAME)
+    vectorstore = PineconeVectorStore(index, embedding.embed_query, "text")
 
-        record_manager = SQLRecordManager(
-            f"weaviate/{WEAVIATE_DOCS_INDEX_NAME}", db_url=RECORD_MANAGER_DB_URL
-        )
-        record_manager.create_schema()
+    record_manager = SQLRecordManager(
+        f"pinecone/{PINECONE_INDEX_NAME}", db_url=RECORD_MANAGER_DB_URL
+    )
+    record_manager.create_schema()
 
-        docs_from_documentation = load_langchain_docs()
-        logger.info(f"Loaded {len(docs_from_documentation)} docs from documentation")
-        docs_from_api = load_api_docs()
-        logger.info(f"Loaded {len(docs_from_api)} docs from API")
-        docs_from_langsmith = load_langsmith_docs()
-        logger.info(f"Loaded {len(docs_from_langsmith)} docs from LangSmith")
-        docs_from_langgraph = load_langgraph_docs()
-        logger.info(f"Loaded {len(docs_from_langgraph)} docs from LangGraph")
+    docs_from_documentation = load_langchain_docs()
+    logger.info(f"Loaded {len(docs_from_documentation)} docs from documentation")
+    docs_from_api = load_api_docs()
+    logger.info(f"Loaded {len(docs_from_api)} docs from API")
+    docs_from_langsmith = load_langsmith_docs()
+    logger.info(f"Loaded {len(docs_from_langsmith)} docs from LangSmith")
+    docs_from_langgraph = load_langgraph_docs()
+    logger.info(f"Loaded {len(docs_from_langgraph)} docs from LangGraph")
 
-        docs_transformed = text_splitter.split_documents(
-            docs_from_documentation
-            + docs_from_api
-            + docs_from_langsmith
-            + docs_from_langgraph
-        )
-        docs_transformed = [
-            doc for doc in docs_transformed if len(doc.page_content) > 10
-        ]
+    docs_transformed = text_splitter.split_documents(
+        docs_from_documentation
+        + docs_from_api
+        + docs_from_langsmith
+        + docs_from_langgraph
+    )
+    docs_transformed = [
+        doc for doc in docs_transformed if len(doc.page_content) > 10
+    ]
 
-        # We try to return 'source' and 'title' metadata when querying vector store and
-        # Weaviate will error at query time if one of the attributes is missing from a
-        # retrieved document.
-        for doc in docs_transformed:
-            if "source" not in doc.metadata:
-                doc.metadata["source"] = ""
-            if "title" not in doc.metadata:
-                doc.metadata["title"] = ""
+    for doc in docs_transformed:
+        if "source" not in doc.metadata:
+            doc.metadata["source"] = ""
+        if "title" not in doc.metadata:
+            doc.metadata["title"] = ""
 
-        indexing_stats = index(
-            docs_transformed,
-            record_manager,
-            vectorstore,
-            cleanup="full",
-            source_id_key="source",
-            force_update=(os.environ.get("FORCE_UPDATE") or "false").lower() == "true",
-        )
+    indexing_stats = index(
+        docs_transformed,
+        record_manager,
+        vectorstore,
+        cleanup="full",
+        source_id_key="source",
+        force_update=(os.environ.get("FORCE_UPDATE") or "false").lower() == "true",
+    )
 
-        logger.info(f"Indexing stats: {indexing_stats}")
-        num_vecs = (
-            weaviate_client.collections.get(WEAVIATE_DOCS_INDEX_NAME)
-            .aggregate.over_all()
-            .total_count
-        )
-        logger.info(
-            f"LangChain now has this many vectors: {num_vecs}",
-        )
+    logger.info(f"Indexing stats: {indexing_stats}")
+    # Pinecone does not have the same aggregate API as Weaviate, so you may want to log differently here.
+    logger.info(
+        f"LangChain ingestion to Pinecone index '{PINECONE_INDEX_NAME}' complete."
+    )
 
 
 if __name__ == "__main__":
