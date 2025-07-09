@@ -28,8 +28,8 @@ jobs:
         run: poetry run python backend/ingest.py
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-          WEAVIATE_URL: ${{ secrets.WEAVIATE_URL }}
-          WEAVIATE_API_KEY: ${{ secrets.WEAVIATE_API_KEY }}
+          PINECONE_API_KEY: ${{ secrets.PINECONE_API_KEY }}
+          PINECONE_INDEX_NAME: ${{ secrets.PINECONE_INDEX_NAME }}
           RECORD_MANAGER_DB_URL: ${{ secrets.RECORD_MANAGER_DB_URL }}
           VOYAGE_AI_MODEL: ${{ secrets.VOYAGE_AI_MODEL }}
           VOYAGE_AI_URL: ${{ secrets.VOYAGE_AI_URL }}
