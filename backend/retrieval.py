@@ -2,19 +2,8 @@ import os
 from contextlib import contextmanager
 from typing import Iterator
 
-# Set environment to suppress deprecated plugin warnings
-os.environ['PINECONE_IGNORE_DEPRECATED_PLUGINS'] = 'true'
-
-try:
-    import pinecone
-except Exception as e:
-    if "pinecone-plugin-inference" in str(e):
-        # If deprecated plugin error, try to work around it
-        import warnings
-        warnings.filterwarnings("ignore", category=DeprecationWarning)
-        import pinecone
-    else:
-        raise e
+# Use the modern pinecone package (not pinecone-client)
+from pinecone import Pinecone
 
 from langchain_core.embeddings import Embeddings
 from langchain_core.retrievers import BaseRetriever
@@ -41,15 +30,12 @@ def make_text_encoder(model: str) -> Embeddings:
 def make_pinecone_retriever(
     configuration: BaseConfiguration, embedding_model: Embeddings
 ) -> Iterator[BaseRetriever]:
-    # Initialize Pinecone with the older API compatible with langchain-pinecone 0.1.3
-    pinecone.init(
-        api_key=os.environ["PINECONE_API_KEY"],
-        environment=os.environ["PINECONE_ENVIRONMENT"]
-    )
-    index = pinecone.Index(os.environ["PINECONE_INDEX_NAME"])
+    # Initialize Pinecone with the modern API
+    pc = Pinecone(api_key=os.environ["PINECONE_API_KEY"])
+    index = pc.Index(os.environ["PINECONE_INDEX_NAME"])
     
-    # Use the newer constructor style for langchain-pinecone 0.1.3
-    store = PineconeVectorStore(index, embedding_model, "text")
+    # Use the modern constructor style for langchain-pinecone
+    store = PineconeVectorStore(index=index, embedding=embedding_model)
     search_kwargs = {**configuration.search_kwargs}
     yield store.as_retriever(search_kwargs=search_kwargs)
 

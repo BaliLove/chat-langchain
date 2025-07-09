@@ -4,19 +4,8 @@ import os
 import re
 from typing import Optional
 
-# Set environment to suppress deprecated plugin warnings
-os.environ['PINECONE_IGNORE_DEPRECATED_PLUGINS'] = 'true'
-
-try:
-    import pinecone
-except Exception as e:
-    if "pinecone-plugin-inference" in str(e):
-        # If deprecated plugin error, try to work around it
-        import warnings
-        warnings.filterwarnings("ignore", category=DeprecationWarning)
-        import pinecone
-    else:
-        raise e
+# Use the modern pinecone package (not pinecone-client)
+from pinecone import Pinecone
 
 from bs4 import BeautifulSoup, SoupStrainer
 from langchain.document_loaders import RecursiveUrlLoader, SitemapLoader
@@ -133,16 +122,16 @@ def load_api_docs():
 
 def ingest_docs():
     PINECONE_API_KEY = os.environ["PINECONE_API_KEY"]
-    PINECONE_ENVIRONMENT = os.environ["PINECONE_ENVIRONMENT"]
     PINECONE_INDEX_NAME = os.environ["PINECONE_INDEX_NAME"]
     RECORD_MANAGER_DB_URL = os.environ["RECORD_MANAGER_DB_URL"]
 
     text_splitter = RecursiveCharacterTextSplitter(chunk_size=4000, chunk_overlap=200)
     embedding = get_embeddings_model()
 
-    pinecone.init(api_key=PINECONE_API_KEY, environment=PINECONE_ENVIRONMENT)
-    index = pinecone.Index(PINECONE_INDEX_NAME)
-    vectorstore = PineconeVectorStore(index, embedding.embed_query, "text")
+    # Use modern Pinecone API
+    pc = Pinecone(api_key=PINECONE_API_KEY)
+    index = pc.Index(PINECONE_INDEX_NAME)
+    vectorstore = PineconeVectorStore(index=index, embedding=embedding)
 
     record_manager = SQLRecordManager(
         f"pinecone/{PINECONE_INDEX_NAME}", db_url=RECORD_MANAGER_DB_URL
