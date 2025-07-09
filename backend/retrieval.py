@@ -35,8 +35,8 @@ def make_pinecone_retriever(
     )
     index = pinecone.Index(os.environ["PINECONE_INDEX_NAME"])
     
-    # Use the older constructor style for compatibility
-    store = PineconeVectorStore(index, embedding_model, "text")
+    # Use the older constructor style for compatibility with langchain-pinecone 0.1.0
+    store = PineconeVectorStore(index, embedding_model.embed_query, "text")
     search_kwargs = {**configuration.search_kwargs}
     yield store.as_retriever(search_kwargs=search_kwargs)
 
