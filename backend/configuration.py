@@ -49,10 +49,10 @@ class BaseConfiguration:
     )
 
     retriever_provider: Annotated[
-        Literal["weaviate"],
+        Literal["pinecone"],
         {"__template_metadata__": {"kind": "retriever"}},
     ] = field(
-        default="weaviate",
+        default="pinecone",
         metadata={"description": "The vector store provider to use for retrieval."},
     )
 
