@@ -2,6 +2,7 @@ import os
 from contextlib import contextmanager
 from typing import Iterator
 
+import pinecone
 from langchain_core.embeddings import Embeddings
 from langchain_core.retrievers import BaseRetriever
 from langchain_core.runnables import RunnableConfig
@@ -27,10 +28,15 @@ def make_text_encoder(model: str) -> Embeddings:
 def make_pinecone_retriever(
     configuration: BaseConfiguration, embedding_model: Embeddings
 ) -> Iterator[BaseRetriever]:
-    store = PineconeVectorStore(
-        index_name=os.environ["PINECONE_INDEX_NAME"],
-        embedding=embedding_model
+    # Initialize Pinecone with the older API compatible with langchain-pinecone 0.1.3
+    pinecone.init(
+        api_key=os.environ["PINECONE_API_KEY"],
+        environment=os.environ["PINECONE_ENVIRONMENT"]
     )
+    index = pinecone.Index(os.environ["PINECONE_INDEX_NAME"])
+    
+    # Use the older constructor style for compatibility
+    store = PineconeVectorStore(index, embedding_model, "text")
     search_kwargs = {**configuration.search_kwargs}
     yield store.as_retriever(search_kwargs=search_kwargs)
 
