@@ -4,7 +4,20 @@ import os
 import re
 from typing import Optional
 
-import pinecone
+# Set environment to suppress deprecated plugin warnings
+os.environ['PINECONE_IGNORE_DEPRECATED_PLUGINS'] = 'true'
+
+try:
+    import pinecone
+except Exception as e:
+    if "pinecone-plugin-inference" in str(e):
+        # If deprecated plugin error, try to work around it
+        import warnings
+        warnings.filterwarnings("ignore", category=DeprecationWarning)
+        import pinecone
+    else:
+        raise e
+
 from bs4 import BeautifulSoup, SoupStrainer
 from langchain.document_loaders import RecursiveUrlLoader, SitemapLoader
 from langchain.indexes import SQLRecordManager, index

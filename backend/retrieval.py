@@ -2,7 +2,20 @@ import os
 from contextlib import contextmanager
 from typing import Iterator
 
-import pinecone
+# Set environment to suppress deprecated plugin warnings
+os.environ['PINECONE_IGNORE_DEPRECATED_PLUGINS'] = 'true'
+
+try:
+    import pinecone
+except Exception as e:
+    if "pinecone-plugin-inference" in str(e):
+        # If deprecated plugin error, try to work around it
+        import warnings
+        warnings.filterwarnings("ignore", category=DeprecationWarning)
+        import pinecone
+    else:
+        raise e
+
 from langchain_core.embeddings import Embeddings
 from langchain_core.retrievers import BaseRetriever
 from langchain_core.runnables import RunnableConfig
@@ -35,8 +48,8 @@ def make_pinecone_retriever(
     )
     index = pinecone.Index(os.environ["PINECONE_INDEX_NAME"])
     
-    # Use the older constructor style for compatibility with langchain-pinecone 0.1.0
-    store = PineconeVectorStore(index, embedding_model.embed_query, "text")
+    # Use the newer constructor style for langchain-pinecone 0.1.3
+    store = PineconeVectorStore(index, embedding_model, "text")
     search_kwargs = {**configuration.search_kwargs}
     yield store.as_retriever(search_kwargs=search_kwargs)
 
