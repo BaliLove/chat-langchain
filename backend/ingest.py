@@ -4,6 +4,10 @@ import os
 import re
 from typing import Optional
 
+# Load environment variables from .env file
+from dotenv import load_dotenv
+load_dotenv()
+
 # Use the modern pinecone package (not pinecone-client)
 from pinecone import Pinecone
 
@@ -17,6 +21,15 @@ from langchain_pinecone import PineconeVectorStore
 from backend.constants import WEAVIATE_DOCS_INDEX_NAME
 from backend.embeddings import get_embeddings_model
 from backend.parser import langchain_docs_extractor
+
+# NEW: Import Bubble.io loader
+try:
+    from backend.bubble_loader import load_bubble_data
+    BUBBLE_AVAILABLE = True
+    logging.info("Bubble.io loader imported successfully")
+except ImportError as e:
+    BUBBLE_AVAILABLE = False
+    logging.warning(f"Bubble.io loader not available: {e}")
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -138,6 +151,7 @@ def ingest_docs():
     )
     record_manager.create_schema()
 
+    # Load from existing sources
     docs_from_documentation = load_langchain_docs()
     logger.info(f"Loaded {len(docs_from_documentation)} docs from documentation")
     docs_from_api = load_api_docs()
@@ -147,12 +161,28 @@ def ingest_docs():
     docs_from_langgraph = load_langgraph_docs()
     logger.info(f"Loaded {len(docs_from_langgraph)} docs from LangGraph")
 
-    docs_transformed = text_splitter.split_documents(
+    # NEW: Load from Bubble.io
+    docs_from_bubble = []
+    if BUBBLE_AVAILABLE:
+        try:
+            docs_from_bubble = load_bubble_data()
+            logger.info(f"Loaded {len(docs_from_bubble)} docs from Bubble.io")
+        except Exception as e:
+            logger.error(f"Failed to load Bubble.io data: {e}")
+            docs_from_bubble = []  # Continue with other sources
+    else:
+        logger.info("Bubble.io loader not available, skipping Bubble.io data")
+
+    # Combine all sources
+    all_docs = (
         docs_from_documentation
         + docs_from_api
         + docs_from_langsmith
         + docs_from_langgraph
+        + docs_from_bubble  # NEW: Include Bubble.io data
     )
+
+    docs_transformed = text_splitter.split_documents(all_docs)
     docs_transformed = [
         doc for doc in docs_transformed if len(doc.page_content) > 10
     ]
@@ -173,6 +203,16 @@ def ingest_docs():
     )
 
     logger.info(f"Indexing stats: {indexing_stats}")
+    
+    # Enhanced logging for Bubble.io integration
+    total_docs = len(docs_transformed)
+    bubble_docs = len([doc for doc in docs_transformed 
+                      if doc.metadata.get("source_system") == "bubble.io"])
+    
+    if bubble_docs > 0:
+        logger.info(f"Successfully integrated {bubble_docs} Bubble.io documents "
+                   f"out of {total_docs} total documents ({bubble_docs/total_docs*100:.1f}%)")
+    
     # Pinecone does not have the same aggregate API as Weaviate, so you may want to log differently here.
     logger.info(
         f"LangChain ingestion to Pinecone index '{PINECONE_INDEX_NAME}' complete."
