@@ -1,0 +1,42 @@
+[
+  {
+    "input": "What's included in your wedding planning package?",
+    "expected_tone": "professional_helpful",
+    "should_include_pricing": false,
+    "should_mention_venues": false,
+    "follow_up_required": true,
+    "metadata": {
+      "source": "common_client_inquiries"
+    }
+  },
+  {
+    "input": "Do you handle traditional Balinese ceremonies?",
+    "expected_tone": "professional_helpful",
+    "should_include_pricing": false,
+    "should_mention_venues": false,
+    "follow_up_required": true,
+    "metadata": {
+      "source": "common_client_inquiries"
+    }
+  },
+  {
+    "input": "What's the pricing for a 100-person event?",
+    "expected_tone": "professional_helpful",
+    "should_include_pricing": true,
+    "should_mention_venues": false,
+    "follow_up_required": true,
+    "metadata": {
+      "source": "common_client_inquiries"
+    }
+  },
+  {
+    "input": "Can you recommend venues for a beachfront wedding?",
+    "expected_tone": "professional_helpful",
+    "should_include_pricing": false,
+    "should_mention_venues": true,
+    "follow_up_required": true,
+    "metadata": {
+      "source": "common_client_inquiries"
+    }
+  }
+]

@@ -1,0 +1,17 @@
+[
+  {
+    "input": "Plan an event using Painting Souvenir on Canvas - Platinum at Renaissance Hotel",
+    "expected_services": [
+      "Painting Souvenir on Canvas - Platinum"
+    ],
+    "expected_venue": "Renaissance Hotel",
+    "integration_requirements": [
+      "timing",
+      "logistics",
+      "setup"
+    ],
+    "metadata": {
+      "source": "real_product_venue_data"
+    }
+  }
+]

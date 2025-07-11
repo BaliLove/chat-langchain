@@ -34,11 +34,17 @@ class BubbleConfig:
     batch_size: int = 100
     max_content_length: int = 10000
     sync_interval: int = 3600  # 1 hour
-    priority_data_types: List[str] = None
+    priority_data_types: Optional[List[str]] = None
     
     def __post_init__(self):
         if self.priority_data_types is None:
-            self.priority_data_types = ["event", "product", "venue", "comment", "eventreview"]
+            self.priority_data_types = [
+                # Training data types (new)
+                "training_module", "training_session", "employee_training_plan", 
+                "training_attendance", "training_assessment", "training_feedback",
+                # Existing venue/event data types
+                "event", "product", "venue", "comment", "eventreview"
+            ]
 
 
 class BubbleAPIError(Exception):
@@ -166,6 +172,14 @@ class BubbleDataMapper:
         """Extract and combine content fields based on data type"""
         
         content_extractors = {
+            # Training data extractors
+            "training_module": self._extract_training_module_content,
+            "training_session": self._extract_training_session_content,
+            "employee_training_plan": self._extract_training_plan_content,
+            "training_attendance": self._extract_training_attendance_content,
+            "training_assessment": self._extract_training_assessment_content,
+            "training_feedback": self._extract_training_feedback_content,
+            # Existing extractors
             "event": self._extract_event_content,
             "product": self._extract_product_content,
             "venue": self._extract_venue_content,
@@ -320,6 +334,207 @@ class BubbleDataMapper:
         
         if record.get("notes"):
             content_parts.append(f"Notes: {record['notes']}")
+        
+        return "\n".join(content_parts)
+    
+    def _extract_training_module_content(self, record: Dict) -> str:
+        """Extract content from Training Module records"""
+        content_parts = []
+        
+        if record.get("title") or record.get("name") or record.get("module_name"):
+            title = record.get("title") or record.get("name") or record.get("module_name")
+            content_parts.append(f"Training Module: {title}")
+        
+        if record.get("description") or record.get("content") or record.get("overview"):
+            desc = record.get("description") or record.get("content") or record.get("overview")
+            content_parts.append(f"Description: {desc}")
+        
+        if record.get("learning_objectives") or record.get("objectives"):
+            objectives = record.get("learning_objectives") or record.get("objectives")
+            content_parts.append(f"Learning Objectives: {objectives}")
+        
+        if record.get("duration") or record.get("estimated_duration"):
+            duration = record.get("duration") or record.get("estimated_duration")
+            content_parts.append(f"Duration: {duration}")
+        
+        if record.get("category") or record.get("training_category"):
+            category = record.get("category") or record.get("training_category")
+            content_parts.append(f"Category: {category}")
+        
+        if record.get("prerequisites"):
+            content_parts.append(f"Prerequisites: {record['prerequisites']}")
+        
+        if record.get("materials") or record.get("resources"):
+            materials = record.get("materials") or record.get("resources")
+            content_parts.append(f"Materials: {materials}")
+        
+        return "\n".join(content_parts)
+    
+    def _extract_training_session_content(self, record: Dict) -> str:
+        """Extract content from Training Session records"""
+        content_parts = []
+        
+        if record.get("session_name") or record.get("title") or record.get("name"):
+            name = record.get("session_name") or record.get("title") or record.get("name")
+            content_parts.append(f"Training Session: {name}")
+        
+        if record.get("training_module"):
+            content_parts.append(f"Module: {record['training_module']}")
+        
+        if record.get("instructor") or record.get("trainer"):
+            instructor = record.get("instructor") or record.get("trainer")
+            content_parts.append(f"Instructor: {instructor}")
+        
+        if record.get("scheduled_date") or record.get("date"):
+            date = record.get("scheduled_date") or record.get("date")
+            content_parts.append(f"Date: {date}")
+        
+        if record.get("location") or record.get("venue"):
+            location = record.get("location") or record.get("venue")
+            content_parts.append(f"Location: {location}")
+        
+        if record.get("capacity") or record.get("max_attendees"):
+            capacity = record.get("capacity") or record.get("max_attendees")
+            content_parts.append(f"Capacity: {capacity}")
+        
+        if record.get("status"):
+            content_parts.append(f"Status: {record['status']}")
+        
+        return "\n".join(content_parts)
+    
+    def _extract_training_plan_content(self, record: Dict) -> str:
+        """Extract content from Employee Training Plan records"""
+        content_parts = []
+        
+        if record.get("employee_name") or record.get("employee"):
+            employee = record.get("employee_name") or record.get("employee")
+            content_parts.append(f"Employee: {employee}")
+        
+        if record.get("department") or record.get("team"):
+            dept = record.get("department") or record.get("team")
+            content_parts.append(f"Department: {dept}")
+        
+        if record.get("role") or record.get("position"):
+            role = record.get("role") or record.get("position")
+            content_parts.append(f"Role: {role}")
+        
+        if record.get("required_modules") or record.get("training_modules"):
+            modules = record.get("required_modules") or record.get("training_modules")
+            content_parts.append(f"Required Modules: {modules}")
+        
+        if record.get("completion_deadline") or record.get("deadline"):
+            deadline = record.get("completion_deadline") or record.get("deadline")
+            content_parts.append(f"Deadline: {deadline}")
+        
+        if record.get("progress") or record.get("completion_status"):
+            progress = record.get("progress") or record.get("completion_status")
+            content_parts.append(f"Progress: {progress}")
+        
+        if record.get("manager") or record.get("supervisor"):
+            manager = record.get("manager") or record.get("supervisor")
+            content_parts.append(f"Manager: {manager}")
+        
+        return "\n".join(content_parts)
+    
+    def _extract_training_attendance_content(self, record: Dict) -> str:
+        """Extract content from Training Attendance records"""
+        content_parts = []
+        
+        if record.get("employee_name") or record.get("employee"):
+            employee = record.get("employee_name") or record.get("employee")
+            content_parts.append(f"Employee: {employee}")
+        
+        if record.get("training_session") or record.get("session"):
+            session = record.get("training_session") or record.get("session")
+            content_parts.append(f"Training Session: {session}")
+        
+        if record.get("attendance_status") or record.get("status"):
+            status = record.get("attendance_status") or record.get("status")
+            content_parts.append(f"Attendance: {status}")
+        
+        if record.get("completion_date") or record.get("attended_date"):
+            date = record.get("completion_date") or record.get("attended_date")
+            content_parts.append(f"Date: {date}")
+        
+        if record.get("score") or record.get("assessment_score"):
+            score = record.get("score") or record.get("assessment_score")
+            content_parts.append(f"Score: {score}")
+        
+        if record.get("certificate_issued"):
+            content_parts.append(f"Certificate Issued: {record['certificate_issued']}")
+        
+        if record.get("notes") or record.get("comments"):
+            notes = record.get("notes") or record.get("comments")
+            content_parts.append(f"Notes: {notes}")
+        
+        return "\n".join(content_parts)
+    
+    def _extract_training_assessment_content(self, record: Dict) -> str:
+        """Extract content from Training Assessment records"""
+        content_parts = []
+        
+        if record.get("assessment_name") or record.get("title"):
+            name = record.get("assessment_name") or record.get("title")
+            content_parts.append(f"Assessment: {name}")
+        
+        if record.get("training_module") or record.get("module"):
+            module = record.get("training_module") or record.get("module")
+            content_parts.append(f"Module: {module}")
+        
+        if record.get("employee_name") or record.get("employee"):
+            employee = record.get("employee_name") or record.get("employee")
+            content_parts.append(f"Employee: {employee}")
+        
+        if record.get("score") or record.get("grade"):
+            score = record.get("score") or record.get("grade")
+            content_parts.append(f"Score: {score}")
+        
+        if record.get("passing_score") or record.get("pass_threshold"):
+            passing = record.get("passing_score") or record.get("pass_threshold")
+            content_parts.append(f"Passing Score: {passing}")
+        
+        if record.get("completion_date") or record.get("taken_date"):
+            date = record.get("completion_date") or record.get("taken_date")
+            content_parts.append(f"Date: {date}")
+        
+        if record.get("passed") or record.get("status"):
+            passed = record.get("passed") or record.get("status")
+            content_parts.append(f"Status: {passed}")
+        
+        return "\n".join(content_parts)
+    
+    def _extract_training_feedback_content(self, record: Dict) -> str:
+        """Extract content from Training Feedback records"""
+        content_parts = []
+        
+        if record.get("training_session") or record.get("session"):
+            session = record.get("training_session") or record.get("session")
+            content_parts.append(f"Training Session: {session}")
+        
+        if record.get("employee_name") or record.get("employee"):
+            employee = record.get("employee_name") or record.get("employee")
+            content_parts.append(f"Employee: {employee}")
+        
+        if record.get("rating") or record.get("overall_rating"):
+            rating = record.get("rating") or record.get("overall_rating")
+            content_parts.append(f"Rating: {rating}")
+        
+        if record.get("feedback") or record.get("comments"):
+            feedback = record.get("feedback") or record.get("comments")
+            content_parts.append(f"Feedback: {feedback}")
+        
+        if record.get("instructor_rating"):
+            content_parts.append(f"Instructor Rating: {record['instructor_rating']}")
+        
+        if record.get("content_rating"):
+            content_parts.append(f"Content Rating: {record['content_rating']}")
+        
+        if record.get("suggestions") or record.get("improvements"):
+            suggestions = record.get("suggestions") or record.get("improvements")
+            content_parts.append(f"Suggestions: {suggestions}")
+        
+        if record.get("would_recommend"):
+            content_parts.append(f"Would Recommend: {record['would_recommend']}")
         
         return "\n".join(content_parts)
     

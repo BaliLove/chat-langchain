@@ -1,13 +1,14 @@
-import "./globals.css";
-import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
+import { AuthProvider } from './contexts/AuthContext'
+import "./globals.css";
+import type { Metadata } from "next";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Chat LangChain",
-  description: "Chatbot for LangChain",
+  title: "Bali Love Chat",
+  description: "AI-powered chat assistant",
 };
 
 export default function RootLayout({
@@ -22,7 +23,9 @@ export default function RootLayout({
           className="flex flex-col h-full w-full"
           style={{ background: "rgb(38, 38, 41)" }}
         >
-          <NuqsAdapter>{children}</NuqsAdapter>
+          <AuthProvider>
+            <NuqsAdapter>{children}</NuqsAdapter>
+          </AuthProvider>
         </div>
       </body>
     </html>

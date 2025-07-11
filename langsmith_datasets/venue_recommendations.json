@@ -1,0 +1,97 @@
+[
+  {
+    "input": "I need a hotel venue for approximately 120 guests",
+    "expected_venues": [
+      "Renaissance Hotel"
+    ],
+    "requirements": {
+      "capacity": 120,
+      "type": "Hotel",
+      "features": [
+        "Type: Hotel",
+        "Capacity: 120",
+        "Supports multiple event types"
+      ]
+    },
+    "metadata": {
+      "venue_id": "1705660533535x434318306830987900",
+      "source": "real_venue_data"
+    }
+  },
+  {
+    "input": "I need a villa venue for approximately 70 guests",
+    "expected_venues": [
+      "Stone Villa Uluwatu"
+    ],
+    "requirements": {
+      "capacity": 70,
+      "type": "Villa",
+      "features": [
+        "Type: Villa",
+        "Capacity: 70",
+        "Supports multiple event types"
+      ]
+    },
+    "metadata": {
+      "venue_id": "1705660533602x412211475813798900",
+      "source": "real_venue_data"
+    }
+  },
+  {
+    "input": "I need a private venue venue for approximately 300 guests",
+    "expected_venues": [
+      "Tirtha Bali"
+    ],
+    "requirements": {
+      "capacity": 300,
+      "type": "Private Venue",
+      "features": [
+        "Type: Private Venue",
+        "Capacity: 300",
+        "Supports multiple event types"
+      ]
+    },
+    "metadata": {
+      "venue_id": "1705660533671x837982465042934600",
+      "source": "real_venue_data"
+    }
+  },
+  {
+    "input": "I need a hotel venue for approximately 300 guests",
+    "expected_venues": [
+      "Conrad Bali"
+    ],
+    "requirements": {
+      "capacity": 300,
+      "type": "Hotel",
+      "features": [
+        "Type: Hotel",
+        "Capacity: 300",
+        "Supports multiple event types"
+      ]
+    },
+    "metadata": {
+      "venue_id": "1705660533744x230545287825607780",
+      "source": "real_venue_data"
+    }
+  },
+  {
+    "input": "I need a hotel venue for approximately 200 guests",
+    "expected_venues": [
+      "The Mulia"
+    ],
+    "requirements": {
+      "capacity": 200,
+      "type": "Hotel",
+      "features": [
+        "Type: Hotel",
+        "Capacity: 200",
+        "Supports multiple event types"
+      ]
+    },
+    "metadata": {
+      "venue_id": "1705660533822x294489781574138750",
+      "source": "real_venue_data"
+    }
+  }
+]
