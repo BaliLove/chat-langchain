@@ -13,9 +13,10 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-# Configuration
-BUBBLE_API_KEY = os.getenv("BUBBLE_API_KEY")
-BUBBLE_APP_NAME = os.getenv("BUBBLE_APP_NAME")
+# Configuration - using existing Bubble env vars
+BUBBLE_API_TOKEN = os.getenv("BUBBLE_API_TOKEN")
+BUBBLE_APP_URL = os.getenv("BUBBLE_APP_URL", "https://app.bali.love")
+BUBBLE_BATCH_SIZE = int(os.getenv("BUBBLE_BATCH_SIZE", "100"))
 SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_SERVICE_KEY = os.getenv("SUPABASE_SERVICE_ROLE_KEY")  # Need service key for RLS bypass
 
@@ -27,10 +28,10 @@ def fetch_bubble_users() -> List[Dict[str, Any]]:
     """Fetch users from Bubble where email domain is bali.love"""
     
     # Bubble API endpoint for searching users
-    url = f"https://{BUBBLE_APP_NAME}.bubbleapps.io/api/1.1/obj/user"
+    url = f"{BUBBLE_APP_URL}/api/1.1/obj/user"
     
     headers = {
-        "Authorization": f"Bearer {BUBBLE_API_KEY}",
+        "Authorization": f"Bearer {BUBBLE_API_TOKEN}",
         "Content-Type": "application/json"
     }
     
@@ -47,7 +48,7 @@ def fetch_bubble_users() -> List[Dict[str, Any]]:
     
     users = []
     cursor = 0
-    limit = 100
+    limit = BUBBLE_BATCH_SIZE
     
     with httpx.Client() as client:
         while True:
@@ -129,9 +130,9 @@ def main():
     print("Starting Bubble → Supabase user sync...")
     
     # Validate environment variables
-    if not all([BUBBLE_API_KEY, BUBBLE_APP_NAME, SUPABASE_URL, SUPABASE_SERVICE_KEY]):
+    if not all([BUBBLE_API_TOKEN, BUBBLE_APP_URL, SUPABASE_URL, SUPABASE_SERVICE_KEY]):
         print("Error: Missing required environment variables")
-        print("Required: BUBBLE_API_KEY, BUBBLE_APP_NAME, SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY")
+        print("Required: BUBBLE_API_TOKEN, BUBBLE_APP_URL, SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY")
         sys.exit(1)
     
     # Fetch users from Bubble
