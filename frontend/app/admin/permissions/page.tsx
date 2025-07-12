@@ -22,6 +22,8 @@ interface UserTeamData {
   updated_at: string
 }
 
+export const dynamic = 'force-dynamic'
+
 export default function PermissionsAdminPage() {
   const { user } = useAuth()
   const { permissions } = usePermissions()

@@ -21,7 +21,10 @@
       "Bash(find:*)",
       "Bash(yarn tsc:*)",
       "Bash(python:*)",
-      "Bash(poetry run:*)"
+      "Bash(poetry run:*)",
+      "Bash(sudo apt:*)",
+      "Bash(sudo apt install:*)",
+      "Bash(grep:*)"
     ],
     "deny": []
   }

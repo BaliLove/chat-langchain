@@ -163,10 +163,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [])
 
   const signOut = async () => {
-    await supabase.auth.signOut()
-    setUser(null)
-    setUserTeamData(null)
-    setIsAuthorized(false)
+    try {
+      await supabase.auth.signOut()
+      setUser(null)
+      setUserTeamData(null)
+      setIsAuthorized(false)
+      
+      // Redirect to login page
+      if (typeof window !== 'undefined') {
+        window.location.href = '/login'
+      }
+    } catch (error) {
+      console.error('Error signing out:', error)
+    }
   }
 
   return (
