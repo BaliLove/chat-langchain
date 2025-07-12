@@ -7,6 +7,7 @@ import { useGraphContext } from "../../contexts/GraphContext";
 import { groupThreads } from "./utils";
 import { ThreadsList } from "./thread-list";
 import { useQueryState } from "nuqs";
+import PermissionStatus from "../PermissionStatus";
 
 const LoadingThread = () => <Skeleton className="w-full h-8 bg-[#373737]" />;
 
@@ -65,6 +66,10 @@ function ThreadHistoryComponent() {
             ) : (
               <ThreadsList groupedThreads={groupedThreads} />
             )}
+          </div>
+          {/* Permission Status at bottom of sidebar */}
+          <div className="p-4 border-t border-[#393939]">
+            <PermissionStatus />
           </div>
         </div>
       </div>

@@ -20,6 +20,7 @@ import { ThreadHistory } from "./thread-history";
 import { Toaster } from "./ui/toaster";
 import { useGraphContext } from "../contexts/GraphContext";
 import { useQueryState } from "nuqs";
+import { usePermissions } from "../hooks/usePermissions";
 
 // Add this debug component near the top of the file
 const DebugInfo = () => {
@@ -44,6 +45,7 @@ function ChatLangChainComponent(): React.ReactElement {
     graphData;
   const [isRunning, setIsRunning] = useState(false);
   const [threadId, setThreadId] = useQueryState("threadId");
+  const { permissions, loading: permissionsLoading, hasAgent } = usePermissions();
 
   const hasCheckedThreadIdParam = useRef(false);
   useEffect(() => {
@@ -71,13 +73,27 @@ function ChatLangChainComponent(): React.ReactElement {
     }
   }, [threadId]);
 
-  const isSubmitDisabled = !userId;
+  const isSubmitDisabled = !userId || permissionsLoading || !permissions?.canCreateThreads;
 
   async function onNew(message: AppendMessage): Promise<void> {
     if (isSubmitDisabled) {
       toast({
         title: "Failed to send message",
-        description: "Unable to find user ID. Please try again later.",
+        description: !userId 
+          ? "Unable to find user ID. Please try again later." 
+          : !permissions?.canCreateThreads 
+          ? "You don't have permission to create new threads."
+          : "Please wait while we load your permissions.",
+      });
+      return;
+    }
+    
+    // Check if user has access to the chat agent
+    if (!hasAgent('chat')) {
+      toast({
+        title: "Access Denied",
+        description: "You don't have access to the chat agent.",
+        variant: "destructive"
       });
       return;
     }

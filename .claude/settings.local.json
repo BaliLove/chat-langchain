@@ -19,7 +19,9 @@
       "WebFetch(domain:smith.langchain.com)",
       "Bash(git remote set-url:*)",
       "Bash(find:*)",
-      "Bash(yarn tsc:*)"
+      "Bash(yarn tsc:*)",
+      "Bash(python:*)",
+      "Bash(poetry run:*)"
     ],
     "deny": []
   }
