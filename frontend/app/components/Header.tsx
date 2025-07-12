@@ -1,7 +1,8 @@
 'use client'
 import { useAuth } from '@/app/contexts/AuthContext'
 import { Button } from './ui/button'
-import { LogOut, User } from 'lucide-react'
+import { LogOut, User, Shield } from 'lucide-react'
+import Link from 'next/link'
 
 export default function Header() {
   const { user, userTeamData, signOut, isAuthorized } = useAuth()
@@ -22,6 +23,19 @@ export default function Header() {
           </div>
           
           <div className="flex items-center space-x-4">
+            {userTeamData?.role === 'admin' && (
+              <Link href="/admin/permissions">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="text-gray-300 hover:text-white hover:bg-gray-800"
+                >
+                  <Shield className="w-4 h-4 mr-2" />
+                  <span className="hidden sm:inline">Admin</span>
+                </Button>
+              </Link>
+            )}
+            
             <div className="flex items-center text-sm text-gray-300">
               <User className="w-4 h-4 mr-2" />
               <span className="hidden sm:inline">{user.email}</span>

@@ -16,6 +16,7 @@ from backend import retrieval
 from backend.retrieval_graph.configuration import AgentConfiguration
 from backend.retrieval_graph.researcher_graph.state import QueryState, ResearcherState
 from backend.utils import load_chat_model
+from backend.permissions import permission_manager
 
 
 async def generate_queries(
@@ -58,7 +59,8 @@ async def retrieve_documents(
 ) -> dict[str, list[Document]]:
     """Retrieve documents based on a given query.
 
-    This function uses a retriever to fetch relevant documents for a given query.
+    This function uses a retriever to fetch relevant documents for a given query,
+    then filters them based on user permissions.
 
     Args:
         state (QueryState): The current state containing the query string.
@@ -68,8 +70,31 @@ async def retrieve_documents(
         dict[str, list[Document]]: A dictionary with a 'documents' key containing the list of retrieved documents.
     """
     with retrieval.make_retriever(config) as retriever:
-        response = await retriever.ainvoke(state.query, config)
-        return {"documents": response}
+        # Retrieve documents
+        documents = await retriever.ainvoke(state.query, config)
+        
+        # Get user email from config (this should be passed from the main graph)
+        user_email = config.get("configurable", {}).get("user_email", "")
+        
+        if user_email:
+            # Get user permissions
+            permissions = await permission_manager.get_user_permissions(user_email)
+            
+            # Filter documents based on permissions
+            filtered_docs = []
+            for doc in documents:
+                # Check document metadata for data source
+                metadata = doc.metadata or {}
+                doc_source = metadata.get("data_source", "public")
+                
+                # Check if user has access to this data source
+                if permissions.has_data_source(doc_source) or doc_source == "public":
+                    filtered_docs.append(doc)
+            
+            return {"documents": filtered_docs}
+        
+        # If no user email, return all documents (backward compatibility)
+        return {"documents": documents}
 
 
 def retrieve_in_parallel(state: ResearcherState) -> list[Send]:

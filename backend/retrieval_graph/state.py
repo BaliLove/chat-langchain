@@ -57,6 +57,9 @@ class InputState:
         A new list of messages with the messages from `right` merged into `left`.
         If a message in `right` has the same ID as a message in `left`, the
         message from `right` will replace the message from `left`."""
+    
+    user_email: str = field(default="")
+    """Email of the user making the request. Used for permission checks."""
 
 
 class Router(TypedDict):
