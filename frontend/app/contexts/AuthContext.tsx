@@ -3,16 +3,8 @@ import { createContext, useContext, useEffect, useState, ReactNode } from 'react
 import { User, Session, AuthChangeEvent } from '@supabase/supabase-js'
 import { createClient } from '@/lib/supabase'
 
-interface UserProfile {
-  id: string
-  email: string
-  name?: string
-  role: 'admin' | 'moderator' | 'user'
-}
-
 interface AuthContextType {
   user: User | null
-  profile: UserProfile | null
   loading: boolean
   isAuthorized: boolean
   signOut: () => Promise<void>
@@ -25,7 +17,6 @@ const ALLOWED_EMAIL_DOMAINS = process.env.NEXT_PUBLIC_ALLOWED_EMAIL_DOMAINS?.spl
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
-  const [profile, setProfile] = useState<UserProfile | null>(null)
   const [loading, setLoading] = useState(true)
   const [isAuthorized, setIsAuthorized] = useState(false)
   const supabase = createClient()
@@ -46,16 +37,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         const authorized = checkUserAuthorization(session.user)
         setIsAuthorized(authorized)
         
-        if (authorized) {
-          loadUserProfile(session.user.id)
-        } else {
+        if (!authorized) {
           // Sign out unauthorized users
           supabase.auth.signOut()
-          setLoading(false)
         }
-      } else {
-        setLoading(false)
       }
+      setLoading(false)
     })
 
     // Listen for auth changes
@@ -67,60 +54,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           const authorized = checkUserAuthorization(session.user)
           setIsAuthorized(authorized)
           
-          if (authorized) {
-            await loadUserProfile(session.user.id)
-          } else {
+          if (!authorized) {
             // Sign out unauthorized users
             await supabase.auth.signOut()
-            setProfile(null)
           }
         } else {
-          setProfile(null)
           setIsAuthorized(false)
-          setLoading(false)
         }
+        setLoading(false)
       }
     )
 
     return () => subscription.unsubscribe()
   }, [])
-
-  const loadUserProfile = async (userId: string) => {
-    try {
-      const { data, error } = await supabase
-        .from('user_profiles')
-        .select('*')
-        .eq('id', userId)
-        .single()
-
-      if (error) {
-        // Check if error is because table doesn't exist
-        if (error.code === '42P01') {
-          console.warn('user_profiles table does not exist. Please run the migration SQL in Supabase.')
-          // Create a temporary profile
-          setProfile({
-            id: userId,
-            email: user?.email || '',
-            role: 'user'
-          })
-        } else {
-          throw error
-        }
-      } else {
-        setProfile(data)
-      }
-    } catch (error) {
-      console.error('Error loading user profile:', error)
-      // If any other error, create a basic profile
-      setProfile({
-        id: userId,
-        email: user?.email || '',
-        role: 'user'
-      })
-    } finally {
-      setLoading(false)
-    }
-  }
 
   const signOut = async () => {
     await supabase.auth.signOut()
@@ -129,7 +75,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   return (
     <AuthContext.Provider value={{
       user,
-      profile,
       loading,
       isAuthorized,
       signOut
