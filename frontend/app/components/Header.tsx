@@ -4,7 +4,7 @@ import { Button } from './ui/button'
 import { LogOut, User } from 'lucide-react'
 
 export default function Header() {
-  const { user, signOut, isAuthorized } = useAuth()
+  const { user, userTeamData, signOut, isAuthorized } = useAuth()
 
   if (!user || !isAuthorized) return null
 
@@ -14,6 +14,11 @@ export default function Header() {
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center">
             <h1 className="text-white text-lg font-semibold">Bali Love Chat</h1>
+            {userTeamData && (
+              <span className="ml-4 text-sm text-gray-400">
+                {userTeamData.team_name} • {userTeamData.role}
+              </span>
+            )}
           </div>
           
           <div className="flex items-center space-x-4">

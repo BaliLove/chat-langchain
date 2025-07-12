@@ -3,8 +3,18 @@ import { createContext, useContext, useEffect, useState, ReactNode } from 'react
 import { User, Session, AuthChangeEvent } from '@supabase/supabase-js'
 import { createClient } from '@/lib/supabase'
 
+interface UserTeamData {
+  email: string
+  team_id: string
+  team_name: string
+  role: string
+  allowed_agents: string[]
+  allowed_data_sources: string[]
+}
+
 interface AuthContextType {
   user: User | null
+  userTeamData: UserTeamData | null
   loading: boolean
   isAuthorized: boolean
   signOut: () => Promise<void>
@@ -17,6 +27,7 @@ const ALLOWED_EMAIL_DOMAINS = process.env.NEXT_PUBLIC_ALLOWED_EMAIL_DOMAINS?.spl
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
+  const [userTeamData, setUserTeamData] = useState<UserTeamData | null>(null)
   const [loading, setLoading] = useState(true)
   const [isAuthorized, setIsAuthorized] = useState(false)
   const supabase = createClient()
@@ -29,9 +40,29 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return ALLOWED_EMAIL_DOMAINS.includes(emailDomain)
   }
 
+  const fetchUserTeamData = async (email: string) => {
+    try {
+      const { data, error } = await supabase
+        .from('user_teams')
+        .select('*')
+        .eq('email', email.toLowerCase())
+        .single()
+      
+      if (error) {
+        console.warn('No team data found for user:', email)
+        return null
+      }
+      
+      return data as UserTeamData
+    } catch (error) {
+      console.error('Error fetching user team data:', error)
+      return null
+    }
+  }
+
   useEffect(() => {
     // Get initial session
-    supabase.auth.getSession().then(({ data: { session } }: { data: { session: Session | null } }) => {
+    supabase.auth.getSession().then(async ({ data: { session } }: { data: { session: Session | null } }) => {
       setUser(session?.user ?? null)
       if (session?.user) {
         const authorized = checkUserAuthorization(session.user)
@@ -40,6 +71,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         if (!authorized) {
           // Sign out unauthorized users
           supabase.auth.signOut()
+        } else if (session.user.email) {
+          // Fetch team data for authorized users
+          const teamData = await fetchUserTeamData(session.user.email)
+          setUserTeamData(teamData)
         }
       }
       setLoading(false)
@@ -57,9 +92,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           if (!authorized) {
             // Sign out unauthorized users
             await supabase.auth.signOut()
+            setUserTeamData(null)
+          } else if (session.user.email) {
+            // Fetch team data for authorized users
+            const teamData = await fetchUserTeamData(session.user.email)
+            setUserTeamData(teamData)
           }
         } else {
           setIsAuthorized(false)
+          setUserTeamData(null)
         }
         setLoading(false)
       }
@@ -75,6 +116,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   return (
     <AuthContext.Provider value={{
       user,
+      userTeamData,
       loading,
       isAuthorized,
       signOut
