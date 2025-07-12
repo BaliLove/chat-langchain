@@ -9,6 +9,7 @@ import { Input } from '@/app/components/ui/input'
 import { Card, CardHeader, CardTitle, CardContent } from '@/app/components/ui/card'
 import { Shield, Users, Search, Edit2, Trash2, Plus, RefreshCw } from 'lucide-react'
 import { useToast } from '@/app/hooks/use-toast'
+import AdminRoute from '@/app/components/AdminRoute'
 
 interface UserTeamData {
   id: string
@@ -155,7 +156,8 @@ export default function PermissionsAdminPage() {
   }
 
   return (
-    <div className="container mx-auto p-6 max-w-7xl">
+    <AdminRoute>
+      <div className="container mx-auto p-6 max-w-7xl">
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
           <Shield className="w-8 h-8" />
@@ -315,5 +317,6 @@ export default function PermissionsAdminPage() {
         </Card>
       </div>
     </div>
+    </AdminRoute>
   )
 }
