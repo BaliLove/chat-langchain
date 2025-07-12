@@ -89,7 +89,7 @@ export default function LoginPage() {
           <Auth
             supabaseClient={supabase}
             appearance={{ theme: ThemeSupa }}
-            providers={['google']}
+            providers={[]}
             redirectTo={redirectUrl || '/'}
             showLinks={false}
             view="sign_in"
