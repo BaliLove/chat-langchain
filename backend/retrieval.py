@@ -20,8 +20,9 @@ def make_text_encoder(model: str) -> Embeddings:
     match provider:
         case "openai":
             from langchain_openai import OpenAIEmbeddings
-
-            return OpenAIEmbeddings(model=model)
+            # Use 1024 dimensions to match Pinecone index
+            # text-embedding-3-small supports dimension reduction
+            return OpenAIEmbeddings(model=model, dimensions=1024)
         case _:
             raise ValueError(f"Unsupported embedding provider: {provider}")
 
