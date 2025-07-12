@@ -1,9 +1,18 @@
 {
+  "name": "chat-langchain-monorepo",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "cd frontend && yarn build",
+    "dev": "cd frontend && yarn dev",
+    "start": "cd frontend && yarn start",
+    "install:frontend": "cd frontend && yarn install"
+  },
+  "workspaces": ["frontend"],
   "dependencies": {
-    "@supabase/auth-helpers-nextjs": "^0.10.0",
     "@supabase/auth-ui-react": "^0.4.7",
     "@supabase/auth-ui-shared": "^0.1.8",
-    "@supabase/ssr": "^0.6.1",
-    "@supabase/supabase-js": "^2.50.5"
-  }
+    "@supabase/ssr": "^0.5.1",
+    "@supabase/supabase-js": "^2.45.4"
+  },
+  "private": true
 }
