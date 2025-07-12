@@ -6,6 +6,9 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { User } from '@supabase/supabase-js'
 
+// Force dynamic rendering to avoid window is not defined error
+export const dynamic = 'force-dynamic'
+
 export default function LoginPage() {
   const supabase = createClient()
   const router = useRouter()
