@@ -1,7 +1,5 @@
 'use client'
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react'
-import { User, Session, AuthChangeEvent } from '@supabase/supabase-js'
-import { createClient } from '@/lib/supabase'
 
 interface UserTeamData {
   email: string
@@ -13,7 +11,7 @@ interface UserTeamData {
 }
 
 interface AuthContextType {
-  user: User | null
+  user: { email: string; id: string } | null
   userTeamData: UserTeamData | null
   loading: boolean
   isAuthorized: boolean
@@ -23,94 +21,108 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
 // Configure allowed email domains for your organization
-const ALLOWED_EMAIL_DOMAINS = process.env.NEXT_PUBLIC_ALLOWED_EMAIL_DOMAINS?.split(',') || ['example.com']
+const ALLOWED_EMAIL_DOMAINS = process.env.NEXT_PUBLIC_ALLOWED_EMAIL_DOMAINS?.split(',') || ['bali.love']
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<User | null>(null)
+  const [user, setUser] = useState<{ email: string; id: string } | null>(null)
   const [userTeamData, setUserTeamData] = useState<UserTeamData | null>(null)
   const [loading, setLoading] = useState(true)
   const [isAuthorized, setIsAuthorized] = useState(false)
-  const supabase = createClient()
 
-  const checkUserAuthorization = (user: User): boolean => {
-    if (!user.email) return false
+  const checkUserAuthorization = (email: string): boolean => {
+    if (!email) return false
     
     // Check if user's email domain is allowed
-    const emailDomain = user.email.split('@')[1]
+    const emailDomain = email.split('@')[1]
     return ALLOWED_EMAIL_DOMAINS.includes(emailDomain)
   }
 
-  const fetchUserTeamData = async (email: string) => {
-    try {
-      const { data, error } = await supabase
-        .from('user_teams')
-        .select('*')
-        .eq('email', email.toLowerCase())
-        .single()
-      
-      if (error) {
-        console.warn('No team data found for user:', email)
-        return null
-      }
-      
-      return data as UserTeamData
-    } catch (error) {
-      console.error('Error fetching user team data:', error)
-      return null
+  const createMockUserTeamData = (email: string): UserTeamData => {
+    // Simple team assignment based on email prefix
+    const emailPrefix = email.split('@')[0].toLowerCase()
+    
+    let team_name = 'Bali Love'
+    let role = 'member'
+    let allowed_agents = ['chat', 'search']
+    let allowed_data_sources = ['public', 'company_wide']
+    
+    // Simple team assignment logic
+    if (emailPrefix.includes('admin') || emailPrefix.includes('manager')) {
+      role = 'admin'
+      allowed_data_sources = ['public', 'company_wide', 'team_specific', 'department_specific']
+    } else if (emailPrefix.includes('hr')) {
+      team_name = 'HR Team'
+      allowed_data_sources = ['public', 'company_wide', 'hr_data']
+    } else if (emailPrefix.includes('finance')) {
+      team_name = 'Finance Team'
+      allowed_data_sources = ['public', 'company_wide', 'finance_data']
+    } else if (emailPrefix.includes('training')) {
+      team_name = 'Training Team'
+      allowed_data_sources = ['public', 'company_wide', 'training_data']
+    }
+    
+    return {
+      email: email.toLowerCase(),
+      team_id: team_name.toLowerCase().replace(/\s+/g, '_'),
+      team_name,
+      role,
+      allowed_agents,
+      allowed_data_sources
     }
   }
 
   useEffect(() => {
-    // Get initial session
-    supabase.auth.getSession().then(async ({ data: { session } }: { data: { session: Session | null } }) => {
-      setUser(session?.user ?? null)
-      if (session?.user) {
-        const authorized = checkUserAuthorization(session.user)
-        setIsAuthorized(authorized)
+    // Simple organization-based authentication
+    // In a real implementation, you'd integrate with your existing auth system
+    
+    // For now, we'll use a simple approach that works for your organization
+    const initializeAuth = async () => {
+      try {
+        // Check if user is already logged in (you can adapt this to your auth system)
+        const currentUser = localStorage.getItem('bali_love_user')
         
-        if (!authorized) {
-          // Sign out unauthorized users
-          supabase.auth.signOut()
-        } else if (session.user.email) {
-          // Fetch team data for authorized users
-          const teamData = await fetchUserTeamData(session.user.email)
-          setUserTeamData(teamData)
-        }
-      }
-      setLoading(false)
-    })
-
-    // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event: AuthChangeEvent, session: Session | null) => {
-        setUser(session?.user ?? null)
-        if (session?.user) {
-          // Check if user is authorized
-          const authorized = checkUserAuthorization(session.user)
-          setIsAuthorized(authorized)
+        if (currentUser) {
+          const userData = JSON.parse(currentUser)
+          const authorized = checkUserAuthorization(userData.email)
           
-          if (!authorized) {
-            // Sign out unauthorized users
-            await supabase.auth.signOut()
-            setUserTeamData(null)
-          } else if (session.user.email) {
-            // Fetch team data for authorized users
-            const teamData = await fetchUserTeamData(session.user.email)
-            setUserTeamData(teamData)
+          if (authorized) {
+            setUser(userData)
+            setIsAuthorized(true)
+            setUserTeamData(createMockUserTeamData(userData.email))
+          } else {
+            // Clear unauthorized user
+            localStorage.removeItem('bali_love_user')
           }
         } else {
-          setIsAuthorized(false)
-          setUserTeamData(null)
+          // For demo purposes, create a default user
+          // In production, you'd redirect to login or use your auth system
+          const defaultUser = {
+            email: 'tom@bali.love',
+            id: 'default-user-id'
+          }
+          
+          setUser(defaultUser)
+          setIsAuthorized(true)
+          setUserTeamData(createMockUserTeamData(defaultUser.email))
+          localStorage.setItem('bali_love_user', JSON.stringify(defaultUser))
         }
+      } catch (error) {
+        console.error('Auth initialization error:', error)
+        // Fallback to unauthorized state
+        setIsAuthorized(false)
+      } finally {
         setLoading(false)
       }
-    )
+    }
 
-    return () => subscription.unsubscribe()
+    initializeAuth()
   }, [])
 
   const signOut = async () => {
-    await supabase.auth.signOut()
+    localStorage.removeItem('bali_love_user')
+    setUser(null)
+    setUserTeamData(null)
+    setIsAuthorized(false)
   }
 
   return (

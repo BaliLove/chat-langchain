@@ -21,6 +21,20 @@ import { Toaster } from "./ui/toaster";
 import { useGraphContext } from "../contexts/GraphContext";
 import { useQueryState } from "nuqs";
 
+// Add this debug component near the top of the file
+const DebugInfo = () => {
+  if (process.env.NODE_ENV === 'production') {
+    return null; // Hide in production
+  }
+  
+  return (
+    <div className="fixed top-2 right-2 bg-gray-800 text-white text-xs p-2 rounded z-50">
+      <div>API_URL: {process.env.NEXT_PUBLIC_API_URL || 'NOT SET'}</div>
+      <div>ENV: {process.env.NODE_ENV}</div>
+    </div>
+  );
+};
+
 function ChatLangChainComponent(): React.ReactElement {
   const { toast } = useToast();
   const { threadsData, userData, graphData } = useGraphContext();
@@ -119,6 +133,7 @@ function ChatLangChainComponent(): React.ReactElement {
 
   return (
     <div className="h-full w-full flex md:flex-row flex-col relative">
+      <DebugInfo />
       {messages.length > 0 ? (
         <div className="absolute top-4 right-4 z-10">
           <SelectModel />
