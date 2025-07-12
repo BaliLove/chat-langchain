@@ -12,7 +12,6 @@ export default function ProtectedRoute({ children }: ProtectedRouteProps) {
   const router = useRouter()
 
   useEffect(() => {
-    console.log('ProtectedRoute - Loading:', loading, 'User:', user?.email, 'Authorized:', isAuthorized)
     if (!loading && (!user || !isAuthorized)) {
       router.push('/login')
     }

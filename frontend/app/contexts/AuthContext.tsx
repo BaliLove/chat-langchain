@@ -26,9 +26,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     
     // Check if user's email domain is allowed
     const emailDomain = user.email.split('@')[1]
-    const isAllowed = ALLOWED_EMAIL_DOMAINS.includes(emailDomain)
-    console.log('Auth check - Email:', user.email, 'Domain:', emailDomain, 'Allowed domains:', ALLOWED_EMAIL_DOMAINS, 'Is allowed:', isAllowed)
-    return isAllowed
+    return ALLOWED_EMAIL_DOMAINS.includes(emailDomain)
   }
 
   useEffect(() => {
