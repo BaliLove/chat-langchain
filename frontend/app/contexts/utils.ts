@@ -1,9 +1,12 @@
 import { Client } from "@langchain/langgraph-sdk";
 
 export function createClient() {
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3000/api";
+  const apiUrl = process.env.NEXT_PUBLIC_LANGGRAPH_API_URL ?? process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3000/api";
+  const apiKey = process.env.NEXT_PUBLIC_LANGGRAPH_API_KEY;
+  
   return new Client({
     apiUrl,
+    ...(apiKey && { apiKey }),
   });
 }
 
