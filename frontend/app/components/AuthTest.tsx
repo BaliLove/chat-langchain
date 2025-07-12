@@ -1,10 +1,9 @@
 'use client'
-import { useAuth } from '../contexts/AuthContext'
-import { createClient } from '../../lib/supabase'
+import { useAuth } from '@/app/contexts/AuthContext'
 import { useRouter } from 'next/navigation'
 
 export default function AuthTest() {
-  const { user, profile, loading, signOut } = useAuth()
+  const { user, userTeamData, loading, signOut } = useAuth()
   const router = useRouter()
 
   if (loading) {
@@ -34,8 +33,8 @@ export default function AuthTest() {
       <h3 className="font-bold text-lg">✅ Authentication Working!</h3>
       <p><strong>User ID:</strong> {user.id}</p>
       <p><strong>Email:</strong> {user.email}</p>
-      <p><strong>Role:</strong> {profile?.role || 'user'}</p>
-      <p><strong>Name:</strong> {profile?.name || 'Not set'}</p>
+      <p><strong>Team:</strong> {userTeamData?.team_name || 'No team data'}</p>
+      <p><strong>Role:</strong> {userTeamData?.role || 'No role assigned'}</p>
       
       <button 
         onClick={signOut}
