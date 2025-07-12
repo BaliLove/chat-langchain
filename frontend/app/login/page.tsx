@@ -13,8 +13,14 @@ export default function LoginPage() {
   const supabase = createClient()
   const router = useRouter()
   const [user, setUser] = useState<User | null>(null)
+  const [redirectUrl, setRedirectUrl] = useState<string>('')
 
   useEffect(() => {
+    // Set redirect URL on client side
+    if (typeof window !== 'undefined') {
+      setRedirectUrl(`${window.location.origin}/`)
+    }
+    
     const getUser = async () => {
       const { data: { user } } = await supabase.auth.getUser()
       setUser(user)
@@ -45,7 +51,7 @@ export default function LoginPage() {
             supabaseClient={supabase}
             appearance={{ theme: ThemeSupa }}
             providers={['google']}
-            redirectTo={`${window.location.origin}/`}
+            redirectTo={redirectUrl || '/'}
             showLinks={false}
             view="sign_in"
           />
