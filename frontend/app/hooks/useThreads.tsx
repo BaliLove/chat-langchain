@@ -7,13 +7,11 @@ import { useToast } from "./use-toast";
 import { useQueryState } from "nuqs";
 
 export const createClient = () => {
-  // Use the LangGraph API URL directly if available, otherwise use the proxy
-  const apiUrl = process.env.NEXT_PUBLIC_LANGGRAPH_API_URL ?? process.env.NEXT_PUBLIC_API_URL ?? "/api";
-  const apiKey = process.env.NEXT_PUBLIC_LANGGRAPH_API_KEY;
+  // Always use the API proxy for authentication
+  const apiUrl = "/api";
   
   return new Client({
     apiUrl,
-    ...(apiKey && { apiKey }),
   });
 };
 

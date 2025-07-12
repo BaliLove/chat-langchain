@@ -21,29 +21,39 @@ async function handleRequest(req: NextRequest, method: string) {
       ? `?${searchParams.toString()}`
       : "";
 
+    const headers: Record<string, string> = {
+      "Content-Type": "application/json",
+    };
+
+    // Add API key for LangGraph authentication
+    if (process.env.LANGSMITH_API_KEY) {
+      headers["x-api-key"] = process.env.LANGSMITH_API_KEY;
+    }
+
     const options: RequestInit = {
       method,
-      headers: {
-        "x-api-key": process.env.LANGSMITH_API_KEY || "",
-      },
+      headers,
     };
 
     if (["POST", "PUT", "PATCH"].includes(method)) {
       options.body = await req.text();
     }
 
-    const res = await fetch(
-      `${process.env.API_BASE_URL}/${path}${queryString}`,
-      options,
-    );
+    const targetUrl = `${process.env.API_BASE_URL}/${path}${queryString}`;
+    console.log(`Proxying ${method} request to: ${targetUrl}`);
+    
+    const res = await fetch(targetUrl, options);
+
+    const responseHeaders = new Headers(res.headers);
+    // Add CORS headers
+    Object.entries(getCorsHeaders()).forEach(([key, value]) => {
+      responseHeaders.set(key, value);
+    });
 
     return new NextResponse(res.body, {
       status: res.status,
       statusText: res.statusText,
-      headers: {
-        ...res.headers,
-        ...getCorsHeaders(),
-      },
+      headers: responseHeaders,
     });
   } catch (e: any) {
     return NextResponse.json({ error: e.message }, { status: e.status ?? 500 });
