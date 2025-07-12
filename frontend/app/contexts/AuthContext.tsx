@@ -93,11 +93,25 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         .eq('id', userId)
         .single()
 
-      if (error) throw error
-      setProfile(data)
+      if (error) {
+        // Check if error is because table doesn't exist
+        if (error.code === '42P01') {
+          console.warn('user_profiles table does not exist. Please run the migration SQL in Supabase.')
+          // Create a temporary profile
+          setProfile({
+            id: userId,
+            email: user?.email || '',
+            role: 'user'
+          })
+        } else {
+          throw error
+        }
+      } else {
+        setProfile(data)
+      }
     } catch (error) {
       console.error('Error loading user profile:', error)
-      // If no profile exists yet, create a basic one
+      // If any other error, create a basic profile
       setProfile({
         id: userId,
         email: user?.email || '',
