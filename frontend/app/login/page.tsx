@@ -4,11 +4,12 @@ import { ThemeSupa } from '@supabase/auth-ui-shared'
 import { createClient } from '@/lib/supabase'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { User } from '@supabase/supabase-js'
 
 export default function LoginPage() {
   const supabase = createClient()
   const router = useRouter()
-  const [user, setUser] = useState(null)
+  const [user, setUser] = useState<User | null>(null)
 
   useEffect(() => {
     const getUser = async () => {
@@ -19,7 +20,7 @@ export default function LoginPage() {
       }
     }
     getUser()
-  }, [router, supabase.auth])
+  }, [router])
 
   if (user) {
     return <div>Redirecting...</div>
