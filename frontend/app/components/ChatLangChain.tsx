@@ -118,7 +118,7 @@ function ChatLangChainComponent(): React.ReactElement {
   });
 
   return (
-    <div className="overflow-hidden w-full flex md:flex-row flex-col relative">
+    <div className="h-full w-full flex md:flex-row flex-col relative">
       {messages.length > 0 ? (
         <div className="absolute top-4 right-4 z-10">
           <SelectModel />
@@ -127,7 +127,7 @@ function ChatLangChainComponent(): React.ReactElement {
       <div>
         <ThreadHistory />
       </div>
-      <div className="w-full h-full overflow-hidden">
+      <div className="flex-1 overflow-hidden">
         <AssistantRuntimeProvider runtime={runtime}>
           <ThreadChat submitDisabled={isSubmitDisabled} messages={messages} />
         </AssistantRuntimeProvider>

@@ -8,7 +8,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 export default function Page(): React.ReactElement {
   return (
     <ProtectedRoute>
-      <main className="w-full h-full">
+      <main className="w-full h-full flex flex-col">
         <React.Suspense fallback={null}>
           <GraphProvider>
             <ChatLangChain />

@@ -26,7 +26,9 @@ export default function RootLayout({
         >
           <AuthProvider>
             <Header />
-            <NuqsAdapter>{children}</NuqsAdapter>
+            <div className="flex-1 overflow-hidden">
+              <NuqsAdapter>{children}</NuqsAdapter>
+            </div>
           </AuthProvider>
         </div>
       </body>
