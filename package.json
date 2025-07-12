@@ -1,9 +1,0 @@
-{
-  "name": "chat-langchain-backend",
-  "version": "1.0.0",
-  "description": "Backend for Chat LangChain",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "private": true
-}
