@@ -8,7 +8,10 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "check": "tsc --noEmit",
+    "check-all": "yarn check && yarn lint",
+    "pre-deploy": "yarn check-all"
   },
   "dependencies": {
     "@assistant-ui/react": "^0.5.75",

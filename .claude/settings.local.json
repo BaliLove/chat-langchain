@@ -24,7 +24,8 @@
       "Bash(poetry run:*)",
       "Bash(sudo apt:*)",
       "Bash(sudo apt install:*)",
-      "Bash(grep:*)"
+      "Bash(grep:*)",
+      "Bash(yarn check)"
     ],
     "deny": []
   }

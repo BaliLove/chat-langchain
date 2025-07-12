@@ -25,8 +25,8 @@ interface UserTeamData {
 export const dynamic = 'force-dynamic'
 
 export default function PermissionsAdminPage() {
-  const { user } = useAuth()
-  const { permissions } = usePermissions()
+  const { user, userTeamData, loading: authLoading } = useAuth()
+  const { permissions, loading: permLoading } = usePermissions()
   const router = useRouter()
   const { toast } = useToast()
   const supabase = createClient()
@@ -39,15 +39,19 @@ export default function PermissionsAdminPage() {
 
   // Check if user is admin
   useEffect(() => {
-    if (!loading && (!permissions || permissions.role !== 'admin')) {
-      router.push('/')
-      toast({
-        title: "Access Denied",
-        description: "You need admin permissions to access this page.",
-        variant: "destructive"
-      })
+    if (!authLoading && !permLoading) {
+      // Get role from userTeamData in auth context
+      const userRole = userTeamData?.role
+      if (!user || userRole !== 'admin') {
+        router.push('/')
+        toast({
+          title: "Access Denied",
+          description: "You need admin permissions to access this page.",
+          variant: "destructive"
+        })
+      }
     }
-  }, [permissions, loading, router, toast])
+  }, [user, userTeamData, authLoading, permLoading, router, toast])
 
   // Fetch users
   useEffect(() => {
@@ -72,10 +76,10 @@ export default function PermissionsAdminPage() {
       }
     }
 
-    if (permissions?.role === 'admin') {
+    if (userTeamData?.role === 'admin') {
       fetchUsers()
     }
-  }, [permissions, supabase, toast])
+  }, [userTeamData, supabase, toast])
 
   const filteredUsers = users.filter(u => 
     u.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
