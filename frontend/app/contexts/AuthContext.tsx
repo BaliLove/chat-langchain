@@ -14,23 +14,45 @@ interface AuthContextType {
   user: User | null
   profile: UserProfile | null
   loading: boolean
+  isAuthorized: boolean
   signOut: () => Promise<void>
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
+// Configure allowed email domains for your organization
+const ALLOWED_EMAIL_DOMAINS = process.env.NEXT_PUBLIC_ALLOWED_EMAIL_DOMAINS?.split(',') || ['example.com']
+
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
   const [profile, setProfile] = useState<UserProfile | null>(null)
   const [loading, setLoading] = useState(true)
+  const [isAuthorized, setIsAuthorized] = useState(false)
   const supabase = createClient()
+
+  const checkUserAuthorization = (user: User): boolean => {
+    if (!user.email) return false
+    
+    // Check if user's email domain is allowed
+    const emailDomain = user.email.split('@')[1]
+    return ALLOWED_EMAIL_DOMAINS.includes(emailDomain)
+  }
 
   useEffect(() => {
     // Get initial session
     supabase.auth.getSession().then(({ data: { session } }: { data: { session: Session | null } }) => {
       setUser(session?.user ?? null)
       if (session?.user) {
-        loadUserProfile(session.user.id)
+        const authorized = checkUserAuthorization(session.user)
+        setIsAuthorized(authorized)
+        
+        if (authorized) {
+          loadUserProfile(session.user.id)
+        } else {
+          // Sign out unauthorized users
+          supabase.auth.signOut()
+          setLoading(false)
+        }
       } else {
         setLoading(false)
       }
@@ -41,9 +63,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       async (event: AuthChangeEvent, session: Session | null) => {
         setUser(session?.user ?? null)
         if (session?.user) {
-          await loadUserProfile(session.user.id)
+          // Check if user is authorized
+          const authorized = checkUserAuthorization(session.user)
+          setIsAuthorized(authorized)
+          
+          if (authorized) {
+            await loadUserProfile(session.user.id)
+          } else {
+            // Sign out unauthorized users
+            await supabase.auth.signOut()
+            setProfile(null)
+          }
         } else {
           setProfile(null)
+          setIsAuthorized(false)
           setLoading(false)
         }
       }
@@ -84,6 +117,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       user,
       profile,
       loading,
+      isAuthorized,
       signOut
     }}>
       {children}

@@ -19,7 +19,7 @@ Your system already has excellent LangSmith integration! Here's what's currently
 ```bash
 # These environment variables enable full tracing
 LANGCHAIN_TRACING_V2=true
-LANGCHAIN_API_KEY=your_api_key
+LANGSMITH_API_KEY=your_api_key
 LANGCHAIN_PROJECT=your_project_name
 ```
 

@@ -1,6 +1,7 @@
 import { Inter } from "next/font/google";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { AuthProvider } from './contexts/AuthContext'
+import Header from './components/Header'
 import "./globals.css";
 import type { Metadata } from "next";
 
@@ -24,6 +25,7 @@ export default function RootLayout({
           style={{ background: "rgb(38, 38, 41)" }}
         >
           <AuthProvider>
+            <Header />
             <NuqsAdapter>{children}</NuqsAdapter>
           </AuthProvider>
         </div>

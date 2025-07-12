@@ -5,6 +5,9 @@ const nextConfig = {
     NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
     NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
     
+    // Organization restrictions
+    NEXT_PUBLIC_ALLOWED_EMAIL_DOMAINS: process.env.NEXT_PUBLIC_ALLOWED_EMAIL_DOMAINS,
+    
     // LangGraph
     NEXT_PUBLIC_LANGGRAPH_API_URL: process.env.NEXT_PUBLIC_LANGGRAPH_API_URL,
     NEXT_PUBLIC_LANGGRAPH_API_KEY: process.env.NEXT_PUBLIC_LANGGRAPH_API_KEY,
@@ -19,7 +22,6 @@ const nextConfig = {
     // LangSmith (optional)
     LANGCHAIN_TRACING_V2: process.env.LANGCHAIN_TRACING_V2,
     LANGCHAIN_ENDPOINT: process.env.LANGCHAIN_ENDPOINT,
-    LANGCHAIN_API_KEY: process.env.LANGCHAIN_API_KEY,
     LANGCHAIN_PROJECT: process.env.LANGCHAIN_PROJECT,
   },
 };

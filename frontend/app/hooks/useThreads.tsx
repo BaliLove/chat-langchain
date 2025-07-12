@@ -8,7 +8,10 @@ import { useQueryState } from "nuqs";
 
 export const createClient = () => {
   // Always use the API proxy for authentication
-  const apiUrl = "/api";
+  // Use full URL instead of relative path
+  const apiUrl = typeof window !== "undefined" 
+    ? `${window.location.origin}/api`
+    : "http://localhost:3000/api";
   
   return new Client({
     apiUrl,
