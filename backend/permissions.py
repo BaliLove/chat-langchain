@@ -10,9 +10,17 @@ from dataclasses import dataclass
 from functools import wraps
 import logging
 
-from supabase import create_client, Client
-
 logger = logging.getLogger(__name__)
+
+# Try to import Supabase, but make it optional
+try:
+    from supabase import create_client, Client
+    SUPABASE_AVAILABLE = True
+except ImportError:
+    logger.warning("Supabase package not installed. Permission features will be disabled.")
+    SUPABASE_AVAILABLE = False
+    Client = None
+    create_client = None
 
 
 @dataclass
@@ -67,6 +75,11 @@ class PermissionManager:
     
     def __init__(self):
         """Initialize the permission manager with Supabase client."""
+        if not SUPABASE_AVAILABLE:
+            logger.warning("Supabase not available. Permission checks will use defaults.")
+            self.supabase = None
+            return
+            
         supabase_url = os.getenv("SUPABASE_URL")
         supabase_key = os.getenv("SUPABASE_SERVICE_ROLE_KEY")
         
