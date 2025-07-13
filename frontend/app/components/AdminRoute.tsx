@@ -9,17 +9,17 @@ interface AdminRouteProps {
 }
 
 export default function AdminRoute({ children }: AdminRouteProps) {
-  const { user, loading: authLoading } = useAuth()
+  const { user, userTeamData, loading: authLoading } = useAuth()
   const { permissions, loading: permLoading } = usePermissions()
   const router = useRouter()
 
   useEffect(() => {
     if (!authLoading && !permLoading) {
-      if (!user || permissions?.role !== 'admin') {
+      if (!user || userTeamData?.role !== 'admin') {
         router.push('/')
       }
     }
-  }, [user, permissions, authLoading, permLoading, router])
+  }, [user, userTeamData, authLoading, permLoading, router])
 
   if (authLoading || permLoading) {
     return (
@@ -29,7 +29,7 @@ export default function AdminRoute({ children }: AdminRouteProps) {
     )
   }
 
-  if (!user || permissions?.role !== 'admin') {
+  if (!user || userTeamData?.role !== 'admin') {
     return null
   }
 
