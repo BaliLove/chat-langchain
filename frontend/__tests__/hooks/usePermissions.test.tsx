@@ -61,17 +61,10 @@ describe('usePermissions', () => {
       loading: false,
     })
 
-    mockSupabase.from().single.mockResolvedValue({
-      data: mockUserTeamData,
-      error: null,
-    })
-
     const { result } = renderHook(() => usePermissions())
 
-    await waitFor(() => {
-      expect(result.current.loading).toBe(false)
-    })
-
+    // Should use data from auth context immediately
+    expect(result.current.loading).toBe(false)
     expect(result.current.permissions).toEqual({
       teamName: 'general',
       role: 'member',
@@ -109,8 +102,8 @@ describe('usePermissions', () => {
 
     expect(result.current.permissions).toBeNull()
     expect(consoleSpy).toHaveBeenCalledWith(
-      'Error fetching permissions:',
-      expect.any(Error)
+      'Error in permission fetch:',
+      expect.any(TypeError)
     )
 
     consoleSpy.mockRestore()

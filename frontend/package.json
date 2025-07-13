@@ -15,7 +15,8 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "test:ci": "jest --ci",
-    "test:coverage": "jest --coverage"
+    "test:coverage": "jest --coverage",
+    "test:simple": "jest --config jest.config.simple.js"
   },
   "dependencies": {
     "@assistant-ui/react": "^0.5.75",
@@ -86,10 +87,12 @@
     "@types/jest": "^30.0.0",
     "@types/js-cookie": "^3.0.6",
     "@types/react-syntax-highlighter": "^15.5.13",
+    "identity-obj-proxy": "^3.0.0",
     "jest": "^30.0.4",
     "jest-environment-jsdom": "^30.0.4",
     "prettier": "^3.0.3",
     "tailwind-scrollbar": "^3.1.0",
+    "ts-jest": "^29.4.0",
     "typescript": "5.1.6",
     "weaviate-ts-client": "^1.5.0"
   }
