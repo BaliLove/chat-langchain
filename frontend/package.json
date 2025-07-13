@@ -12,11 +12,14 @@
     "check": "tsc --noEmit",
     "check-all": "yarn check && yarn lint",
     "pre-deploy": "yarn check-all",
-    "test": "jest",
-    "test:watch": "jest --watch",
-    "test:ci": "jest --ci",
-    "test:coverage": "jest --coverage",
-    "test:simple": "jest --config jest.config.simple.js"
+    "test": "vitest",
+    "test:watch": "vitest watch",
+    "test:ci": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "test:ui": "vitest --ui",
+    "test:jest": "jest",
+    "test:simple": "jest --config jest.config.simple.js",
+    "test:standalone": "NODE_OPTIONS=--experimental-vm-modules jest --config jest.config.standalone.js"
   },
   "dependencies": {
     "@assistant-ui/react": "^0.5.75",
@@ -87,13 +90,17 @@
     "@types/jest": "^30.0.0",
     "@types/js-cookie": "^3.0.6",
     "@types/react-syntax-highlighter": "^15.5.13",
+    "@vitejs/plugin-react": "^4.6.0",
+    "happy-dom": "^18.0.1",
     "identity-obj-proxy": "^3.0.0",
     "jest": "^30.0.4",
     "jest-environment-jsdom": "^30.0.4",
+    "jsdom": "^26.1.0",
     "prettier": "^3.0.3",
     "tailwind-scrollbar": "^3.1.0",
     "ts-jest": "^29.4.0",
     "typescript": "5.1.6",
+    "vitest": "^3.2.4",
     "weaviate-ts-client": "^1.5.0"
   }
 }

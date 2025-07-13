@@ -1,15 +1,16 @@
 import { renderHook, waitFor } from '@testing-library/react'
+import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { usePermissions } from '@/app/hooks/usePermissions'
 import { createClient } from '@/lib/supabase'
 
 // Mock Supabase
-jest.mock('@/lib/supabase', () => ({
-  createClient: jest.fn(),
+vi.mock('@/lib/supabase', () => ({
+  createClient: vi.fn(),
 }))
 
 // Mock auth context
-jest.mock('@/app/contexts/AuthContext', () => ({
-  useAuth: jest.fn(),
+vi.mock('@/app/contexts/AuthContext', () => ({
+  useAuth: vi.fn(),
 }))
 
 import { useAuth } from '@/app/contexts/AuthContext'
@@ -17,22 +18,22 @@ import { useAuth } from '@/app/contexts/AuthContext'
 describe('usePermissions', () => {
   const mockSupabase = {
     auth: {
-      getUser: jest.fn(),
+      getUser: vi.fn(),
     },
-    from: jest.fn(() => ({
-      select: jest.fn().mockReturnThis(),
-      eq: jest.fn().mockReturnThis(),
-      single: jest.fn(),
+    from: vi.fn(() => ({
+      select: vi.fn().mockReturnThis(),
+      eq: vi.fn().mockReturnThis(),
+      single: vi.fn(),
     })),
   }
 
   beforeEach(() => {
-    jest.clearAllMocks()
-    ;(createClient as jest.Mock).mockReturnValue(mockSupabase)
+    vi.clearAllMocks()
+    vi.mocked(createClient).mockReturnValue(mockSupabase)
   })
 
   it('should return null permissions when no user is authenticated', () => {
-    ;(useAuth as jest.Mock).mockReturnValue({
+    vi.mocked(useAuth).mockReturnValue({
       user: null,
       loading: false,
     })
@@ -55,7 +56,7 @@ describe('usePermissions', () => {
       allowed_data_sources: ['docs', 'api'],
     }
 
-    ;(useAuth as jest.Mock).mockReturnValue({
+    vi.mocked(useAuth).mockReturnValue({
       user: mockUser,
       userTeamData: mockUserTeamData,
       loading: false,
@@ -81,7 +82,7 @@ describe('usePermissions', () => {
   it('should handle errors gracefully', async () => {
     const mockUser = { id: '123', email: 'test@bali.love' }
     
-    ;(useAuth as jest.Mock).mockReturnValue({
+    vi.mocked(useAuth).mockReturnValue({
       user: mockUser,
       userTeamData: null,
       loading: false,
@@ -92,7 +93,7 @@ describe('usePermissions', () => {
       error: new Error('Database error'),
     })
 
-    const consoleSpy = jest.spyOn(console, 'error').mockImplementation()
+    const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
 
     const { result } = renderHook(() => usePermissions())
 
@@ -118,7 +119,7 @@ describe('usePermissions', () => {
       allowed_data_sources: ['*'],
     }
 
-    ;(useAuth as jest.Mock).mockReturnValue({
+    vi.mocked(useAuth).mockReturnValue({
       user: { id: '123', email: 'test@bali.love' },
       userTeamData: mockUserTeamData,
       loading: false,

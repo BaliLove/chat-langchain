@@ -1,26 +1,32 @@
 import { render, screen } from '@testing-library/react'
+import { describe, it, expect, beforeEach, vi } from 'vitest'
 import PermissionStatus from '@/app/components/PermissionStatus'
 import { usePermissions } from '@/app/hooks/usePermissions'
+import { AuthProvider } from '@/app/contexts/AuthContext'
 
 // Mock the usePermissions hook
-jest.mock('@/app/hooks/usePermissions')
+vi.mock('@/app/hooks/usePermissions')
 
 describe('PermissionStatus', () => {
-  const mockUsePermissions = usePermissions as jest.MockedFunction<typeof usePermissions>
+  const mockUsePermissions = vi.mocked(usePermissions)
 
   beforeEach(() => {
-    jest.clearAllMocks()
+    vi.clearAllMocks()
   })
 
   it('should show loading state', () => {
     mockUsePermissions.mockReturnValue({
       permissions: null,
       loading: true,
-      hasAgent: jest.fn(),
-      hasDataSource: jest.fn(),
+      hasAgent: vi.fn(),
+      hasDataSource: vi.fn(),
     })
 
-    render(<PermissionStatus />)
+    render(
+      <AuthProvider>
+        <PermissionStatus />
+      </AuthProvider>
+    )
     
     expect(screen.getByText('Loading permissions...')).toBeInTheDocument()
   })
@@ -34,11 +40,15 @@ describe('PermissionStatus', () => {
         allowedDataSources: ['docs', 'api'],
       },
       loading: false,
-      hasAgent: jest.fn(),
-      hasDataSource: jest.fn(),
+      hasAgent: vi.fn(),
+      hasDataSource: vi.fn(),
     })
 
-    render(<PermissionStatus />)
+    render(
+      <AuthProvider>
+        <PermissionStatus />
+      </AuthProvider>
+    )
     
     expect(screen.getByText(/Team: Engineering/)).toBeInTheDocument()
     expect(screen.getByText(/Role: member/)).toBeInTheDocument()
@@ -57,11 +67,15 @@ describe('PermissionStatus', () => {
         allowedDataSources: ['*'],
       },
       loading: false,
-      hasAgent: jest.fn(),
-      hasDataSource: jest.fn(),
+      hasAgent: vi.fn(),
+      hasDataSource: vi.fn(),
     })
 
-    render(<PermissionStatus />)
+    render(
+      <AuthProvider>
+        <PermissionStatus />
+      </AuthProvider>
+    )
     
     expect(screen.getByText(/Team: Admin/)).toBeInTheDocument()
     expect(screen.getByText(/Role: admin/)).toBeInTheDocument()
@@ -78,11 +92,15 @@ describe('PermissionStatus', () => {
         allowedDataSources: [],
       },
       loading: false,
-      hasAgent: jest.fn(),
-      hasDataSource: jest.fn(),
+      hasAgent: vi.fn(),
+      hasDataSource: vi.fn(),
     })
 
-    render(<PermissionStatus />)
+    render(
+      <AuthProvider>
+        <PermissionStatus />
+      </AuthProvider>
+    )
     
     expect(screen.getByText(/No agents available/)).toBeInTheDocument()
     expect(screen.getByText(/No data sources available/)).toBeInTheDocument()
@@ -92,11 +110,15 @@ describe('PermissionStatus', () => {
     mockUsePermissions.mockReturnValue({
       permissions: null,
       loading: false,
-      hasAgent: jest.fn(() => false),
-      hasDataSource: jest.fn(() => false),
+      hasAgent: vi.fn(() => false),
+      hasDataSource: vi.fn(() => false),
     })
 
-    render(<PermissionStatus />)
+    render(
+      <AuthProvider>
+        <PermissionStatus />
+      </AuthProvider>
+    )
     
     expect(screen.getByText(/No permissions found/)).toBeInTheDocument()
   })
