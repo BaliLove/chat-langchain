@@ -29,7 +29,8 @@
       "Bash(yarn install)",
       "Bash(yarn run:*)",
       "Bash(yarn --version)",
-      "Bash(yarn pre-deploy:*)"
+      "Bash(yarn pre-deploy:*)",
+      "Bash(yarn lint)"
     ],
     "deny": []
   }
