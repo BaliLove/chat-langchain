@@ -32,7 +32,8 @@
       "Bash(yarn pre-deploy:*)",
       "Bash(yarn lint)",
       "Bash(yarn add:*)",
-      "Bash(poetry add:*)"
+      "Bash(poetry add:*)",
+      "Bash(yarn test:*)"
     ],
     "deny": []
   }
