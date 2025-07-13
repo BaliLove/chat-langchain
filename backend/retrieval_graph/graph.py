@@ -7,8 +7,9 @@ conducting research, and formulating responses.
 """
 
 from typing import Any, Literal, TypedDict, cast
+import logging
 
-from langchain_core.messages import BaseMessage
+from langchain_core.messages import BaseMessage, AIMessage
 from langchain_core.runnables import RunnableConfig
 from langgraph.graph import END, START, StateGraph
 
@@ -16,6 +17,9 @@ from backend.retrieval_graph.configuration import AgentConfiguration
 from backend.retrieval_graph.researcher_graph.graph import graph as researcher_graph
 from backend.retrieval_graph.state import AgentState, InputState, Router
 from backend.utils import format_docs, load_chat_model
+
+# Set up logging
+logger = logging.getLogger(__name__)
 
 
 async def analyze_and_route_query(
@@ -33,22 +37,27 @@ async def analyze_and_route_query(
     Returns:
         dict[str, Router]: A dictionary containing the 'router' key with the classification result (classification type and logic).
     """
-    # allow skipping the router for testing
-    if state.router and state.router["logic"]:
-        return {"router": state.router}
+    try:
+        # allow skipping the router for testing
+        if state.router and state.router["logic"]:
+            return {"router": state.router}
 
-    configuration = AgentConfiguration.from_runnable_config(config)
-    structured_output_kwargs = (
-        {"method": "function_calling"} if "openai" in configuration.query_model else {}
-    )
-    model = load_chat_model(configuration.query_model).with_structured_output(
-        Router, **structured_output_kwargs
-    )
-    messages = [
-        {"role": "system", "content": configuration.router_system_prompt}
-    ] + state.messages
-    response = cast(Router, await model.ainvoke(messages))
-    return {"router": response}
+        configuration = AgentConfiguration.from_runnable_config(config)
+        structured_output_kwargs = (
+            {"method": "function_calling"} if "openai" in configuration.query_model else {}
+        )
+        model = load_chat_model(configuration.query_model).with_structured_output(
+            Router, **structured_output_kwargs
+        )
+        messages = [
+            {"role": "system", "content": configuration.router_system_prompt}
+        ] + state.messages
+        response = cast(Router, await model.ainvoke(messages))
+        return {"router": response}
+    except Exception as e:
+        logger.error(f"Error in analyze_and_route_query: {str(e)}", exc_info=True)
+        # Default to general query to avoid crashes
+        return {"router": {"type": "general", "logic": f"Error occurred during routing: {str(e)}. Defaulting to general response."}}
 
 
 def route_query(
@@ -90,14 +99,22 @@ async def ask_for_more_info(
     Returns:
         dict[str, list[str]]: A dictionary with a 'messages' key containing the generated response.
     """
-    configuration = AgentConfiguration.from_runnable_config(config)
-    model = load_chat_model(configuration.query_model)
-    system_prompt = configuration.more_info_system_prompt.format(
-        logic=state.router["logic"]
-    )
-    messages = [{"role": "system", "content": system_prompt}] + state.messages
-    response = await model.ainvoke(messages)
-    return {"messages": [response]}
+    try:
+        configuration = AgentConfiguration.from_runnable_config(config)
+        model = load_chat_model(configuration.query_model)
+        system_prompt = configuration.more_info_system_prompt.format(
+            logic=state.router["logic"]
+        )
+        messages = [{"role": "system", "content": system_prompt}] + state.messages
+        response = await model.ainvoke(messages)
+        return {"messages": [response]}
+    except Exception as e:
+        logger.error(f"Error in ask_for_more_info: {str(e)}", exc_info=True)
+        # Return a fallback message
+        fallback_message = AIMessage(
+            content="I apologize, but I encountered an error while processing your request. Could you please rephrase your question or provide more details about what you're looking for?"
+        )
+        return {"messages": [fallback_message]}
 
 
 async def respond_to_general_query(
@@ -114,14 +131,22 @@ async def respond_to_general_query(
     Returns:
         dict[str, list[str]]: A dictionary with a 'messages' key containing the generated response.
     """
-    configuration = AgentConfiguration.from_runnable_config(config)
-    model = load_chat_model(configuration.query_model)
-    system_prompt = configuration.general_system_prompt.format(
-        logic=state.router["logic"]
-    )
-    messages = [{"role": "system", "content": system_prompt}] + state.messages
-    response = await model.ainvoke(messages)
-    return {"messages": [response]}
+    try:
+        configuration = AgentConfiguration.from_runnable_config(config)
+        model = load_chat_model(configuration.query_model)
+        system_prompt = configuration.general_system_prompt.format(
+            logic=state.router["logic"]
+        )
+        messages = [{"role": "system", "content": system_prompt}] + state.messages
+        response = await model.ainvoke(messages)
+        return {"messages": [response]}
+    except Exception as e:
+        logger.error(f"Error in respond_to_general_query: {str(e)}", exc_info=True)
+        # Return a fallback message
+        fallback_message = AIMessage(
+            content="I apologize, but I encountered an error while processing your request. Please try again or rephrase your question."
+        )
+        return {"messages": [fallback_message]}
 
 
 async def create_research_plan(
@@ -136,30 +161,39 @@ async def create_research_plan(
     Returns:
         dict[str, list[str]]: A dictionary with a 'steps' key containing the list of research steps.
     """
+    try:
+        class Plan(TypedDict):
+            """Generate research plan."""
 
-    class Plan(TypedDict):
-        """Generate research plan."""
+            steps: list[str]
 
-        steps: list[str]
-
-    configuration = AgentConfiguration.from_runnable_config(config)
-    structured_output_kwargs = (
-        {"method": "function_calling"} if "openai" in configuration.query_model else {}
-    )
-    model = load_chat_model(configuration.query_model).with_structured_output(
-        Plan, **structured_output_kwargs
-    )
-    messages = [
-        {"role": "system", "content": configuration.research_plan_system_prompt}
-    ] + state.messages
-    response = cast(
-        Plan, await model.ainvoke(messages, {"tags": ["langsmith:nostream"]})
-    )
-    return {
-        "steps": response["steps"],
-        "documents": "delete",
-        "query": state.messages[-1].content,
-    }
+        configuration = AgentConfiguration.from_runnable_config(config)
+        structured_output_kwargs = (
+            {"method": "function_calling"} if "openai" in configuration.query_model else {}
+        )
+        model = load_chat_model(configuration.query_model).with_structured_output(
+            Plan, **structured_output_kwargs
+        )
+        messages = [
+            {"role": "system", "content": configuration.research_plan_system_prompt}
+        ] + state.messages
+        response = cast(
+            Plan, await model.ainvoke(messages, {"tags": ["langsmith:nostream"]})
+        )
+        return {
+            "steps": response["steps"],
+            "documents": "delete",
+            "query": state.messages[-1].content,
+        }
+    except Exception as e:
+        logger.error(f"Error in create_research_plan: {str(e)}", exc_info=True)
+        # Return a simple fallback plan
+        query = state.messages[-1].content if state.messages else "your question"
+        return {
+            "steps": [f"Search for information about: {query}"],
+            "documents": "delete",
+            "query": query,
+        }
 
 
 async def conduct_research(state: AgentState) -> dict[str, Any]:
@@ -178,8 +212,17 @@ async def conduct_research(state: AgentState) -> dict[str, Any]:
         - Invokes the researcher_graph with the first step of the research plan.
         - Updates the state with the retrieved documents and removes the completed step.
     """
-    result = await researcher_graph.ainvoke({"question": state.steps[0]})
-    return {"documents": result["documents"], "steps": state.steps[1:]}
+    try:
+        if not state.steps:
+            logger.warning("No research steps available")
+            return {"documents": [], "steps": []}
+            
+        result = await researcher_graph.ainvoke({"question": state.steps[0]})
+        return {"documents": result.get("documents", []), "steps": state.steps[1:]}
+    except Exception as e:
+        logger.error(f"Error in conduct_research: {str(e)}", exc_info=True)
+        # Skip this step and continue with remaining steps
+        return {"documents": state.documents or [], "steps": state.steps[1:] if state.steps else []}
 
 
 def check_finished(state: AgentState) -> Literal["respond", "conduct_research"]:
@@ -215,27 +258,59 @@ async def respond(
     Returns:
         dict[str, list[str]]: A dictionary with a 'messages' key containing the generated response.
     """
-    configuration = AgentConfiguration.from_runnable_config(config)
-    model = load_chat_model(configuration.response_model)
-    # TODO: add a re-ranker here
-    top_k = 20
-    context = format_docs(state.documents[:top_k])
-    prompt = configuration.response_system_prompt.format(context=context)
-    messages = [{"role": "system", "content": prompt}] + state.messages
-    response = await model.ainvoke(messages)
-    return {"messages": [response], "answer": response.content}
+    try:
+        configuration = AgentConfiguration.from_runnable_config(config)
+        model = load_chat_model(configuration.response_model)
+        # TODO: add a re-ranker here
+        top_k = 20
+        
+        # Handle case where no documents were retrieved
+        documents = state.documents or []
+        if not documents:
+            logger.warning("No documents available for response generation")
+            context = "No specific documentation was found for this query."
+        else:
+            context = format_docs(documents[:top_k])
+        
+        prompt = configuration.response_system_prompt.format(context=context)
+        messages = [{"role": "system", "content": prompt}] + state.messages
+        response = await model.ainvoke(messages)
+        return {"messages": [response], "answer": response.content}
+    except Exception as e:
+        logger.error(f"Error in respond: {str(e)}", exc_info=True)
+        # Return a helpful error message
+        fallback_message = AIMessage(
+            content="I apologize, but I encountered an error while generating a response. "
+                    "Based on your question, I suggest checking the documentation or trying to rephrase your query."
+        )
+        return {"messages": [fallback_message], "answer": fallback_message.content}
 
 
 # Define the graph
 
 
 builder = StateGraph(AgentState, input=InputState, config_schema=AgentConfiguration)
-builder.add_node(create_research_plan)
-builder.add_node(conduct_research)
-builder.add_node(respond)
 
-builder.add_edge(START, "create_research_plan")
+# Add all nodes
+builder.add_node("analyze_and_route_query", analyze_and_route_query)
+builder.add_node("create_research_plan", create_research_plan)
+builder.add_node("ask_for_more_info", ask_for_more_info)
+builder.add_node("respond_to_general_query", respond_to_general_query)
+builder.add_node("conduct_research", conduct_research)
+builder.add_node("respond", respond)
+
+# Add routing from start
+builder.add_edge(START, "analyze_and_route_query")
+
+# Add conditional routing based on query analysis
+builder.add_conditional_edges("analyze_and_route_query", route_query)
+
+# Add edges for each route
 builder.add_edge("create_research_plan", "conduct_research")
+builder.add_edge("ask_for_more_info", END)
+builder.add_edge("respond_to_general_query", END)
+
+# Add conditional edges for research loop
 builder.add_conditional_edges("conduct_research", check_finished)
 builder.add_edge("respond", END)
 

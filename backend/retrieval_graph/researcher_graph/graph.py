@@ -5,6 +5,7 @@ which is responsible for generating search queries and retrieving relevant docum
 """
 
 from typing import cast
+import logging
 
 from langchain_core.documents import Document
 from langchain_core.runnables import RunnableConfig
@@ -17,6 +18,9 @@ from backend.retrieval_graph.configuration import AgentConfiguration
 from backend.retrieval_graph.researcher_graph.state import QueryState, ResearcherState
 from backend.utils import load_chat_model
 from backend.permissions import permission_manager
+
+# Set up logging
+logger = logging.getLogger(__name__)
 
 
 async def generate_queries(
@@ -33,25 +37,29 @@ async def generate_queries(
     Returns:
         dict[str, list[str]]: A dictionary with a 'queries' key containing the list of generated search queries.
     """
+    try:
+        class Response(TypedDict):
+            queries: list[str]
 
-    class Response(TypedDict):
-        queries: list[str]
-
-    configuration = AgentConfiguration.from_runnable_config(config)
-    structured_output_kwargs = (
-        {"method": "function_calling"} if "openai" in configuration.query_model else {}
-    )
-    model = load_chat_model(configuration.query_model).with_structured_output(
-        Response, **structured_output_kwargs
-    )
-    messages = [
-        {"role": "system", "content": configuration.generate_queries_system_prompt},
-        {"role": "human", "content": state.question},
-    ]
-    response = cast(
-        Response, await model.ainvoke(messages, {"tags": ["langsmith:nostream"]})
-    )
-    return {"queries": response["queries"]}
+        configuration = AgentConfiguration.from_runnable_config(config)
+        structured_output_kwargs = (
+            {"method": "function_calling"} if "openai" in configuration.query_model else {}
+        )
+        model = load_chat_model(configuration.query_model).with_structured_output(
+            Response, **structured_output_kwargs
+        )
+        messages = [
+            {"role": "system", "content": configuration.generate_queries_system_prompt},
+            {"role": "human", "content": state.question},
+        ]
+        response = cast(
+            Response, await model.ainvoke(messages, {"tags": ["langsmith:nostream"]})
+        )
+        return {"queries": response["queries"]}
+    except Exception as e:
+        logger.error(f"Error in generate_queries: {str(e)}", exc_info=True)
+        # Return a simple fallback query
+        return {"queries": [state.question]}
 
 
 async def retrieve_documents(
@@ -69,32 +77,42 @@ async def retrieve_documents(
     Returns:
         dict[str, list[Document]]: A dictionary with a 'documents' key containing the list of retrieved documents.
     """
-    with retrieval.make_retriever(config) as retriever:
-        # Retrieve documents
-        documents = await retriever.ainvoke(state.query, config)
-        
-        # Get user email from config (this should be passed from the main graph)
-        user_email = config.get("configurable", {}).get("user_email", "")
-        
-        if user_email:
-            # Get user permissions
-            permissions = await permission_manager.get_user_permissions(user_email)
+    try:
+        with retrieval.make_retriever(config) as retriever:
+            # Retrieve documents
+            documents = await retriever.ainvoke(state.query, config)
             
-            # Filter documents based on permissions
-            filtered_docs = []
-            for doc in documents:
-                # Check document metadata for data source
-                metadata = doc.metadata or {}
-                doc_source = metadata.get("data_source", "public")
-                
-                # Check if user has access to this data source
-                if permissions.has_data_source(doc_source) or doc_source == "public":
-                    filtered_docs.append(doc)
+            # Get user email from config (this should be passed from the main graph)
+            user_email = config.get("configurable", {}).get("user_email", "")
             
-            return {"documents": filtered_docs}
-        
-        # If no user email, return all documents (backward compatibility)
-        return {"documents": documents}
+            if user_email:
+                try:
+                    # Get user permissions
+                    permissions = await permission_manager.get_user_permissions(user_email)
+                    
+                    # Filter documents based on permissions
+                    filtered_docs = []
+                    for doc in documents:
+                        # Check document metadata for data source
+                        metadata = doc.metadata or {}
+                        doc_source = metadata.get("data_source", "public")
+                        
+                        # Check if user has access to this data source
+                        if permissions.has_data_source(doc_source) or doc_source == "public":
+                            filtered_docs.append(doc)
+                    
+                    return {"documents": filtered_docs}
+                except Exception as e:
+                    logger.error(f"Error filtering documents by permissions: {str(e)}", exc_info=True)
+                    # If permission check fails, return unfiltered documents
+                    return {"documents": documents}
+            
+            # If no user email, return all documents (backward compatibility)
+            return {"documents": documents}
+    except Exception as e:
+        logger.error(f"Error in retrieve_documents: {str(e)}", exc_info=True)
+        # Return empty documents list on error
+        return {"documents": []}
 
 
 def retrieve_in_parallel(state: ResearcherState) -> list[Send]:
