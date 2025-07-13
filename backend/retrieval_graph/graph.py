@@ -17,9 +17,19 @@ from backend.retrieval_graph.configuration import AgentConfiguration
 from backend.retrieval_graph.researcher_graph.graph import graph as researcher_graph
 from backend.retrieval_graph.state import AgentState, InputState, Router
 from backend.utils import format_docs, load_chat_model
+from backend.retry_utils import with_retry, OPENAI_RETRY_CONFIG
 
 # Set up logging
 logger = logging.getLogger(__name__)
+
+
+# Helper function for retrying LLM calls
+@with_retry(**OPENAI_RETRY_CONFIG)
+async def invoke_llm_with_retry(model, messages, config=None):
+    """Invoke LLM with automatic retry on failure."""
+    if config:
+        return await model.ainvoke(messages, config)
+    return await model.ainvoke(messages)
 
 
 async def analyze_and_route_query(
@@ -52,7 +62,7 @@ async def analyze_and_route_query(
         messages = [
             {"role": "system", "content": configuration.router_system_prompt}
         ] + state.messages
-        response = cast(Router, await model.ainvoke(messages))
+        response = cast(Router, await invoke_llm_with_retry(model, messages))
         return {"router": response}
     except Exception as e:
         logger.error(f"Error in analyze_and_route_query: {str(e)}", exc_info=True)
@@ -106,7 +116,7 @@ async def ask_for_more_info(
             logic=state.router["logic"]
         )
         messages = [{"role": "system", "content": system_prompt}] + state.messages
-        response = await model.ainvoke(messages)
+        response = await invoke_llm_with_retry(model, messages)
         return {"messages": [response]}
     except Exception as e:
         logger.error(f"Error in ask_for_more_info: {str(e)}", exc_info=True)
@@ -138,7 +148,7 @@ async def respond_to_general_query(
             logic=state.router["logic"]
         )
         messages = [{"role": "system", "content": system_prompt}] + state.messages
-        response = await model.ainvoke(messages)
+        response = await invoke_llm_with_retry(model, messages)
         return {"messages": [response]}
     except Exception as e:
         logger.error(f"Error in respond_to_general_query: {str(e)}", exc_info=True)
@@ -178,7 +188,7 @@ async def create_research_plan(
             {"role": "system", "content": configuration.research_plan_system_prompt}
         ] + state.messages
         response = cast(
-            Plan, await model.ainvoke(messages, {"tags": ["langsmith:nostream"]})
+            Plan, await invoke_llm_with_retry(model, messages, {"tags": ["langsmith:nostream"]})
         )
         return {
             "steps": response["steps"],
@@ -217,7 +227,12 @@ async def conduct_research(state: AgentState) -> dict[str, Any]:
             logger.warning("No research steps available")
             return {"documents": [], "steps": []}
             
-        result = await researcher_graph.ainvoke({"question": state.steps[0]})
+        # Retry the research call up to 3 times
+        @with_retry(max_retries=2, base_delay=2.0)
+        async def research_with_retry():
+            return await researcher_graph.ainvoke({"question": state.steps[0]})
+        
+        result = await research_with_retry()
         return {"documents": result.get("documents", []), "steps": state.steps[1:]}
     except Exception as e:
         logger.error(f"Error in conduct_research: {str(e)}", exc_info=True)
@@ -274,7 +289,7 @@ async def respond(
         
         prompt = configuration.response_system_prompt.format(context=context)
         messages = [{"role": "system", "content": prompt}] + state.messages
-        response = await model.ainvoke(messages)
+        response = await invoke_llm_with_retry(model, messages)
         return {"messages": [response], "answer": response.content}
     except Exception as e:
         logger.error(f"Error in respond: {str(e)}", exc_info=True)

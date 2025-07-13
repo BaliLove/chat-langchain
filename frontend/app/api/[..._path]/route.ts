@@ -2,6 +2,15 @@ import { NextRequest, NextResponse } from "next/server";
 
 export const runtime = "edge";
 
+// Retry configuration
+const MAX_RETRIES = 3;
+const RETRY_DELAY_BASE = 1000; // 1 second
+const RETRYABLE_STATUS_CODES = [502, 503, 504, 429]; // Bad Gateway, Service Unavailable, Gateway Timeout, Too Many Requests
+
+async function delay(ms: number) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 function getCorsHeaders() {
   return {
     "Access-Control-Allow-Origin": "*",
@@ -42,7 +51,39 @@ async function handleRequest(req: NextRequest, method: string) {
     const targetUrl = `${process.env.API_BASE_URL}/${path}${queryString}`;
     console.log(`Proxying ${method} request to: ${targetUrl}`);
     
-    const res = await fetch(targetUrl, options);
+    // Implement retry logic
+    let lastError: Error | null = null;
+    let res: Response | null = null;
+    
+    for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
+      try {
+        res = await fetch(targetUrl, options);
+        
+        // If successful or non-retryable status, break
+        if (!RETRYABLE_STATUS_CODES.includes(res.status)) {
+          break;
+        }
+        
+        // Log retryable error
+        console.warn(`Retryable status ${res.status} on attempt ${attempt + 1}/${MAX_RETRIES + 1}`);
+        
+      } catch (error) {
+        lastError = error as Error;
+        console.error(`Network error on attempt ${attempt + 1}/${MAX_RETRIES + 1}:`, error);
+      }
+      
+      // If this wasn't the last attempt, wait before retrying
+      if (attempt < MAX_RETRIES) {
+        const delayMs = RETRY_DELAY_BASE * Math.pow(2, attempt) * (0.5 + Math.random() * 0.5); // Exponential backoff with jitter
+        console.log(`Retrying in ${delayMs}ms...`);
+        await delay(delayMs);
+      }
+    }
+    
+    // If we never got a response, throw the last error
+    if (!res) {
+      throw lastError || new Error("Failed to fetch after retries");
+    }
 
     const responseHeaders = new Headers(res.headers);
     // Add CORS headers

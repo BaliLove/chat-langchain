@@ -33,7 +33,10 @@
       "Bash(yarn lint)",
       "Bash(yarn add:*)",
       "Bash(poetry add:*)",
-      "Bash(yarn test:*)"
+      "Bash(yarn test:*)",
+      "Bash(npm test:*)",
+      "Bash(gh workflow list:*)",
+      "Bash(echo:*)"
     ],
     "deny": []
   }

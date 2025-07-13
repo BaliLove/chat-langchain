@@ -18,6 +18,7 @@ from backend.retrieval_graph.configuration import AgentConfiguration
 from backend.retrieval_graph.researcher_graph.state import QueryState, ResearcherState
 from backend.utils import load_chat_model
 from backend.permissions import permission_manager
+from backend.retry_utils import with_retry, OPENAI_RETRY_CONFIG, RETRIEVAL_RETRY_CONFIG
 
 # Set up logging
 logger = logging.getLogger(__name__)
@@ -52,9 +53,12 @@ async def generate_queries(
             {"role": "system", "content": configuration.generate_queries_system_prompt},
             {"role": "human", "content": state.question},
         ]
-        response = cast(
-            Response, await model.ainvoke(messages, {"tags": ["langsmith:nostream"]})
-        )
+        # Use retry logic for LLM call
+        @with_retry(**OPENAI_RETRY_CONFIG)
+        async def generate_with_retry():
+            return await model.ainvoke(messages, {"tags": ["langsmith:nostream"]})
+        
+        response = cast(Response, await generate_with_retry())
         return {"queries": response["queries"]}
     except Exception as e:
         logger.error(f"Error in generate_queries: {str(e)}", exc_info=True)
@@ -79,8 +83,12 @@ async def retrieve_documents(
     """
     try:
         with retrieval.make_retriever(config) as retriever:
-            # Retrieve documents
-            documents = await retriever.ainvoke(state.query, config)
+            # Retrieve documents with retry logic
+            @with_retry(**RETRIEVAL_RETRY_CONFIG)
+            async def retrieve_with_retry():
+                return await retriever.ainvoke(state.query, config)
+            
+            documents = await retrieve_with_retry()
             
             # Get user email from config (this should be passed from the main graph)
             user_email = config.get("configurable", {}).get("user_email", "")
