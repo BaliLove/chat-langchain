@@ -38,7 +38,8 @@
       "Bash(gh workflow list:*)",
       "Bash(echo:*)",
       "Bash(pip search:*)",
-      "WebFetch(domain:pypi.org)"
+      "WebFetch(domain:pypi.org)",
+      "Bash(gh run list:*)"
     ],
     "deny": []
   }
