@@ -36,7 +36,9 @@
       "Bash(yarn test:*)",
       "Bash(npm test:*)",
       "Bash(gh workflow list:*)",
-      "Bash(echo:*)"
+      "Bash(echo:*)",
+      "Bash(pip search:*)",
+      "WebFetch(domain:pypi.org)"
     ],
     "deny": []
   }
