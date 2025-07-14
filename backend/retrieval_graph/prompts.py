@@ -14,32 +14,32 @@ if USE_LANGSMITH_PROMPTS:
         client = Client()
         # fetch from langsmith
         ROUTER_SYSTEM_PROMPT = (
-            client.pull_prompt("langchain-ai/chat-langchain-router-prompt")
+            client.pull_prompt("bali-love-router-prompt")
             .messages[0]
             .prompt.template
         )
         GENERATE_QUERIES_SYSTEM_PROMPT = (
-            client.pull_prompt("langchain-ai/chat-langchain-generate-queries-prompt")
+            client.pull_prompt("bali-love-generate-queries-prompt")
             .messages[0]
             .prompt.template
         )
         MORE_INFO_SYSTEM_PROMPT = (
-            client.pull_prompt("langchain-ai/chat-langchain-more-info-prompt")
+            client.pull_prompt("bali-love-more-info-prompt")
             .messages[0]
             .prompt.template
         )
         RESEARCH_PLAN_SYSTEM_PROMPT = (
-            client.pull_prompt("langchain-ai/chat-langchain-research-plan-prompt")
+            client.pull_prompt("bali-love-research-plan-prompt")
             .messages[0]
             .prompt.template
         )
         GENERAL_SYSTEM_PROMPT = (
-            client.pull_prompt("langchain-ai/chat-langchain-general-prompt")
+            client.pull_prompt("bali-love-general-prompt")
             .messages[0]
             .prompt.template
         )
         RESPONSE_SYSTEM_PROMPT = (
-            client.pull_prompt("langchain-ai/chat-langchain-response-prompt")
+            client.pull_prompt("bali-love-response-prompt")
             .messages[0]
             .prompt.template
         )

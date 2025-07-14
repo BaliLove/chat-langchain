@@ -4,24 +4,24 @@ import { MapPin, Calendar, Users, Sparkles } from "lucide-react";
 
 const suggestedQuestions = [
   {
-    question: "How do I use a RecursiveUrlLoader to load content from a page?",
-    icon: <Sparkles className="w-5 h-5" />,
-    category: "Development"
-  },
-  {
-    question: "How can I define the state schema for my LangGraph graph?",
+    question: "Show me wedding venues in Uluwatu with ocean views",
     icon: <MapPin className="w-5 h-5" />,
-    category: "Architecture"
+    category: "Venues"
   },
   {
-    question: "How can I run a model locally on my laptop with Ollama?",
-    icon: <Users className="w-5 h-5" />,
-    category: "Setup"
+    question: "What event services do you offer for weddings?",
+    icon: <Sparkles className="w-5 h-5" />,
+    category: "Services"
   },
   {
-    question: "Explain RAG techniques and how LangGraph can implement them.",
+    question: "Tell me about Alila Uluwatu venue",
     icon: <Calendar className="w-5 h-5" />,
-    category: "Concepts"
+    category: "Featured"
+  },
+  {
+    question: "I need a venue for 200 guests in Seminyak",
+    icon: <Users className="w-5 h-5" />,
+    category: "Search"
   },
 ];
 
