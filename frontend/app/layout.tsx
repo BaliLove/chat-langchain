@@ -1,7 +1,7 @@
 import { Inter } from "next/font/google";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { AuthProvider } from './contexts/AuthContext'
-import Header from './components/Header'
+import { AppLayout } from './components/AppLayout'
 import "./globals.css";
 import type { Metadata } from "next";
 
@@ -20,17 +20,11 @@ export default function RootLayout({
   return (
     <html lang="en" className="h-full">
       <body className={`${inter.className} h-full`}>
-        <div
-          className="flex flex-col h-full w-full"
-          style={{ background: "rgb(38, 38, 41)" }}
-        >
-          <AuthProvider>
-            <Header />
-            <div className="flex-1 overflow-hidden">
-              <NuqsAdapter>{children}</NuqsAdapter>
-            </div>
-          </AuthProvider>
-        </div>
+        <AuthProvider>
+          <AppLayout>
+            <NuqsAdapter>{children}</NuqsAdapter>
+          </AppLayout>
+        </AuthProvider>
       </body>
     </html>
   );
