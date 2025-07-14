@@ -15,10 +15,10 @@ import {
   LogOut,
   Shield
 } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
+import { Button } from '@/app/components/ui/button'
+import { Input } from '@/app/components/ui/input'
 import { useAuth } from '@/app/contexts/AuthContext'
-import { cn } from '@/utils/cn'
+import { cn } from '@/app/utils/cn'
 import { ThreadHistory } from './thread-history'
 
 export function Sidebar() {
@@ -129,7 +129,7 @@ export function Sidebar() {
               Recent Chats
             </h3>
             <div className="space-y-1 max-h-96 overflow-y-auto">
-              <ThreadHistory searchQuery={searchQuery} />
+              <ThreadHistory />
             </div>
           </div>
         )}

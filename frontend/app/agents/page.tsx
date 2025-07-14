@@ -1,16 +1,16 @@
 'use client'
 
 import { useState } from 'react'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/app/components/ui/card'
+import { Button } from '@/app/components/ui/button'
+import { Input } from '@/app/components/ui/input'
 import { 
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select'
+} from '@/app/components/ui/select'
 import { Search, Bot, FileText, Filter, Users } from 'lucide-react'
 import ProtectedRoute from '@/app/components/ProtectedRoute'
 
@@ -214,7 +214,7 @@ export default function AgentsPage() {
               </CardHeader>
               <CardContent>
                 <div className="flex items-center justify-between text-sm text-gray-600">
-                  <span>{item.type === 'agent' ? `Model: ${item.model}` : `Type: ${item.category}`}</span>
+                  <span>{item.type === 'agent' ? `Model: ${(item as any).model}` : `Type: ${(item as any).category}`}</span>
                   <span>{item.usage.toLocaleString()} uses</span>
                 </div>
                 <div className="mt-4 flex gap-2">
