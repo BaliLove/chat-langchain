@@ -30,7 +30,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [userTeamData, setUserTeamData] = useState<UserTeamData | null>(null)
   const [loading, setLoading] = useState(true)
   const [isAuthorized, setIsAuthorized] = useState(false)
-  const supabase = createClient()
+  const [supabase] = useState(() => createClient())
 
   const checkUserAuthorization = (email: string): boolean => {
     if (!email) return false
@@ -98,9 +98,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const initializeAuth = async () => {
+      // Set a timeout to prevent infinite loading
+      const timeoutId = setTimeout(() => {
+        console.warn('Auth initialization timeout - setting loading to false')
+        setLoading(false)
+      }, 5000) // 5 second timeout
+
       try {
         // Get current session from Supabase
-        const { data: { session } } = await supabase.auth.getSession()
+        const { data: { session }, error: sessionError } = await supabase.auth.getSession()
+        
+        if (sessionError) {
+          console.error('Session error:', sessionError)
+          throw sessionError
+        }
         
         if (session?.user) {
           const email = session.user.email || ''
@@ -120,11 +131,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             setIsAuthorized(false)
             await supabase.auth.signOut()
           }
+        } else {
+          // No session - ensure clean state
+          setUser(null)
+          setUserTeamData(null)
+          setIsAuthorized(false)
         }
       } catch (error) {
         console.error('Auth initialization error:', error)
+        setUser(null)
+        setUserTeamData(null)
         setIsAuthorized(false)
       } finally {
+        clearTimeout(timeoutId)
         setLoading(false)
       }
     }

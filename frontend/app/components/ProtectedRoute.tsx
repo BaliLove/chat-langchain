@@ -12,7 +12,11 @@ export default function ProtectedRoute({ children }: ProtectedRouteProps) {
   const router = useRouter()
 
   useEffect(() => {
+    // Debug logging
+    console.log('ProtectedRoute state:', { user, loading, isAuthorized })
+    
     if (!loading && (!user || !isAuthorized)) {
+      console.log('Redirecting to login - no user or not authorized')
       router.push('/login')
     }
   }, [user, loading, isAuthorized, router])
@@ -20,7 +24,17 @@ export default function ProtectedRoute({ children }: ProtectedRouteProps) {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900"></div>
+        <div className="flex flex-col items-center gap-4">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900"></div>
+          <p className="text-sm text-gray-600">Loading authentication...</p>
+          {/* Add a manual refresh option after 3 seconds */}
+          <button 
+            onClick={() => window.location.reload()} 
+            className="mt-4 text-sm text-blue-600 hover:text-blue-800 underline"
+          >
+            Taking too long? Click to refresh
+          </button>
+        </div>
       </div>
     )
   }
