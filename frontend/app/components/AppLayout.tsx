@@ -2,6 +2,7 @@
 
 import { Sidebar } from './Sidebar'
 import { useAuth } from '@/app/contexts/AuthContext'
+import { GraphProvider } from '@/app/contexts/GraphContext'
 
 interface AppLayoutProps {
   children: React.ReactNode
@@ -16,11 +17,13 @@ export function AppLayout({ children }: AppLayoutProps) {
   }
 
   return (
-    <div className="flex h-full w-full bg-white dark:bg-gray-950">
-      <Sidebar />
-      <div className="flex-1 flex flex-col overflow-hidden">
-        {children}
+    <GraphProvider>
+      <div className="flex h-full w-full bg-white dark:bg-gray-950">
+        <Sidebar />
+        <div className="flex-1 flex flex-col overflow-hidden">
+          {children}
+        </div>
       </div>
-    </div>
+    </GraphProvider>
   )
 }

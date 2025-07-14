@@ -50,7 +50,7 @@ def get_supabase_client():
         logger.warning("Supabase not available, returning mock client")
         return None
         
-    supabase_url = os.getenv("SUPABASE_URL")
+    supabase_url = os.getenv("NEXT_PUBLIC_SUPABASE_URL")
     supabase_key = os.getenv("SUPABASE_SERVICE_ROLE_KEY")
     
     if not supabase_url or not supabase_key:

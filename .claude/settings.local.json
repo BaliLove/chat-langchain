@@ -39,7 +39,12 @@
       "Bash(echo:*)",
       "Bash(pip search:*)",
       "WebFetch(domain:pypi.org)",
-      "Bash(gh run list:*)"
+      "Bash(gh run list:*)",
+      "Bash(cat:*)",
+      "Bash(npx shadcn-ui@latest add select separator:*)",
+      "Bash(npx shadcn@latest add select separator:*)",
+      "Bash(pip show:*)",
+      "Bash(pip install:*)"
     ],
     "deny": []
   }

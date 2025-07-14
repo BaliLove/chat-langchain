@@ -1,0 +1,506 @@
+{
+  "base_url": "https://app.bali.love/api/1.1/obj/",
+  "datatypes": {
+    "Event": {
+      "count": 1,
+      "sample_fields": [
+        "bookingCount",
+        "eventType",
+        "Created By",
+        "Modified Date",
+        "eventCoverImage",
+        "code",
+        "realEventImage",
+        "status",
+        "creationDate",
+        "name",
+        "contactName",
+        "Created Date",
+        "xeroContactId",
+        "isWedding",
+        "_id",
+        "leadInformation",
+        "hosts",
+        "satellite",
+        "team",
+        "planningGuide"
+      ]
+    },
+    "EventReview": {
+      "count": 1,
+      "sample_fields": [
+        "Modified Date",
+        "Created Date",
+        "Created By",
+        "event",
+        "reviewStatus",
+        "reviewEmailSentDate",
+        "reviewSubmittedDate",
+        "flow",
+        "_id"
+      ]
+    },
+    "EventRSVP": {
+      "count": 1,
+      "sample_fields": [
+        "rsvpQuestion",
+        "_id",
+        "flow",
+        "Created By",
+        "event",
+        "Modified Date",
+        "Created Date"
+      ]
+    },
+    "EventSatellite": {
+      "count": 1,
+      "sample_fields": [
+        "Created By",
+        "clientTZOffset",
+        "Modified Date",
+        "_id",
+        "Created Date",
+        "event"
+      ]
+    },
+    "Booking": {
+      "count": 1,
+      "sample_fields": [
+        "creationDate",
+        "satellite",
+        "isHiddenFromClients",
+        "Created Date",
+        "clientPayments",
+        "fullyPaidVendor?",
+        "bill",
+        "code",
+        "Created By",
+        "_id",
+        "partiallyPaidClient?",
+        "partiallyPaidVendor?",
+        "event",
+        "fullyPaidClient?",
+        "Modified Date",
+        "isApproved?",
+        "totalSell",
+        "invoice",
+        "bookingItems",
+        "currency",
+        "vendor",
+        "totalBuy"
+      ]
+    },
+    "AutomationBookingCondition": {
+      "count": 1,
+      "sample_fields": [
+        "automation",
+        "Created Date",
+        "Created By",
+        "dateType",
+        "Modified Date",
+        "_id"
+      ]
+    },
+    "Guest": {
+      "count": 1,
+      "sample_fields": [
+        "Created Date",
+        "firstName",
+        "guestEvents",
+        "guestLists",
+        "phone",
+        "_id",
+        "client",
+        "Created By",
+        "Modified Date",
+        "email",
+        "guestGroups",
+        "lastName"
+      ]
+    },
+    "GuestList": {
+      "count": 1,
+      "sample_fields": [
+        "Modified Date",
+        "client",
+        "_id",
+        "guests",
+        "Created By",
+        "Created Date"
+      ]
+    },
+    "GuestEvent": {
+      "count": 1,
+      "sample_fields": [
+        "guest",
+        "Created Date",
+        "Modified Date",
+        "event",
+        "rsvpStatus",
+        "Created By",
+        "_id",
+        "specialRole",
+        "invitationStatus"
+      ]
+    },
+    "Comment": {
+      "count": 1,
+      "sample_fields": [
+        "Created Date",
+        "Created By",
+        "Read(o)",
+        "Comment Satellite ",
+        "Parent Comment Thread",
+        "Comment Text",
+        "Modified Date",
+        "_id"
+      ]
+    },
+    "CommentReaction": {
+      "count": 1,
+      "sample_fields": [
+        "Created By",
+        "Created Date",
+        "Modified Date",
+        "Emoji-Text",
+        "Reaction Users",
+        "Parent Comment",
+        "_id"
+      ]
+    },
+    "CommentExtended": {
+      "count": 1,
+      "sample_fields": [
+        "Image",
+        "Created By",
+        "Modified Date",
+        "Created Date",
+        "Parent Comment ",
+        "_id"
+      ]
+    },
+    "CommentThread": {
+      "count": 1,
+      "sample_fields": [
+        "Modified Date",
+        "itemType ",
+        "_id",
+        "Created Date",
+        "Created By",
+        "issue",
+        "followedBy"
+      ]
+    },
+    "InboxConversation": {
+      "count": 1,
+      "sample_fields": [
+        "Modified Date",
+        "Created Date",
+        "Created By",
+        "Assignee",
+        "Last Message",
+        "Last Message Date",
+        "Status",
+        "User Creator",
+        "Subject",
+        "event",
+        "_id"
+      ]
+    },
+    "InboxConversationUser": {
+      "count": 1,
+      "sample_fields": [
+        "noReplyNeeded?",
+        "User(o)",
+        "Created By",
+        "Modified Date",
+        "Conversation",
+        "Destination",
+        "lastMessageDate",
+        "Created Date",
+        "_id",
+        "Users"
+      ]
+    },
+    "Payment": {
+      "count": 1,
+      "sample_fields": [
+        "_id",
+        "currency",
+        "Modified Date",
+        "Created By",
+        "paymentStatus",
+        "paymentDate",
+        "Created Date",
+        "paidAmountUSD"
+      ]
+    },
+    "Product": {
+      "count": 1,
+      "sample_fields": [
+        "_id",
+        "venues",
+        "creatorName",
+        "creationDate",
+        "vendorTradingName",
+        "Created By",
+        "forEvent?",
+        "satellite",
+        "priceModel",
+        "categories",
+        "vendor",
+        "images",
+        "status",
+        "Modified Date",
+        "name",
+        "Created Date",
+        "availability",
+        "isPublished?",
+        "eventTypes",
+        "constantPrice"
+      ]
+    },
+    "ProductImage": {
+      "count": 1,
+      "sample_fields": [
+        "Created Date",
+        "Modified Date",
+        "Created By",
+        "product",
+        "_id"
+      ]
+    },
+    "ProductSatellite": {
+      "count": 1,
+      "sample_fields": [
+        "Modified Date",
+        "description",
+        "product",
+        "xeroID",
+        "Created By",
+        "_id",
+        "currency",
+        "code",
+        "Created Date"
+      ]
+    },
+    "Venue": {
+      "count": 1,
+      "sample_fields": [
+        "Modified Date",
+        "Created Date",
+        "isPublish?",
+        "area",
+        "Created By",
+        "eventTypes",
+        "seats",
+        "_id",
+        "shortCode",
+        "name",
+        "order",
+        "type",
+        "satellite"
+      ]
+    },
+    "VenueImage": {
+      "count": 1,
+      "sample_fields": [
+        "_id",
+        "Venue",
+        "Created By",
+        "Modified Date",
+        "ceremonyImages",
+        "generalImages",
+        "receptionImages",
+        "Created Date"
+      ]
+    },
+    "Vendor": {
+      "count": 1,
+      "sample_fields": [
+        "preferenceIndex",
+        "companyName",
+        "_id",
+        "satellite",
+        "eventTypes",
+        "clients",
+        "IsPreferred?",
+        "categories",
+        "Modified Date",
+        "Created Date",
+        "tradingName",
+        "Created By",
+        "email"
+      ]
+    },
+    "VendorImage": {
+      "count": 1,
+      "sample_fields": [
+        "Modified Date",
+        "images",
+        "_id",
+        "vendor",
+        "Created By",
+        "Created Date"
+      ]
+    },
+    "event": {
+      "count": 1,
+      "sample_fields": [
+        "hosts",
+        "bookingCount",
+        "code",
+        "name",
+        "satellite",
+        "realEventImage",
+        "planningGuide",
+        "Modified Date",
+        "status",
+        "eventType",
+        "eventCoverImage",
+        "team",
+        "creationDate",
+        "_id",
+        "isWedding",
+        "Created Date",
+        "xeroContactId",
+        "Created By",
+        "leadInformation",
+        "contactName"
+      ]
+    },
+    "venue": {
+      "count": 1,
+      "sample_fields": [
+        "name",
+        "shortCode",
+        "Modified Date",
+        "type",
+        "eventTypes",
+        "_id",
+        "satellite",
+        "Created Date",
+        "Created By",
+        "area",
+        "seats",
+        "isPublish?",
+        "order"
+      ]
+    },
+    "product": {
+      "count": 1,
+      "sample_fields": [
+        "priceModel",
+        "_id",
+        "Modified Date",
+        "Created By",
+        "eventTypes",
+        "categories",
+        "Created Date",
+        "availability",
+        "name",
+        "creatorName",
+        "satellite",
+        "isPublished?",
+        "forEvent?",
+        "constantPrice",
+        "venues",
+        "vendorTradingName",
+        "images",
+        "vendor",
+        "status",
+        "creationDate"
+      ]
+    },
+    "booking": {
+      "count": 1,
+      "sample_fields": [
+        "totalBuy",
+        "satellite",
+        "isHiddenFromClients",
+        "currency",
+        "totalSell",
+        "Created By",
+        "partiallyPaidVendor?",
+        "Modified Date",
+        "isApproved?",
+        "Created Date",
+        "code",
+        "vendor",
+        "fullyPaidVendor?",
+        "bookingItems",
+        "_id",
+        "partiallyPaidClient?",
+        "creationDate",
+        "event",
+        "bill",
+        "invoice",
+        "fullyPaidClient?",
+        "clientPayments"
+      ]
+    },
+    "guest": {
+      "count": 1,
+      "sample_fields": [
+        "lastName",
+        "client",
+        "firstName",
+        "guestEvents",
+        "guestLists",
+        "phone",
+        "email",
+        "Created Date",
+        "Modified Date",
+        "guestGroups",
+        "_id",
+        "Created By"
+      ]
+    },
+    "payment": {
+      "count": 1,
+      "sample_fields": [
+        "Modified Date",
+        "currency",
+        "paidAmountUSD",
+        "paymentDate",
+        "Created By",
+        "paymentStatus",
+        "_id",
+        "Created Date"
+      ]
+    },
+    "training": {
+      "count": 1,
+      "sample_fields": [
+        "trainingSessions",
+        "isArchive",
+        "qualifiedToTrain",
+        "Modified Date",
+        "content",
+        "responsibilities",
+        "_id",
+        "title",
+        "Created Date",
+        "qualifications",
+        "Created By"
+      ]
+    },
+    "TrainingModule": {
+      "count": 1,
+      "sample_fields": [
+        "content",
+        "Created Date",
+        "trainingSessions",
+        "qualifiedToTrain",
+        "_id",
+        "title",
+        "Modified Date",
+        "Created By",
+        "qualifications",
+        "responsibilities",
+        "isArchive"
+      ]
+    }
+  },
+  "discovered_at": "2025-07-14 16:24:36"
+}

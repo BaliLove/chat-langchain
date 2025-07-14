@@ -23,8 +23,10 @@ class CustomDataIngester:
     def __init__(self):
         """Initialize the ingester with necessary connections."""
         # Initialize embeddings
+        # Use text-embedding-3-small with 1024 dimensions to match the index
         self.embeddings = OpenAIEmbeddings(
-            model=os.getenv("EMBEDDING_MODEL", "text-embedding-3-small")
+            model=os.getenv("EMBEDDING_MODEL", "text-embedding-3-small"),
+            dimensions=1024  # Match the Pinecone index dimension
         )
         
         # Initialize vector store
@@ -46,6 +48,12 @@ class CustomDataIngester:
     
     def _get_postgres_connection(self):
         """Get PostgreSQL connection."""
+        # Use DATABASE_URL if available
+        database_url = os.getenv("DATABASE_URL")
+        if database_url:
+            return psycopg2.connect(database_url)
+        
+        # Fall back to individual parameters
         return psycopg2.connect(
             host=os.getenv("POSTGRES_HOST", "localhost"),
             port=os.getenv("POSTGRES_PORT", "5432"),
