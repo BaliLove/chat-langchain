@@ -25,6 +25,7 @@ const baliLoveAgents = [
     description: 'Primary chat assistant that routes queries and provides comprehensive answers',
     team: 'All',
     type: 'agent',
+    itemTypes: ['All'],
     features: ['Query Routing', 'Context Retrieval', 'Multi-step Research'],
     usage: 25432,
     lastUpdated: '2025-01-10T10:00:00Z'
@@ -35,6 +36,7 @@ const baliLoveAgents = [
     description: 'Specialized in finding and recommending venues based on event requirements',
     team: 'Revenue',
     type: 'agent',
+    itemTypes: ['Venues & Vendors', 'Events'],
     features: ['Venue Search', 'Availability Check', 'Price Comparison'],
     usage: 8765,
     lastUpdated: '2025-01-08T14:30:00Z'
@@ -45,6 +47,7 @@ const baliLoveAgents = [
     description: 'Helps with event coordination, vendor management, and timeline planning',
     team: 'Client Experience',
     type: 'agent',
+    itemTypes: ['Events', 'Venues & Vendors', 'Bookings'],
     features: ['Timeline Creation', 'Vendor Coordination', 'Budget Management'],
     usage: 6543,
     lastUpdated: '2025-01-07T09:15:00Z'
@@ -55,6 +58,7 @@ const baliLoveAgents = [
     description: 'Assists new team members with training materials and company policies',
     team: 'People & Culture',
     type: 'agent',
+    itemTypes: ['Training', 'People'],
     features: ['Policy Q&A', 'Training Modules', 'Onboarding Guidance'],
     usage: 3210,
     lastUpdated: '2025-01-05T16:45:00Z'
@@ -72,6 +76,19 @@ const baliLoveTeams = [
   'Special Projects'
 ]
 
+// Item types based on Bubble data
+const itemTypes = [
+  'All',
+  'Events',
+  'Venues & Vendors',
+  'Bookings',
+  'Communication',
+  'Tasks & Issues',
+  'Training',
+  'People',
+  'Products'
+]
+
 interface Prompt {
   id: string
   name: string
@@ -79,6 +96,7 @@ interface Prompt {
   team: string
   type: string
   category: string
+  itemTypes?: string[]
   usage: number
   lastUpdated: string
   version?: number
@@ -89,6 +107,7 @@ export default function AgentsPage() {
   const [searchQuery, setSearchQuery] = useState('')
   const [filterType, setFilterType] = useState('all')
   const [selectedTeam, setSelectedTeam] = useState(userTeamData?.team_name || 'All')
+  const [selectedItemType, setSelectedItemType] = useState('All')
   const [prompts, setPrompts] = useState<Prompt[]>([])
   const [loading, setLoading] = useState(true)
   const [refreshing, setRefreshing] = useState(false)
@@ -133,8 +152,10 @@ export default function AgentsPage() {
                          item.description.toLowerCase().includes(searchQuery.toLowerCase())
     const matchesType = filterType === 'all' || item.type === filterType
     const matchesTeam = selectedTeam === 'All' || item.team === selectedTeam
+    const matchesItemType = selectedItemType === 'All' || 
+                           (item.itemTypes && (item.itemTypes.includes('All') || item.itemTypes.includes(selectedItemType)))
     
-    return matchesSearch && matchesType && matchesTeam
+    return matchesSearch && matchesType && matchesTeam && matchesItemType
   })
 
   const getIcon = (item: any) => {
@@ -231,13 +252,27 @@ export default function AgentsPage() {
               
               {/* Type Filter */}
               <Select value={filterType} onValueChange={setFilterType}>
-                <SelectTrigger className="w-full sm:w-[180px]">
+                <SelectTrigger className="w-full sm:w-[160px]">
                   <SelectValue placeholder="Filter by type" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All Types</SelectItem>
                   <SelectItem value="agent">Agents Only</SelectItem>
                   <SelectItem value="prompt">Prompts Only</SelectItem>
+                </SelectContent>
+              </Select>
+
+              {/* Item Type Filter */}
+              <Select value={selectedItemType} onValueChange={setSelectedItemType}>
+                <SelectTrigger className="w-full sm:w-[180px]">
+                  <SelectValue placeholder="Filter by item type" />
+                </SelectTrigger>
+                <SelectContent>
+                  {itemTypes.map(itemType => (
+                    <SelectItem key={itemType} value={itemType}>
+                      {itemType}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>
@@ -293,6 +328,20 @@ export default function AgentsPage() {
                         <div className="flex items-center gap-2 text-xs text-muted-foreground">
                           <Clock className="h-3 w-3" />
                           <span>Updated {format(new Date(item.lastUpdated), 'PP')}</span>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Item Types */}
+                    {(item as any).itemTypes && (item as any).itemTypes.length > 0 && !(item as any).itemTypes.includes('All') && (
+                      <div className="mb-3">
+                        <p className="text-sm text-muted-foreground mb-1">Works with:</p>
+                        <div className="flex flex-wrap gap-1">
+                          {(item as any).itemTypes.map((itemType: string, idx: number) => (
+                            <Badge key={idx} variant="secondary" className="text-xs">
+                              {itemType}
+                            </Badge>
+                          ))}
                         </div>
                       </div>
                     )}
