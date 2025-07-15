@@ -235,31 +235,7 @@ export default function AgentsPage() {
           </div>
 
           {/* Stats */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-            <Card>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium text-muted-foreground">Active Agents</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="flex items-center gap-2">
-                  <Bot className="h-8 w-8 text-primary" />
-                  <span className="text-2xl font-bold">{baliLoveAgents.length}</span>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium text-muted-foreground">Prompt Templates</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="flex items-center gap-2">
-                  <FileText className="h-8 w-8 text-primary" />
-                  <span className="text-2xl font-bold">{prompts.length}</span>
-                </div>
-              </CardContent>
-            </Card>
-
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
             <Card>
               <CardHeader className="pb-2">
                 <CardTitle className="text-sm font-medium text-muted-foreground">Total Usage</CardTitle>
@@ -281,7 +257,7 @@ export default function AgentsPage() {
               <CardContent>
                 <div className="flex items-center gap-2">
                   <FileText className="h-8 w-8 text-primary" />
-                  <span className="text-2xl font-bold">{filteredItems.length}</span>
+                  <span className="text-2xl font-bold">{filteredItems.length} of {allItems.length}</span>
                 </div>
               </CardContent>
             </Card>
