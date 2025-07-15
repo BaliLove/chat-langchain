@@ -175,7 +175,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
       
       setLoading(false)
-    }) || {}
+    })
 
     return () => {
       authListener?.data?.subscription?.unsubscribe()
