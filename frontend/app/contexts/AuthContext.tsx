@@ -30,7 +30,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [userTeamData, setUserTeamData] = useState<UserTeamData | null>(null)
   const [loading, setLoading] = useState(true)
   const [isAuthorized, setIsAuthorized] = useState(false)
-  const [supabase] = useState(() => createClient())
+  const [supabase] = useState(() => {
+    try {
+      return createClient()
+    } catch (error) {
+      console.error('Failed to create Supabase client:', error)
+      return null
+    }
+  })
 
   const checkUserAuthorization = (email: string): boolean => {
     if (!email) return false
@@ -42,6 +49,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const fetchUserTeamData = async (email: string): Promise<UserTeamData | null> => {
     try {
+      if (!supabase) {
+        console.log('Supabase client not available, using mock data')
+        return createMockUserTeamData(email)
+      }
+
       // Try to fetch from user_teams table first
       const { data, error } = await supabase
         .from('user_teams')
@@ -101,10 +113,25 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       // Set a timeout to prevent infinite loading
       const timeoutId = setTimeout(() => {
         console.warn('Auth initialization timeout - setting loading to false')
+        console.log('Supabase URL:', process.env.NEXT_PUBLIC_SUPABASE_URL ? 'Set' : 'Missing')
+        console.log('Supabase Anon Key:', process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ? 'Set' : 'Missing')
         setLoading(false)
       }, 5000) // 5 second timeout
 
       try {
+        // Check if Supabase is configured
+        if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+          console.error('Supabase environment variables are not configured')
+          console.log('NEXT_PUBLIC_SUPABASE_URL:', process.env.NEXT_PUBLIC_SUPABASE_URL)
+          console.log('NEXT_PUBLIC_SUPABASE_ANON_KEY:', process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ? 'Set' : 'Missing')
+          throw new Error('Missing Supabase configuration')
+        }
+
+        if (!supabase) {
+          console.error('Supabase client is not initialized')
+          throw new Error('Supabase client initialization failed')
+        }
+
         // Get current session from Supabase
         const { data: { session }, error: sessionError } = await supabase.auth.getSession()
         
@@ -113,9 +140,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           throw sessionError
         }
         
+        console.log('Session check:', session ? 'Session found' : 'No session')
+        
         if (session?.user) {
           const email = session.user.email || ''
           const authorized = checkUserAuthorization(email)
+          
+          console.log('User email:', email)
+          console.log('Authorized:', authorized)
+          console.log('Allowed domains:', ALLOWED_EMAIL_DOMAINS)
           
           if (authorized) {
             setUser({ email, id: session.user.id })
@@ -128,11 +161,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             }
           } else {
             // Unauthorized domain
+            console.log('User domain not authorized')
             setIsAuthorized(false)
             await supabase.auth.signOut()
           }
         } else {
           // No session - ensure clean state
+          console.log('No active session found')
           setUser(null)
           setUserTeamData(null)
           setIsAuthorized(false)
@@ -151,7 +186,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     initializeAuth()
 
     // Listen for auth state changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+    const { data: { subscription } } = supabase?.auth.onAuthStateChange(async (event, session) => {
       if (event === 'SIGNED_IN' && session) {
         const email = session.user.email || ''
         const authorized = checkUserAuthorization(email)
@@ -177,13 +212,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     })
 
     return () => {
-      subscription.unsubscribe()
+      subscription?.unsubscribe()
     }
   }, [])
 
   const signOut = async () => {
     try {
-      await supabase.auth.signOut()
+      if (supabase) {
+        await supabase.auth.signOut()
+      }
       setUser(null)
       setUserTeamData(null)
       setIsAuthorized(false)
