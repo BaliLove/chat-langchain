@@ -17,7 +17,7 @@ import {
 } from 'lucide-react'
 import { Button } from '@/app/components/ui/button'
 import { Input } from '@/app/components/ui/input'
-import { useAuth } from '@/app/contexts/AuthContext'
+import { useAuth } from '@/app/contexts/AuthContextStable'
 import { cn } from '@/app/utils/cn'
 import { ThreadHistory } from './thread-history'
 

@@ -1,7 +1,7 @@
 'use client'
 
 import { Sidebar } from './Sidebar'
-import { useAuth } from '@/app/contexts/AuthContext'
+import { useAuth } from '@/app/contexts/AuthContextStable'
 import { GraphProvider } from '@/app/contexts/GraphContext'
 
 interface AppLayoutProps {

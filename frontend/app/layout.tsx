@@ -1,8 +1,7 @@
 import { Inter } from "next/font/google";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
-import { AuthProvider } from './contexts/AuthContext'
+import { AuthProvider } from './contexts/AuthContextStable'
 import { AppLayout } from './components/AppLayout'
-import { GraphProvider } from './contexts/GraphContext'
 import "./globals.css";
 import type { Metadata } from "next";
 

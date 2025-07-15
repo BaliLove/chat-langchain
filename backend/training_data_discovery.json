@@ -1,0 +1,226 @@
+{
+  "found_types": [
+    "training",
+    "TrainingModule",
+    "trainingsession",
+    "TrainingSession",
+    "trainingplan",
+    "TrainingPlan",
+    "trainingqualification",
+    "TrainingQualification"
+  ],
+  "summary": {
+    "training": {
+      "count": 5,
+      "fields": [
+        "content",
+        "trainingSessions",
+        "responsibilities",
+        "Created By",
+        "Created Date",
+        "qualifiedToTrain",
+        "_id",
+        "qualifications",
+        "Modified Date",
+        "isArchive",
+        "title"
+      ],
+      "sample": {
+        "content": "{\"time\":1751964923091,\"blocks\":[{\"id\":\"FzUZGbGs2r\",\"type\":\"paragraph\",\"data\":{\"text\":\"Content for exactly how to do it.&nbsp;\"},\"tunes\":{\"anyTuneName\":{\"alignment\":\"left\"}}},{\"id\":\"oYU4D6OtWg\",\"type\":\"paragraph\",\"data\":{\"text\":\"\"},\"tunes\":{\"anyTuneName\":{\"alignment\":\"left\"}}},{\"id\":\"_aViZR-tvl\",\"type\":\"paragraph\",\"data\":{\"text\":\"Summary Email\"},\"tunes\":{\"anyTuneName\":{\"alignment\":\"left\"}}},{\"id\":\"rMZUb_AQUV\",\"type\":\"paragraph\",\"data\":{\"text\":\"\"},\"tunes\":{\"anyTuneName\":{\"alignment\":\"left\"}}}],\"version\":\"2.30.6\"}",
+        "trainingSessions": [
+          "1736491456189x357553428943496260"
+        ],
+        "responsibilities": [
+          "1731739572596x165379713385889800"
+        ],
+        "Created By": "1665057490662x869948921559859200",
+        "Created Date": "2024-11-16T06:41:35.574Z",
+        "qualifiedToTrain": [
+          "1665071758539x863306934722732400"
+        ],
+        "_id": "1731739294155x289249259344363500",
+        "qualifications": [
+          "1731739267888x296695147809996800"
+        ],
+        "Modified Date": "2025-07-08T08:55:25.528Z",
+        "isArchive": true,
+        "title": "Perfect Planning Calls"
+      }
+    },
+    "TrainingModule": {
+      "count": 5,
+      "fields": [
+        "isArchive",
+        "Created Date",
+        "qualifiedToTrain",
+        "trainingSessions",
+        "content",
+        "qualifications",
+        "_id",
+        "title",
+        "Modified Date",
+        "Created By",
+        "responsibilities"
+      ],
+      "sample": {
+        "isArchive": true,
+        "Created Date": "2024-11-16T06:41:35.574Z",
+        "qualifiedToTrain": [
+          "1665071758539x863306934722732400"
+        ],
+        "trainingSessions": [
+          "1736491456189x357553428943496260"
+        ],
+        "content": "{\"time\":1751964923091,\"blocks\":[{\"id\":\"FzUZGbGs2r\",\"type\":\"paragraph\",\"data\":{\"text\":\"Content for exactly how to do it.&nbsp;\"},\"tunes\":{\"anyTuneName\":{\"alignment\":\"left\"}}},{\"id\":\"oYU4D6OtWg\",\"type\":\"paragraph\",\"data\":{\"text\":\"\"},\"tunes\":{\"anyTuneName\":{\"alignment\":\"left\"}}},{\"id\":\"_aViZR-tvl\",\"type\":\"paragraph\",\"data\":{\"text\":\"Summary Email\"},\"tunes\":{\"anyTuneName\":{\"alignment\":\"left\"}}},{\"id\":\"rMZUb_AQUV\",\"type\":\"paragraph\",\"data\":{\"text\":\"\"},\"tunes\":{\"anyTuneName\":{\"alignment\":\"left\"}}}],\"version\":\"2.30.6\"}",
+        "qualifications": [
+          "1731739267888x296695147809996800"
+        ],
+        "_id": "1731739294155x289249259344363500",
+        "title": "Perfect Planning Calls",
+        "Modified Date": "2025-07-08T08:55:25.528Z",
+        "Created By": "1665057490662x869948921559859200",
+        "responsibilities": [
+          "1731739572596x165379713385889800"
+        ]
+      }
+    },
+    "trainingsession": {
+      "count": 5,
+      "fields": [
+        "trainees",
+        "calendarEvent",
+        "_id",
+        "Modified Date",
+        "Created Date",
+        "Created By",
+        "observers",
+        "trainingModule",
+        "trainers"
+      ],
+      "sample": {
+        "trainees": [
+          "1665093512423x266110174612502750"
+        ],
+        "calendarEvent": "1733282204419x571728833323065200",
+        "_id": "1733282204659x891498348391640600",
+        "Modified Date": "2024-12-04T03:16:44.709Z",
+        "Created Date": "2024-12-04T03:16:44.708Z",
+        "Created By": "1665057490662x869948921559859200",
+        "observers": [
+          "1696563193572x699461241291293000"
+        ],
+        "trainingModule": "1733281888522x652198275379363800",
+        "trainers": [
+          "1665057490662x869948921559859200"
+        ]
+      }
+    },
+    "TrainingSession": {
+      "count": 5,
+      "fields": [
+        "trainers",
+        "Modified Date",
+        "Created Date",
+        "trainees",
+        "Created By",
+        "calendarEvent",
+        "_id",
+        "observers",
+        "trainingModule"
+      ],
+      "sample": {
+        "trainers": [
+          "1665057490662x869948921559859200"
+        ],
+        "Modified Date": "2024-12-04T03:16:44.709Z",
+        "Created Date": "2024-12-04T03:16:44.708Z",
+        "trainees": [
+          "1665093512423x266110174612502750"
+        ],
+        "Created By": "1665057490662x869948921559859200",
+        "calendarEvent": "1733282204419x571728833323065200",
+        "_id": "1733282204659x891498348391640600",
+        "observers": [
+          "1696563193572x699461241291293000"
+        ],
+        "trainingModule": "1733281888522x652198275379363800"
+      }
+    },
+    "trainingplan": {
+      "count": 5,
+      "fields": [
+        "Modified Date",
+        "goalCompletionDate",
+        "Created By",
+        "Created Date",
+        "trainee",
+        "_id"
+      ],
+      "sample": {
+        "Modified Date": "2025-02-11T04:53:25.650Z",
+        "goalCompletionDate": "2025-02-10T16:00:00.000Z",
+        "Created By": "1735615689416x504983988535866000",
+        "Created Date": "2025-02-11T04:52:15.786Z",
+        "trainee": "1719819774384x427996681558356700",
+        "_id": "1739249534984x585629717402484700"
+      }
+    },
+    "TrainingPlan": {
+      "count": 5,
+      "fields": [
+        "goalCompletionDate",
+        "Modified Date",
+        "trainee",
+        "_id",
+        "Created By",
+        "Created Date"
+      ],
+      "sample": {
+        "goalCompletionDate": "2025-02-10T16:00:00.000Z",
+        "Modified Date": "2025-02-11T04:53:25.650Z",
+        "trainee": "1719819774384x427996681558356700",
+        "_id": "1739249534984x585629717402484700",
+        "Created By": "1735615689416x504983988535866000",
+        "Created Date": "2025-02-11T04:52:15.786Z"
+      }
+    },
+    "trainingqualification": {
+      "count": 5,
+      "fields": [
+        "Modified Date",
+        "Created Date",
+        "Created By",
+        "name",
+        "order",
+        "_id"
+      ],
+      "sample": {
+        "Modified Date": "2025-06-01T06:03:57.884Z",
+        "Created Date": "2024-11-16T06:41:09.239Z",
+        "Created By": "1665057490662x869948921559859200",
+        "name": "Team Member",
+        "order": 2,
+        "_id": "1731739267888x296695147809996800"
+      }
+    },
+    "TrainingQualification": {
+      "count": 5,
+      "fields": [
+        "_id",
+        "name",
+        "Created By",
+        "Modified Date",
+        "Created Date",
+        "order"
+      ],
+      "sample": {
+        "_id": "1731739267888x296695147809996800",
+        "name": "Team Member",
+        "Created By": "1665057490662x869948921559859200",
+        "Modified Date": "2025-06-01T06:03:57.884Z",
+        "Created Date": "2024-11-16T06:41:09.239Z",
+        "order": 2
+      }
+    }
+  }
+}

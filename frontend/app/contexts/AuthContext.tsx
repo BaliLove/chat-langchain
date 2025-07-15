@@ -118,21 +118,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         allowedDomains: ALLOWED_EMAIL_DOMAINS
       })
       
-      // Set a timeout to prevent infinite loading
+      // Set a timeout to warn about slow initialization
       const timeoutId = setTimeout(() => {
-        // Only timeout if we haven't been initialized by auth state change
-        if (!isInitialized) {
-          console.warn('⏱️ Auth initialization timeout - setting loading to false')
+        if (loading) {
+          console.warn('⏱️ Auth initialization is taking longer than expected')
           console.log('Supabase URL:', process.env.NEXT_PUBLIC_SUPABASE_URL ? 'Set' : 'Missing')
           console.log('Supabase Anon Key:', process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ? 'Set' : 'Missing')
-          
-          // Force loading to false and clear user state if timeout occurs
-          setLoading(false)
-          setUser(null)
-          setUserTeamData(null)
-          setIsAuthorized(false)
+          // Don't clear user state - let Supabase handle auth state
         }
-      }, 5000) // 5 second timeout
+      }, 5000) // 5 second warning
 
       try {
         // Check if Supabase is configured
@@ -199,9 +193,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }
       } catch (error) {
         console.error('❌ Auth initialization error:', error)
-        setUser(null)
-        setUserTeamData(null)
-        setIsAuthorized(false)
+        // Only clear state if we don't have a user
+        if (!user) {
+          setUser(null)
+          setUserTeamData(null)
+          setIsAuthorized(false)
+        }
       } finally {
         clearTimeout(timeoutId)
         console.log('🔐 Auth initialization complete. Setting loading to false.')

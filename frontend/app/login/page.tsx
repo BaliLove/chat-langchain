@@ -5,7 +5,7 @@ import { createClient } from '@/lib/supabase'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { User } from '@supabase/supabase-js'
-import { useAuth } from '@/app/contexts/AuthContext'
+import { useAuth } from '@/app/contexts/AuthContextStable'
 
 // Force dynamic rendering to avoid window is not defined error
 export const dynamic = 'force-dynamic'
