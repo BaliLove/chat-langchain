@@ -35,8 +35,8 @@ async function handleRequest(req: NextRequest, method: string) {
     };
 
     // Add API key for LangGraph authentication
-    if (process.env.LANGSMITH_API_KEY) {
-      headers["x-api-key"] = process.env.LANGSMITH_API_KEY;
+    if (process.env.LANGGRAPH_API_KEY || process.env.LANGSMITH_API_KEY) {
+      headers["x-api-key"] = process.env.LANGGRAPH_API_KEY || process.env.LANGSMITH_API_KEY;
     }
 
     const options: RequestInit = {
@@ -50,6 +50,8 @@ async function handleRequest(req: NextRequest, method: string) {
 
     const targetUrl = `${process.env.API_BASE_URL}/${path}${queryString}`;
     console.log(`Proxying ${method} request to: ${targetUrl}`);
+    console.log(`API_BASE_URL: ${process.env.API_BASE_URL}`);
+    console.log(`API Key present: ${!!headers["x-api-key"]}`);
     
     // Implement retry logic
     let lastError: Error | null = null;
