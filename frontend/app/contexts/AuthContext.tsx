@@ -115,7 +115,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         console.warn('Auth initialization timeout - setting loading to false')
         console.log('Supabase URL:', process.env.NEXT_PUBLIC_SUPABASE_URL ? 'Set' : 'Missing')
         console.log('Supabase Anon Key:', process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ? 'Set' : 'Missing')
+        
+        // Force loading to false and clear user state if timeout occurs
         setLoading(false)
+        setUser(null)
+        setUserTeamData(null)
+        setIsAuthorized(false)
       }, 5000) // 5 second timeout
 
       try {
@@ -186,7 +191,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     initializeAuth()
 
     // Listen for auth state changes
-    const { data: { subscription } } = supabase?.auth.onAuthStateChange(async (event, session) => {
+    const subscription = supabase?.auth.onAuthStateChange(async (event, session) => {
+      console.log('Auth state change:', event)
+      
       if (event === 'SIGNED_IN' && session) {
         const email = session.user.email || ''
         const authorized = checkUserAuthorization(email)
@@ -202,7 +209,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           }
         } else {
           setIsAuthorized(false)
-          await supabase.auth.signOut()
+          await supabase?.auth.signOut()
         }
       } else if (event === 'SIGNED_OUT') {
         setUser(null)
@@ -212,7 +219,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     })
 
     return () => {
-      subscription?.unsubscribe()
+      subscription?.data.subscription?.unsubscribe()
     }
   }, [])
 

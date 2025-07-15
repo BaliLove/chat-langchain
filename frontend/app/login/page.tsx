@@ -14,19 +14,32 @@ export const dynamic = 'force-dynamic'
 const ALLOWED_DOMAINS = process.env.NEXT_PUBLIC_ALLOWED_EMAIL_DOMAINS?.split(',') || ['example.com']
 
 export default function LoginPage() {
-  const supabase = createClient()
   const router = useRouter()
   const { isAuthorized } = useAuth()
   const [user, setUser] = useState<User | null>(null)
   const [redirectUrl, setRedirectUrl] = useState<string>('')
   const [authError, setAuthError] = useState<string | null>(null)
+  const [supabase, setSupabase] = useState<ReturnType<typeof createClient> | null>(null)
 
   useEffect(() => {
+    // Initialize Supabase client
+    try {
+      const client = createClient()
+      setSupabase(client)
+    } catch (error) {
+      console.error('Failed to create Supabase client in login page:', error)
+      setAuthError('Authentication service is not available. Please check your configuration.')
+    }
+
     // Set redirect URL on client side
     if (typeof window !== 'undefined') {
       setRedirectUrl(`${window.location.origin}/`)
     }
-    
+  }, [])
+
+  useEffect(() => {
+    if (!supabase) return
+
     const getUser = async () => {
       const { data: { user } } = await supabase.auth.getUser()
       setUser(user)
@@ -53,7 +66,7 @@ export default function LoginPage() {
     })
 
     return () => subscription.unsubscribe()
-  }, [router, isAuthorized])
+  }, [supabase, router, isAuthorized])
 
   if (user) {
     return <div>Redirecting...</div>
@@ -86,14 +99,20 @@ export default function LoginPage() {
           </div>
         )}
         <div className="mt-8 space-y-6">
-          <Auth
-            supabaseClient={supabase}
-            appearance={{ theme: ThemeSupa }}
-            providers={[]}
-            redirectTo={redirectUrl || '/'}
-            showLinks={false}
-            view="sign_in"
-          />
+          {supabase ? (
+            <Auth
+              supabaseClient={supabase}
+              appearance={{ theme: ThemeSupa }}
+              providers={[]}
+              redirectTo={redirectUrl || '/'}
+              showLinks={false}
+              view="sign_in"
+            />
+          ) : (
+            <div className="text-center text-red-600">
+              Authentication service is unavailable. Please check your configuration.
+            </div>
+          )}
         </div>
       </div>
     </div>
