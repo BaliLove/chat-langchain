@@ -43,15 +43,15 @@ export function Sidebar() {
 
   return (
     <div className={cn(
-      "h-full bg-gray-50 dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 flex flex-col transition-all duration-300",
+      "h-full bg-background border-r border-border flex flex-col transition-all duration-300",
       isCollapsed ? "w-16" : "w-64"
     )}>
       {/* Header */}
-      <div className="p-4 border-b border-gray-200 dark:border-gray-800">
+      <div className="p-4 border-b border-border">
         <div className="flex items-center justify-between">
           {!isCollapsed && (
-            <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
-              Bali Chat
+            <h2 className="text-lg font-semibold text-foreground">
+              Bali Chat {/* Debug: {Date.now()} */}
             </h2>
           )}
           <Button
@@ -125,7 +125,7 @@ export function Sidebar() {
         {/* Chat History */}
         {!isCollapsed && (
           <div className="mt-6">
-            <h3 className="mb-2 px-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+            <h3 className="mb-2 px-2 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
               Recent Chats
             </h3>
             <div className="space-y-1 max-h-96 overflow-y-auto">
@@ -136,7 +136,7 @@ export function Sidebar() {
       </nav>
 
       {/* Bottom Section - User Profile */}
-      <div className="mt-auto border-t border-gray-200 dark:border-gray-800 p-4">
+      <div className="mt-auto border-t border-border p-4">
         <div className="space-y-2">
           {/* Settings */}
           <Link href="/settings">
@@ -164,7 +164,7 @@ export function Sidebar() {
 
           {/* User Profile */}
           <div className={cn(
-            "flex items-center gap-2 p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 cursor-pointer",
+            "flex items-center gap-2 p-2 rounded-md hover:bg-accent hover:text-accent-foreground cursor-pointer",
             isCollapsed && "justify-center"
           )}>
             <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
@@ -172,10 +172,10 @@ export function Sidebar() {
             </div>
             {!isCollapsed && (
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
+                <p className="text-sm font-medium text-foreground truncate">
                   {user?.email?.split('@')[0] || 'User'}
                 </p>
-                <p className="text-xs text-gray-500 truncate">
+                <p className="text-xs text-muted-foreground truncate">
                   {userTeamData?.team_name || 'Team Member'}
                 </p>
               </div>
@@ -185,7 +185,7 @@ export function Sidebar() {
           {/* Sign Out */}
           <Button
             variant="ghost"
-            className={cn("w-full justify-start gap-2 text-red-600 hover:text-red-700 hover:bg-red-50", 
+            className={cn("w-full justify-start gap-2 text-destructive hover:text-destructive hover:bg-destructive/10", 
               isCollapsed && "justify-center"
             )}
             onClick={signOut}

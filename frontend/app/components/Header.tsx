@@ -10,13 +10,13 @@ export default function Header() {
   if (!user || !isAuthorized) return null
 
   return (
-    <header className="bg-gray-900 border-b border-gray-800">
+    <header className="bg-background border-b border-border">
       <div className="mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center">
-            <h1 className="text-white text-lg font-semibold">Bali Love Chat</h1>
+            <h1 className="text-foreground text-lg font-semibold">Bali Love Chat</h1>
             {userTeamData && (
-              <span className="ml-4 text-sm text-gray-400">
+              <span className="ml-4 text-sm text-muted-foreground">
                 {userTeamData.team_name} • {userTeamData.role}
               </span>
             )}
@@ -28,7 +28,7 @@ export default function Header() {
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="text-gray-300 hover:text-white hover:bg-gray-800"
+                  className="text-foreground hover:text-foreground hover:bg-accent"
                 >
                   <Shield className="w-4 h-4 mr-2" />
                   <span className="hidden sm:inline">Admin</span>
@@ -36,7 +36,7 @@ export default function Header() {
               </Link>
             )}
             
-            <div className="flex items-center text-sm text-gray-300">
+            <div className="flex items-center text-sm text-foreground">
               <User className="w-4 h-4 mr-2" />
               <span className="hidden sm:inline">{user.email}</span>
             </div>

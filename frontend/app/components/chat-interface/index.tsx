@@ -35,7 +35,7 @@ export const ThreadChat: FC<ThreadChatProps> = (props: ThreadChatProps) => {
           className={cn(
             "flex-1 overflow-y-auto scroll-smooth bg-inherit transition-all duration-300 ease-in-out w-full",
             isEmpty ? "pb-[30vh] sm:pb-[50vh]" : "pb-32 sm:pb-24",
-            "scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-transparent",
+            "scrollbar-thin scrollbar-thumb-muted-foreground/20 scrollbar-track-transparent",
           )}
         >
           <div className="md:pl-8 lg:pl-24 mt-2 max-w-full">
