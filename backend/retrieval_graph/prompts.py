@@ -50,7 +50,7 @@ if USE_LANGSMITH_PROMPTS:
 
 if not USE_LANGSMITH_PROMPTS:
     # Use custom prompts
-    from backend.retrieval_graph.custom_prompts import (
+    from .custom_prompts import (
         ROUTER_SYSTEM_PROMPT,
         GENERATE_QUERIES_SYSTEM_PROMPT,
         MORE_INFO_SYSTEM_PROMPT,
