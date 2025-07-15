@@ -99,12 +99,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (initRef.current) return
     initRef.current = true
 
+    // Add a timeout to ensure loading state is resolved
+    const timeoutId = setTimeout(() => {
+      if (loading) {
+        console.error('⏱️ Auth initialization timeout - forcing loading to false')
+        setLoading(false)
+      }
+    }, 10000) // 10 second hard timeout
+
     const initializeAuth = async () => {
       console.log('🔐 Initializing auth...')
       
       if (!supabase) {
         console.error('❌ Supabase client not available')
         setLoading(false)
+        clearTimeout(timeoutId)
         return
       }
 
@@ -140,6 +149,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         console.error('❌ Auth initialization error:', error)
       } finally {
         setLoading(false)
+        clearTimeout(timeoutId)
       }
     }
 
@@ -178,6 +188,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     })
 
     return () => {
+      clearTimeout(timeoutId)
       authListener?.data?.subscription?.unsubscribe()
     }
   }, []) // Empty deps, only run once
