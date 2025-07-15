@@ -147,7 +147,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     initializeAuth()
 
     // Listen for auth changes
-    const { data: { subscription } } = supabase?.auth.onAuthStateChange(async (event, session) => {
+    const authListener = supabase?.auth.onAuthStateChange(async (event, session) => {
       console.log('🔄 Auth state changed:', event)
       
       if (session) {
@@ -178,7 +178,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }) || {}
 
     return () => {
-      subscription?.unsubscribe()
+      authListener?.data?.subscription?.unsubscribe()
     }
   }, []) // Empty deps, only run once
 
