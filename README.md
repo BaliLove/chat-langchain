@@ -34,12 +34,25 @@ Question-Answering has the following steps:
 3. Pass the standalone question and relevant documents to the model to generate and stream the final answer.
 4. Generate a trace URL for the current chat session, as well as the endpoint to collect feedback.
 
-## Documentation
+## Current Architecture
 
-Looking to use or modify this Use Case Accelerant for your own needs? We've added a few docs to aid with this:
+This project has been extended with:
+
+- **Bubble.io Integration**: Ingests data from Bubble.io API into Pinecone vector store
+- **Supabase Authentication**: User management and permissions
+- **Training Data**: 119 training documents successfully indexed for RAG
+
+### Key Documentation
 
 - **[Concepts](./CONCEPTS.md)**: A conceptual overview of the different components of Chat LangChain. Goes over features like ingestion, vector stores, query analysis, etc.
 - **[Modify](./MODIFY.md)**: A guide on how to modify Chat LangChain for your own needs. Covers the frontend, backend and everything in between.
 - **[LangSmith](./LANGSMITH.md)**: A guide on adding robustness to your application using LangSmith. Covers observability, evaluations, and feedback.
 - **[Production](./PRODUCTION.md)**: Documentation on preparing your application for production usage. Explains different security considerations, and more.
 - **[Deployment](./DEPLOYMENT.md)**: How to deploy your application to production. Covers setting up production databases, deploying the frontend, and more.
+
+### Bali Love Specific Documentation
+
+- **[Bubble Integration](./BUBBLE_INTEGRATION_CURRENT.md)**: How Bubble.io data is ingested (ACTIVE)
+- **[Permissions](./PERMISSION_SYSTEM.md)**: Current permission system using Supabase (ACTIVE)
+- **[Data Architecture](./DATA_FLOW_ARCHITECTURE.md)**: Explains the two data pipelines
+- **[Bubble API Reality](./BUBBLE_API_REALITY.md)**: Actual Bubble.io API structure
