@@ -14,7 +14,7 @@ export default function Header() {
       <div className="mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center">
-            <h1 className="text-foreground text-lg font-semibold">Bali Love Chat</h1>
+            <h1 className="text-foreground text-lg font-semibold">LoveGPT</h1>
             {userTeamData && (
               <span className="ml-4 text-sm text-muted-foreground">
                 {userTeamData.team_name} • {userTeamData.role}

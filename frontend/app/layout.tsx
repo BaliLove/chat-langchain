@@ -6,7 +6,7 @@ import type { Metadata } from "next";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Bali Love Chat",
+  title: "LoveGPT",
   description: "AI-powered chat assistant",
 };
 

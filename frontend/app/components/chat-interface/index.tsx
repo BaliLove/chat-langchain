@@ -2,8 +2,6 @@
 
 import { ThreadPrimitive } from "@assistant-ui/react";
 import { type FC } from "react";
-import NextImage from "next/image";
-
 import { ArrowDownIcon } from "lucide-react";
 import { useAnswerHeaderToolUI } from "../AnswerHeaderToolUI";
 import { useGeneratingQuestionsUI } from "../GeneratingQuestionsToolUI";
@@ -11,7 +9,6 @@ import { useProgressToolUI } from "../ProgressToolUI";
 import { useRouterLogicUI } from "../RouterLogicToolUI";
 import { useSelectedDocumentsUI } from "../SelectedDocumentsToolUI";
 import { SelectModel } from "../SelectModel";
-import { SuggestedQuestions } from "../SuggestedQuestions";
 import { TooltipIconButton } from "../ui/assistant-ui/tooltip-icon-button";
 import { AssistantMessage, UserMessage } from "./messages";
 import { ChatComposer, ChatComposerProps } from "./chat-composer";
@@ -51,23 +48,9 @@ export const ThreadChat: FC<ThreadChatProps> = (props: ThreadChatProps) => {
       <ThreadChatScrollToBottom />
       {isEmpty ? (
         <div className="flex items-center justify-center flex-grow my-auto">
-          <div className="flex flex-col items-center mx-4 md:mt-0 mt-24">
-            <div className="flex flex-row gap-1 items-center justify-center">
-              <p className="text-xl sm:text-2xl">Chat LangChain</p>
-              <NextImage
-                src="/images/lc_logo.jpg"
-                className="rounded-3xl"
-                alt="LangChain Logo"
-                width={32}
-                height={32}
-                style={{ width: "auto", height: "auto" }}
-              />
-            </div>
-            <div className="mb-4 sm:mb-[24px] mt-1 sm:mt-2">
+          <div className="flex flex-col items-center mx-4 md:mt-0 mt-24 w-full max-w-3xl">
+            <div className="mb-4 sm:mb-[24px]">
               <SelectModel />
-            </div>
-            <div className="md:mb-8 mb-4">
-              <SuggestedQuestions />
             </div>
             <ChatComposer
               submitDisabled={props.submitDisabled}

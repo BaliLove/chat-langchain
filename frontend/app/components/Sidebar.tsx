@@ -13,13 +13,21 @@ import {
   ChevronLeft,
   ChevronRight,
   LogOut,
-  Shield
+  Shield,
+  MoreVertical
 } from 'lucide-react'
 import { Button } from '@/app/components/ui/button'
 import { Input } from '@/app/components/ui/input'
 import { useAuth } from '@/app/contexts/AuthContextStable'
 import { cn } from '@/app/utils/cn'
 import { ThreadHistory } from './thread-history'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/app/components/ui/dropdown-menu'
 
 export function Sidebar() {
   const [isCollapsed, setIsCollapsed] = useState(false)
@@ -51,7 +59,7 @@ export function Sidebar() {
         <div className="flex items-center justify-between">
           {!isCollapsed && (
             <h2 className="text-lg font-semibold text-foreground">
-              Bali Chat {/* Debug: {Date.now()} */}
+              LoveGPT
             </h2>
           )}
           <Button
@@ -136,63 +144,71 @@ export function Sidebar() {
       </nav>
 
       {/* Bottom Section - User Profile */}
-      <div className="mt-auto border-t border-border p-4">
-        <div className="space-y-2">
-          {/* Settings */}
-          <Link href="/settings">
-            <Button
-              variant="ghost"
-              className={cn("w-full justify-start gap-2", isCollapsed && "justify-center")}
-            >
-              <Settings className="h-4 w-4" />
-              {!isCollapsed && "Settings"}
-            </Button>
-          </Link>
-
-          {/* Admin Link */}
-          {isAdmin && (
-            <Link href="/admin">
+      <div className="mt-auto border-t border-border">
+        {/* User Profile */}
+        <div className={cn(
+          "flex items-center gap-3 p-4",
+          isCollapsed && "justify-center px-2"
+        )}>
+          <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+            <User className="h-5 w-5 text-primary" />
+          </div>
+          {!isCollapsed && (
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-medium text-foreground truncate">
+                {user?.email?.split('@')[0] || 'User'}
+              </p>
+              <p className="text-xs text-muted-foreground truncate">
+                {userTeamData?.team_name || 'Team Member'} • {userTeamData?.role || 'member'}
+              </p>
+            </div>
+          )}
+          
+          {/* More Menu */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
               <Button
                 variant="ghost"
-                className={cn("w-full justify-start gap-2", isCollapsed && "justify-center")}
+                size="icon"
+                className="h-8 w-8 ml-auto"
               >
-                <Shield className="h-4 w-4" />
-                {!isCollapsed && "Admin"}
+                <MoreVertical className="h-4 w-4" />
               </Button>
-            </Link>
-          )}
-
-          {/* User Profile */}
-          <div className={cn(
-            "flex items-center gap-2 p-2 rounded-md hover:bg-accent hover:text-accent-foreground cursor-pointer",
-            isCollapsed && "justify-center"
-          )}>
-            <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
-              <User className="h-4 w-4 text-primary" />
-            </div>
-            {!isCollapsed && (
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-foreground truncate">
-                  {user?.email?.split('@')[0] || 'User'}
-                </p>
-                <p className="text-xs text-muted-foreground truncate">
-                  {userTeamData?.team_name || 'Team Member'}
-                </p>
-              </div>
-            )}
-          </div>
-
-          {/* Sign Out */}
-          <Button
-            variant="ghost"
-            className={cn("w-full justify-start gap-2 text-destructive hover:text-destructive hover:bg-destructive/10", 
-              isCollapsed && "justify-center"
-            )}
-            onClick={signOut}
-          >
-            <LogOut className="h-4 w-4" />
-            {!isCollapsed && "Sign Out"}
-          </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align={isCollapsed ? "center" : "end"} side="top" className="w-56">
+              {/* Admin Link */}
+              {isAdmin && (
+                <>
+                  <DropdownMenuItem asChild>
+                    <Link href="/admin" className="flex items-center cursor-pointer">
+                      <Shield className="mr-2 h-4 w-4" />
+                      Admin Panel
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                </>
+              )}
+              
+              {/* Settings */}
+              <DropdownMenuItem asChild>
+                <Link href="/settings" className="flex items-center cursor-pointer">
+                  <Settings className="mr-2 h-4 w-4" />
+                  Settings
+                </Link>
+              </DropdownMenuItem>
+              
+              <DropdownMenuSeparator />
+              
+              {/* Sign Out */}
+              <DropdownMenuItem 
+                onClick={signOut}
+                className="text-destructive focus:text-destructive cursor-pointer"
+              >
+                <LogOut className="mr-2 h-4 w-4" />
+                Sign Out
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </div>
     </div>

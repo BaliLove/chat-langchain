@@ -11,77 +11,137 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/app/components/ui/select'
-import { Search, Bot, FileText, Filter, Users } from 'lucide-react'
+import { Badge } from '@/app/components/ui/badge'
+import { Search, Bot, FileText, Filter, Users, Sparkles, Target, Info, MessageSquare, Route, Database } from 'lucide-react'
 import ProtectedRoute from '@/app/components/ProtectedRoute'
 
-// Mock data for agents and prompts
-const mockAgents = [
+// Real LangChain prompts from the backend
+const langChainPrompts = [
   {
-    id: '1',
-    name: 'Venue Assistant',
-    description: 'Helps users find and book venues in Bali',
-    team: 'sales',
+    id: 'router',
+    name: 'Router System Prompt',
+    description: 'Classifies user queries into research, general, or more-info categories',
+    team: 'All',
+    type: 'prompt',
+    category: 'Core System',
+    langsmithId: 'bali-love-router-prompt',
+    usage: 15234,
+    preview: 'You are a helpful AI assistant routing user queries. Classify the user\'s query into one of these categories...'
+  },
+  {
+    id: 'generate-queries',
+    name: 'Generate Queries Prompt',
+    description: 'Creates 3-5 specific search queries to find relevant information',
+    team: 'Digital',
+    type: 'prompt',
+    category: 'Research',
+    langsmithId: 'bali-love-generate-queries-prompt',
+    usage: 8421,
+    preview: 'Given a user\'s question, generate 3-5 specific search queries that would help find relevant information...'
+  },
+  {
+    id: 'more-info',
+    name: 'More Information Prompt',
+    description: 'Requests clarification when queries are too vague or unclear',
+    team: 'Client Experience',
+    type: 'prompt',
+    category: 'Conversation',
+    langsmithId: 'bali-love-more-info-prompt',
+    usage: 3456,
+    preview: 'The user\'s query is too vague or unclear. Based on their query: {logic}...'
+  },
+  {
+    id: 'research-plan',
+    name: 'Research Plan Prompt',
+    description: 'Creates step-by-step research plans to answer questions comprehensively',
+    team: 'Revenue',
+    type: 'prompt',
+    category: 'Research',
+    langsmithId: 'bali-love-research-plan-prompt',
+    usage: 5678,
+    preview: 'Create a step-by-step research plan to answer the user\'s question comprehensively...'
+  },
+  {
+    id: 'general',
+    name: 'General Conversation Prompt',
+    description: 'Handles general queries and casual conversation',
+    team: 'Client Experience',
+    type: 'prompt',
+    category: 'Conversation',
+    langsmithId: 'bali-love-general-prompt',
+    usage: 12345,
+    preview: 'You are a helpful AI assistant. Based on the context: {logic}...'
+  },
+  {
+    id: 'response',
+    name: 'Response System Prompt',
+    description: 'Generates comprehensive answers based on retrieved context',
+    team: 'All',
+    type: 'prompt',
+    category: 'Core System',
+    langsmithId: 'bali-love-response-prompt',
+    usage: 18765,
+    preview: 'You are a helpful AI assistant. Answer the user\'s question based on the following context...'
+  }
+]
+
+// Real agents/assistants based on the prompts
+const baliLoveAgents = [
+  {
+    id: 'main-assistant',
+    name: 'Bali Love Main Assistant',
+    description: 'Primary chat assistant that routes queries and provides comprehensive answers',
+    team: 'All',
+    type: 'agent',
+    model: 'GPT-4 / Claude',
+    features: ['Query Routing', 'Context Retrieval', 'Multi-step Research'],
+    usage: 25432
+  },
+  {
+    id: 'venue-specialist',
+    name: 'Venue Research Specialist',
+    description: 'Specialized in finding and recommending venues based on event requirements',
+    team: 'Revenue',
     type: 'agent',
     model: 'GPT-4',
-    created: '2024-01-15',
-    usage: 1234
+    features: ['Venue Search', 'Availability Check', 'Price Comparison'],
+    usage: 8765
   },
   {
-    id: '2',
-    name: 'Event Planner',
-    description: 'Assists with event planning and coordination',
-    team: 'operations',
+    id: 'event-planner',
+    name: 'Event Planning Assistant',
+    description: 'Helps with event coordination, vendor management, and timeline planning',
+    team: 'Client Experience',
     type: 'agent',
     model: 'Claude 3',
-    created: '2024-01-20',
-    usage: 856
+    features: ['Timeline Creation', 'Vendor Coordination', 'Budget Management'],
+    usage: 6543
   },
   {
-    id: '3',
-    name: 'Customer Service Bot',
-    description: 'Handles customer inquiries and support tickets',
-    team: 'support',
+    id: 'training-bot',
+    name: 'Training & Onboarding Bot',
+    description: 'Assists new team members with training materials and company policies',
+    team: 'People & Culture',
     type: 'agent',
     model: 'GPT-3.5',
-    created: '2024-01-10',
-    usage: 3421
+    features: ['Policy Q&A', 'Training Modules', 'Onboarding Guidance'],
+    usage: 3210
   }
 ]
 
-const mockPrompts = [
-  {
-    id: '4',
-    name: 'Venue Search Prompt',
-    description: 'Optimized prompt for searching venue database',
-    team: 'sales',
-    type: 'prompt',
-    category: 'search',
-    created: '2024-01-18',
-    usage: 567
-  },
-  {
-    id: '5',
-    name: 'Welcome Message',
-    description: 'Initial greeting for new chat sessions',
-    team: 'all',
-    type: 'prompt',
-    category: 'greeting',
-    created: '2024-01-05',
-    usage: 10234
-  },
-  {
-    id: '6',
-    name: 'Training Module Q&A',
-    description: 'Handles questions about training and onboarding',
-    team: 'hr',
-    type: 'prompt',
-    category: 'training',
-    created: '2024-01-22',
-    usage: 234
-  }
+// Real teams from the database
+const baliLoveTeams = [
+  { value: 'all', label: 'All Teams' },
+  { value: 'All', label: 'All' },
+  { value: 'Revenue', label: 'Revenue' },
+  { value: 'Client Experience', label: 'Client Experience' },
+  { value: 'Finance', label: 'Finance' },
+  { value: 'People & Culture', label: 'People & Culture' },
+  { value: 'Digital', label: 'Digital' },
+  { value: 'Special Projects', label: 'Special Projects' }
 ]
 
-const allItems = [...mockAgents, ...mockPrompts]
+const allItems = [...baliLoveAgents, ...langChainPrompts]
 
 export default function AgentsPage() {
   const [searchQuery, setSearchQuery] = useState('')
@@ -92,10 +152,26 @@ export default function AgentsPage() {
     const matchesSearch = item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
                          item.description.toLowerCase().includes(searchQuery.toLowerCase())
     const matchesType = filterType === 'all' || item.type === filterType
-    const matchesTeam = filterTeam === 'all' || item.team === filterTeam
+    const matchesTeam = filterTeam === 'all' || item.team === filterTeam || (filterTeam === 'All' && item.team === 'All')
     
     return matchesSearch && matchesType && matchesTeam
   })
+
+  const getIcon = (item: any) => {
+    if (item.type === 'agent') {
+      return <Bot className="h-5 w-5 text-primary" />
+    }
+    switch (item.category) {
+      case 'Core System':
+        return <Route className="h-5 w-5 text-primary" />
+      case 'Research':
+        return <Database className="h-5 w-5 text-primary" />
+      case 'Conversation':
+        return <MessageSquare className="h-5 w-5 text-primary" />
+      default:
+        return <FileText className="h-5 w-5 text-primary" />
+    }
+  }
 
   return (
     <ProtectedRoute>
@@ -106,14 +182,14 @@ export default function AgentsPage() {
             Agents & Prompts
           </h1>
           <p className="text-muted-foreground">
-            Manage and explore available AI agents and prompt templates
+            Explore Bali Love&apos;s AI agents and LangChain prompt templates
           </p>
         </div>
 
         {/* Filters */}
         <div className="mb-6 flex flex-col sm:flex-row gap-4">
           <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
             <Input
               placeholder="Search agents and prompts..."
               value={searchQuery}
@@ -134,15 +210,15 @@ export default function AgentsPage() {
           </Select>
 
           <Select value={filterTeam} onValueChange={setFilterTeam}>
-            <SelectTrigger className="w-full sm:w-40">
+            <SelectTrigger className="w-full sm:w-48">
               <SelectValue placeholder="Filter by team" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All Teams</SelectItem>
-              <SelectItem value="sales">Sales</SelectItem>
-              <SelectItem value="operations">Operations</SelectItem>
-              <SelectItem value="support">Support</SelectItem>
-              <SelectItem value="hr">HR</SelectItem>
+              {baliLoveTeams.map(team => (
+                <SelectItem key={team.value} value={team.value}>
+                  {team.label}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
         </div>
@@ -151,31 +227,31 @@ export default function AgentsPage() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
           <Card>
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-gray-600">Total Agents</CardTitle>
+              <CardTitle className="text-sm font-medium text-muted-foreground">Active Agents</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="flex items-center gap-2">
                 <Bot className="h-8 w-8 text-primary" />
-                <span className="text-2xl font-bold">{mockAgents.length}</span>
+                <span className="text-2xl font-bold">{baliLoveAgents.length}</span>
               </div>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-gray-600">Total Prompts</CardTitle>
+              <CardTitle className="text-sm font-medium text-muted-foreground">Prompt Templates</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="flex items-center gap-2">
                 <FileText className="h-8 w-8 text-primary" />
-                <span className="text-2xl font-bold">{mockPrompts.length}</span>
+                <span className="text-2xl font-bold">{langChainPrompts.length}</span>
               </div>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-gray-600">Total Usage</CardTitle>
+              <CardTitle className="text-sm font-medium text-muted-foreground">Total Usage</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="flex items-center gap-2">
@@ -196,32 +272,58 @@ export default function AgentsPage() {
               className="hover:shadow-lg transition-shadow cursor-pointer"
             >
               <CardHeader>
-                <div className="flex items-start justify-between">
+                <div className="flex items-start justify-between mb-2">
                   <div className="flex items-center gap-2">
-                    {item.type === 'agent' ? 
-                      <Bot className="h-5 w-5 text-primary" /> : 
-                      <FileText className="h-5 w-5 text-primary" />
-                    }
+                    {getIcon(item)}
                     <CardTitle className="text-lg">{item.name}</CardTitle>
                   </div>
-                  <span className="text-xs bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded">
+                  <Badge variant="secondary" className="text-xs">
                     {item.team}
-                  </span>
+                  </Badge>
                 </div>
                 <CardDescription className="mt-2">
                   {item.description}
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="flex items-center justify-between text-sm text-gray-600">
-                  <span>{item.type === 'agent' ? `Model: ${(item as any).model}` : `Type: ${(item as any).category}`}</span>
+                {item.type === 'agent' && (
+                  <div className="mb-3">
+                    <p className="text-sm text-muted-foreground mb-2">Features:</p>
+                    <div className="flex flex-wrap gap-1">
+                      {(item as any).features?.map((feature: string, idx: number) => (
+                        <Badge key={idx} variant="outline" className="text-xs">
+                          {feature}
+                        </Badge>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                
+                {item.type === 'prompt' && (
+                  <div className="mb-3">
+                    <p className="text-sm text-muted-foreground mb-1">Category: {(item as any).category}</p>
+                    {(item as any).langsmithId && (
+                      <p className="text-xs text-muted-foreground font-mono">
+                        ID: {(item as any).langsmithId}
+                      </p>
+                    )}
+                  </div>
+                )}
+                
+                <div className="flex items-center justify-between text-sm text-muted-foreground mb-4">
+                  <span>
+                    {item.type === 'agent' ? `Model: ${(item as any).model}` : 'LangSmith Prompt'}
+                  </span>
                   <span>{item.usage.toLocaleString()} uses</span>
                 </div>
-                <div className="mt-4 flex gap-2">
+                
+                <div className="flex gap-2">
                   <Button size="sm" variant="outline" className="flex-1">
-                    View Details
+                    <Info className="h-3 w-3 mr-1" />
+                    Details
                   </Button>
                   <Button size="sm" className="flex-1">
+                    <Sparkles className="h-3 w-3 mr-1" />
                     Use This
                   </Button>
                 </div>
@@ -232,7 +334,7 @@ export default function AgentsPage() {
 
         {filteredItems.length === 0 && (
           <div className="text-center py-12">
-            <p className="text-gray-500">No agents or prompts found matching your criteria.</p>
+            <p className="text-muted-foreground">No agents or prompts found matching your criteria.</p>
           </div>
         )}
       </div>
