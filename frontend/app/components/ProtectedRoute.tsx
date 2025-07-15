@@ -13,10 +13,15 @@ export default function ProtectedRoute({ children }: ProtectedRouteProps) {
 
   useEffect(() => {
     // Debug logging
-    console.log('ProtectedRoute state:', { user, loading, isAuthorized })
+    console.log('🛡️ ProtectedRoute state:', { 
+      user: user ? `${user.email} (${user.id})` : null, 
+      loading, 
+      isAuthorized,
+      shouldRedirect: !loading && (!user || !isAuthorized)
+    })
     
     if (!loading && (!user || !isAuthorized)) {
-      console.log('Redirecting to login - no user or not authorized')
+      console.log('🚫 Redirecting to login - no user or not authorized')
       router.push('/login')
     }
   }, [user, loading, isAuthorized, router])

@@ -44,7 +44,14 @@
       "Bash(npx shadcn-ui@latest add select separator:*)",
       "Bash(npx shadcn@latest add select separator:*)",
       "Bash(pip show:*)",
-      "Bash(pip install:*)"
+      "Bash(pip install:*)",
+      "Bash(set PYTHONPATH=%PYTHONPATH%)",
+      "Bash(C:Userstombaliloveagentchat)",
+      "Bash(yarn dev)",
+      "Bash(curl:*)",
+      "WebFetch(domain:localhost)",
+      "Bash(node:*)",
+      "Bash(timeout 5 yarn dev)"
     ],
     "deny": []
   }

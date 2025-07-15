@@ -111,11 +111,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const initializeAuth = async () => {
+      console.log('🔐 Starting auth initialization...')
+      console.log('🔐 Environment check:', {
+        supabaseUrl: process.env.NEXT_PUBLIC_SUPABASE_URL ? 'Set' : 'Missing',
+        supabaseKey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ? 'Set' : 'Missing',
+        allowedDomains: ALLOWED_EMAIL_DOMAINS
+      })
+      
       // Set a timeout to prevent infinite loading
       const timeoutId = setTimeout(() => {
         // Only timeout if we haven't been initialized by auth state change
         if (!isInitialized) {
-          console.warn('Auth initialization timeout - setting loading to false')
+          console.warn('⏱️ Auth initialization timeout - setting loading to false')
           console.log('Supabase URL:', process.env.NEXT_PUBLIC_SUPABASE_URL ? 'Set' : 'Missing')
           console.log('Supabase Anon Key:', process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ? 'Set' : 'Missing')
           
@@ -142,14 +149,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }
 
         // Get current session from Supabase
+        console.log('🔐 Fetching session from Supabase...')
         const { data: { session }, error: sessionError } = await supabase.auth.getSession()
         
         if (sessionError) {
-          console.error('Session error:', sessionError)
+          console.error('❌ Session error:', sessionError)
           throw sessionError
         }
         
-        console.log('Session check:', session ? 'Session found' : 'No session')
+        console.log('🔐 Session check:', session ? 'Session found' : 'No session')
+        if (session) {
+          console.log('🔐 Session details:', {
+            userId: session.user.id,
+            email: session.user.email,
+            expiresAt: new Date(session.expires_at! * 1000).toLocaleString()
+          })
+        }
         
         if (session?.user) {
           const email = session.user.email || ''
@@ -183,12 +198,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           setIsAuthorized(false)
         }
       } catch (error) {
-        console.error('Auth initialization error:', error)
+        console.error('❌ Auth initialization error:', error)
         setUser(null)
         setUserTeamData(null)
         setIsAuthorized(false)
       } finally {
         clearTimeout(timeoutId)
+        console.log('🔐 Auth initialization complete. Setting loading to false.')
         setLoading(false)
         setIsInitialized(true)
       }
@@ -198,7 +214,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     // Listen for auth state changes
     const subscription = supabase?.auth.onAuthStateChange(async (event, session) => {
-      console.log('Auth state change:', event)
+      console.log('🔐 Auth state change:', event, session ? 'with session' : 'no session')
       
       if (event === 'SIGNED_IN' && session) {
         const email = session.user.email || ''

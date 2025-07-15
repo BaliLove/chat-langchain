@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Auth Flow Test</title>
+</head>
+<body>
+    <h1>Testing Auth Flow</h1>
+    <p>Open browser console to see auth logs</p>
+    <p>Current URL: <span id="url"></span></p>
+    <p>Auth Status: <span id="status">Checking...</span></p>
+    
+    <br>
+    <h2>Instructions:</h2>
+    <ol>
+        <li>Open the browser developer console (F12)</li>
+        <li>Navigate to <a href="http://localhost:3000" target="_blank">http://localhost:3000</a></li>
+        <li>Watch the console for auth logs (look for 🔐 emoji markers)</li>
+        <li>The app should either:
+            <ul>
+                <li>Show the chat interface if authenticated</li>
+                <li>Redirect to /login if not authenticated</li>
+            </ul>
+        </li>
+    </ol>
+    
+    <h2>Expected Console Output:</h2>
+    <pre>
+🔐 Starting auth initialization...
+🔐 Environment check: { supabaseUrl: 'Set', supabaseKey: 'Set', allowedDomains: ['bali.love'] }
+🔐 Fetching session from Supabase...
+🔐 Session check: 'No session' or 'Session found'
+🛡️ ProtectedRoute state: { user: null, loading: true/false, isAuthorized: true/false }
+    </pre>
+    
+    <script>
+        document.getElementById('url').textContent = window.location.href;
+    </script>
+</body>
+</html>
