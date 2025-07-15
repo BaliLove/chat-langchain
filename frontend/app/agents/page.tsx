@@ -198,44 +198,49 @@ export default function AgentsPage() {
           </div>
 
           {/* Filters */}
-          <div className="flex flex-col sm:flex-row gap-4 mb-6">
-            {/* Search */}
-            <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-              <Input
-                placeholder="Search agents and prompts..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-9"
-              />
+          <div className="space-y-4 mb-6">
+            {/* Team Filter - Primary filter as buttons */}
+            <div className="flex flex-wrap gap-2">
+              {baliLoveTeams.map(team => (
+                <Button
+                  key={team}
+                  variant={selectedTeam === team ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setSelectedTeam(team)}
+                >
+                  {team}
+                  {team === userTeamData?.team_name && (
+                    <span className="ml-1 text-xs">(Your Team)</span>
+                  )}
+                </Button>
+              ))}
             </div>
-            
-            {/* Type Filter */}
-            <Select value={filterType} onValueChange={setFilterType}>
-              <SelectTrigger className="w-full sm:w-[180px]">
-                <SelectValue placeholder="Filter by type" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Types</SelectItem>
-                <SelectItem value="agent">Agents Only</SelectItem>
-                <SelectItem value="prompt">Prompts Only</SelectItem>
-              </SelectContent>
-            </Select>
 
-            {/* Team Filter */}
-            <Select value={selectedTeam} onValueChange={setSelectedTeam}>
-              <SelectTrigger className="w-full sm:w-[200px]">
-                <SelectValue placeholder="Filter by team" />
-              </SelectTrigger>
-              <SelectContent>
-                {baliLoveTeams.map(team => (
-                  <SelectItem key={team} value={team}>
-                    {team}
-                    {team === userTeamData?.team_name && " (Your Team)"}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            {/* Search and Type Filter Row */}
+            <div className="flex flex-col sm:flex-row gap-4">
+              {/* Search */}
+              <div className="relative flex-1">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+                <Input
+                  placeholder="Search agents and prompts..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-9"
+                />
+              </div>
+              
+              {/* Type Filter */}
+              <Select value={filterType} onValueChange={setFilterType}>
+                <SelectTrigger className="w-full sm:w-[180px]">
+                  <SelectValue placeholder="Filter by type" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Types</SelectItem>
+                  <SelectItem value="agent">Agents Only</SelectItem>
+                  <SelectItem value="prompt">Prompts Only</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
 
 
