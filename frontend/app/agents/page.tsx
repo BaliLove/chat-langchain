@@ -17,7 +17,7 @@ import ProtectedRoute from '@/app/components/ProtectedRoute'
 import { useAuth } from '@/app/contexts/AuthContextStable'
 import { format } from 'date-fns'
 
-// Real agents/assistants
+// Real agents/assistants with contextual tags
 const baliLoveAgents = [
   {
     id: 'main-assistant',
@@ -25,7 +25,15 @@ const baliLoveAgents = [
     description: 'Primary chat assistant that routes queries and provides comprehensive answers',
     team: 'All',
     type: 'agent',
-    itemTypes: ['All'],
+    contextTags: {
+      'All': ['All'],
+      'Revenue': ['All'],
+      'Client Experience': ['All'],
+      'Finance': ['All'],
+      'People & Culture': ['All'],
+      'Digital': ['All'],
+      'Special Projects': ['All']
+    },
     features: ['Query Routing', 'Context Retrieval', 'Multi-step Research'],
     usage: 25432,
     lastUpdated: '2025-01-10T10:00:00Z'
@@ -36,7 +44,12 @@ const baliLoveAgents = [
     description: 'Specialized in finding and recommending venues based on event requirements',
     team: 'Revenue',
     type: 'agent',
-    itemTypes: ['Venues & Vendors', 'Events'],
+    contextTags: {
+      'All': ['Venues & Vendors'],
+      'Revenue': ['Venues', 'Packages'],
+      'Client Experience': ['Weddings', 'Corporate Events'],
+      'Finance': ['Bookings', 'Invoices']
+    },
     features: ['Venue Search', 'Availability Check', 'Price Comparison'],
     usage: 8765,
     lastUpdated: '2025-01-08T14:30:00Z'
@@ -47,7 +60,12 @@ const baliLoveAgents = [
     description: 'Helps with event coordination, vendor management, and timeline planning',
     team: 'Client Experience',
     type: 'agent',
-    itemTypes: ['Events', 'Venues & Vendors', 'Bookings'],
+    contextTags: {
+      'All': ['Events', 'Venues & Vendors', 'Bookings'],
+      'Client Experience': ['Weddings', 'Corporate Events', 'Private Parties'],
+      'Revenue': ['Venues', 'Vendors', 'Packages'],
+      'Finance': ['Bookings', 'Payments']
+    },
     features: ['Timeline Creation', 'Vendor Coordination', 'Budget Management'],
     usage: 6543,
     lastUpdated: '2025-01-07T09:15:00Z'
@@ -58,10 +76,46 @@ const baliLoveAgents = [
     description: 'Assists new team members with training materials and company policies',
     team: 'People & Culture',
     type: 'agent',
-    itemTypes: ['Training', 'People'],
+    contextTags: {
+      'All': ['Training', 'People'],
+      'People & Culture': ['Training Modules', 'Policies', 'Onboarding'],
+      'Digital': ['Documentation', 'Systems']
+    },
     features: ['Policy Q&A', 'Training Modules', 'Onboarding Guidance'],
     usage: 3210,
     lastUpdated: '2025-01-05T16:45:00Z'
+  },
+  {
+    id: 'finance-assistant',
+    name: 'Finance & Booking Assistant',
+    description: 'Manages bookings, payments, invoices and financial reporting',
+    team: 'Finance',
+    type: 'agent',
+    contextTags: {
+      'All': ['Bookings', 'Finance'],
+      'Finance': ['Bookings', 'Payments', 'Invoices', 'Reports'],
+      'Revenue': ['Packages', 'Add-ons'],
+      'Client Experience': ['Weddings']
+    },
+    features: ['Booking Status', 'Payment Tracking', 'Invoice Generation', 'Financial Reports'],
+    usage: 12890,
+    lastUpdated: '2025-01-12T11:30:00Z'
+  },
+  {
+    id: 'wedding-specialist',
+    name: 'Wedding Specialist Assistant',
+    description: 'Dedicated assistant for wedding planning, vendor coordination, and guest management',
+    team: 'Client Experience',
+    type: 'agent',
+    contextTags: {
+      'All': ['Events'],
+      'Client Experience': ['Weddings', 'Private Parties'],
+      'Revenue': ['Venues', 'Vendors', 'Packages'],
+      'Finance': ['Bookings', 'Payments']
+    },
+    features: ['Wedding Timeline', 'Guest Management', 'Vendor Coordination', 'RSVP Tracking'],
+    usage: 18234,
+    lastUpdated: '2025-01-14T08:45:00Z'
   }
 ]
 
@@ -76,18 +130,37 @@ const baliLoveTeams = [
   'Special Projects'
 ]
 
-// Item types based on Bubble data
-const itemTypes = [
-  'All',
-  'Events',
-  'Venues & Vendors',
-  'Bookings',
-  'Communication',
-  'Tasks & Issues',
-  'Training',
-  'People',
-  'Products'
-]
+// Team-specific contextual filters
+const teamContextualFilters: Record<string, { label: string; options: string[] }> = {
+  'All': {
+    label: 'Filter by Type',
+    options: ['All', 'Events', 'Venues & Vendors', 'Bookings', 'Communication', 'Tasks & Issues', 'Training', 'People', 'Products']
+  },
+  'Revenue': {
+    label: 'Service Category',
+    options: ['All', 'Venues', 'Vendors', 'Packages', 'Add-ons', 'Products']
+  },
+  'Client Experience': {
+    label: 'Event Type',
+    options: ['All', 'Weddings', 'Corporate Events', 'Private Parties', 'Special Events']
+  },
+  'Finance': {
+    label: 'Transaction Type',
+    options: ['All', 'Bookings', 'Payments', 'Invoices', 'Refunds', 'Reports']
+  },
+  'People & Culture': {
+    label: 'Content Type',
+    options: ['All', 'Training Modules', 'Policies', 'Onboarding', 'Team Info']
+  },
+  'Digital': {
+    label: 'Work Type',
+    options: ['All', 'Issues', 'Tasks', 'Documentation', 'Systems', 'Integrations']
+  },
+  'Special Projects': {
+    label: 'Project Area',
+    options: ['All', 'Research', 'Innovation', 'Partnerships', 'New Services']
+  }
+}
 
 interface Prompt {
   id: string
@@ -96,7 +169,7 @@ interface Prompt {
   team: string
   type: string
   category: string
-  itemTypes?: string[]
+  contextTags?: Record<string, string[]>
   usage: number
   lastUpdated: string
   version?: number
@@ -107,7 +180,7 @@ export default function AgentsPage() {
   const [searchQuery, setSearchQuery] = useState('')
   const [filterType, setFilterType] = useState('all')
   const [selectedTeam, setSelectedTeam] = useState(userTeamData?.team_name || 'All')
-  const [selectedItemType, setSelectedItemType] = useState('All')
+  const [contextualFilter, setContextualFilter] = useState('All')
   const [prompts, setPrompts] = useState<Prompt[]>([])
   const [loading, setLoading] = useState(true)
   const [refreshing, setRefreshing] = useState(false)
@@ -123,6 +196,11 @@ export default function AgentsPage() {
       setSelectedTeam(userTeamData.team_name)
     }
   }, [userTeamData])
+
+  // Reset contextual filter when team changes
+  useEffect(() => {
+    setContextualFilter('All')
+  }, [selectedTeam])
 
   const fetchPrompts = async () => {
     try {
@@ -152,10 +230,15 @@ export default function AgentsPage() {
                          item.description.toLowerCase().includes(searchQuery.toLowerCase())
     const matchesType = filterType === 'all' || item.type === filterType
     const matchesTeam = selectedTeam === 'All' || item.team === selectedTeam
-    const matchesItemType = selectedItemType === 'All' || 
-                           (item.itemTypes && (item.itemTypes.includes('All') || item.itemTypes.includes(selectedItemType)))
     
-    return matchesSearch && matchesType && matchesTeam && matchesItemType
+    // Check contextual filter based on contextTags
+    let matchesContext = contextualFilter === 'All'
+    if (!matchesContext && item.contextTags) {
+      const teamTags = item.contextTags[selectedTeam] || []
+      matchesContext = teamTags.includes('All') || teamTags.includes(contextualFilter)
+    }
+    
+    return matchesSearch && matchesType && matchesTeam && matchesContext
   })
 
   const getIcon = (item: any) => {
@@ -237,6 +320,23 @@ export default function AgentsPage() {
               ))}
             </div>
 
+            {/* Contextual Filters Row - Shows team-specific options */}
+            <div className="flex flex-wrap gap-2">
+              <p className="text-sm font-medium w-full mb-2">
+                {teamContextualFilters[selectedTeam]?.label || 'Filter by'}:
+              </p>
+              {teamContextualFilters[selectedTeam]?.options.map(option => (
+                <Button
+                  key={option}
+                  variant={contextualFilter === option ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setContextualFilter(option)}
+                >
+                  {option}
+                </Button>
+              ))}
+            </div>
+
             {/* Search and Type Filter Row */}
             <div className="flex flex-col sm:flex-row gap-4">
               {/* Search */}
@@ -252,27 +352,13 @@ export default function AgentsPage() {
               
               {/* Type Filter */}
               <Select value={filterType} onValueChange={setFilterType}>
-                <SelectTrigger className="w-full sm:w-[160px]">
+                <SelectTrigger className="w-full sm:w-[180px]">
                   <SelectValue placeholder="Filter by type" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All Types</SelectItem>
                   <SelectItem value="agent">Agents Only</SelectItem>
                   <SelectItem value="prompt">Prompts Only</SelectItem>
-                </SelectContent>
-              </Select>
-
-              {/* Item Type Filter */}
-              <Select value={selectedItemType} onValueChange={setSelectedItemType}>
-                <SelectTrigger className="w-full sm:w-[180px]">
-                  <SelectValue placeholder="Filter by item type" />
-                </SelectTrigger>
-                <SelectContent>
-                  {itemTypes.map(itemType => (
-                    <SelectItem key={itemType} value={itemType}>
-                      {itemType}
-                    </SelectItem>
-                  ))}
                 </SelectContent>
               </Select>
             </div>
@@ -332,14 +418,15 @@ export default function AgentsPage() {
                       </div>
                     )}
 
-                    {/* Item Types */}
-                    {(item as any).itemTypes && (item as any).itemTypes.length > 0 && !(item as any).itemTypes.includes('All') && (
+                    {/* Contextual Tags for current team */}
+                    {(item as any).contextTags && (item as any).contextTags[selectedTeam] && 
+                     !(item as any).contextTags[selectedTeam].includes('All') && (
                       <div className="mb-3">
-                        <p className="text-sm text-muted-foreground mb-1">Works with:</p>
+                        <p className="text-sm text-muted-foreground mb-1">Best for:</p>
                         <div className="flex flex-wrap gap-1">
-                          {(item as any).itemTypes.map((itemType: string, idx: number) => (
+                          {(item as any).contextTags[selectedTeam].map((tag: string, idx: number) => (
                             <Badge key={idx} variant="secondary" className="text-xs">
-                              {itemType}
+                              {tag}
                             </Badge>
                           ))}
                         </div>

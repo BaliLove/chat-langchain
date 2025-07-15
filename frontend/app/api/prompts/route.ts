@@ -9,7 +9,15 @@ const LANGSMITH_PROMPTS = [
     team: 'All',
     type: 'prompt',
     category: 'Core System',
-    itemTypes: ['All'],
+    contextTags: {
+      'All': ['All'],
+      'Revenue': ['All'],
+      'Client Experience': ['All'],
+      'Finance': ['All'],
+      'People & Culture': ['All'],
+      'Digital': ['All'],
+      'Special Projects': ['All']
+    },
     usage: 15234,
     lastUpdated: '2025-01-15T10:30:00Z',
     version: 1,
@@ -21,7 +29,11 @@ const LANGSMITH_PROMPTS = [
     team: 'Digital',
     type: 'prompt',
     category: 'Research',
-    itemTypes: ['All'],
+    contextTags: {
+      'All': ['All'],
+      'Digital': ['Documentation', 'Systems'],
+      'Special Projects': ['Research']
+    },
     usage: 8421,
     lastUpdated: '2025-01-15T09:45:00Z',
     version: 1,
@@ -33,7 +45,10 @@ const LANGSMITH_PROMPTS = [
     team: 'Client Experience',
     type: 'prompt',
     category: 'Conversation',
-    itemTypes: ['Communication', 'Events'],
+    contextTags: {
+      'All': ['Communication'],
+      'Client Experience': ['Weddings', 'Corporate Events', 'All']
+    },
     usage: 3456,
     lastUpdated: '2025-01-14T16:20:00Z',
     version: 1,
@@ -45,7 +60,11 @@ const LANGSMITH_PROMPTS = [
     team: 'Revenue',
     type: 'prompt',
     category: 'Research',
-    itemTypes: ['Events', 'Venues & Vendors', 'Products'],
+    contextTags: {
+      'All': ['Events', 'Venues & Vendors'],
+      'Revenue': ['Venues', 'Vendors', 'Packages'],
+      'Client Experience': ['Weddings', 'Corporate Events']
+    },
     usage: 5678,
     lastUpdated: '2025-01-13T14:30:00Z',
     version: 1,
@@ -57,7 +76,11 @@ const LANGSMITH_PROMPTS = [
     team: 'Client Experience',
     type: 'prompt',
     category: 'Conversation',
-    itemTypes: ['Communication', 'People'],
+    contextTags: {
+      'All': ['Communication'],
+      'Client Experience': ['All'],
+      'People & Culture': ['Team Info']
+    },
     usage: 12345,
     lastUpdated: '2025-01-12T11:15:00Z',
     version: 1,
@@ -69,7 +92,15 @@ const LANGSMITH_PROMPTS = [
     team: 'All',
     type: 'prompt',
     category: 'Core System',
-    itemTypes: ['All'],
+    contextTags: {
+      'All': ['All'],
+      'Revenue': ['All'],
+      'Client Experience': ['All'],
+      'Finance': ['All'],
+      'People & Culture': ['All'],
+      'Digital': ['All'],
+      'Special Projects': ['All']
+    },
     usage: 18765,
     lastUpdated: '2025-01-11T08:00:00Z',
     version: 1,
@@ -81,7 +112,12 @@ const LANGSMITH_PROMPTS = [
     team: 'Digital',
     type: 'prompt',
     category: 'Operations',
-    itemTypes: ['Tasks & Issues'],
+    contextTags: {
+      'All': ['Tasks & Issues'],
+      'Digital': ['Issues', 'Tasks'],
+      'Finance': ['Reports'],
+      'Client Experience': ['All']
+    },
     usage: 0,
     lastUpdated: '2025-01-15T12:00:00Z',
     version: 1,
