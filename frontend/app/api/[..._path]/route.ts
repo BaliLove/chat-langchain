@@ -35,8 +35,8 @@ async function handleRequest(req: NextRequest, method: string) {
     };
 
     // Add API key for LangGraph authentication
-    if (process.env.LANGGRAPH_API_KEY || process.env.LANGSMITH_API_KEY) {
-      headers["x-api-key"] = process.env.LANGGRAPH_API_KEY || process.env.LANGSMITH_API_KEY;
+    if (process.env.LANGSMITH_API_KEY) {
+      headers["x-api-key"] = process.env.LANGSMITH_API_KEY;
     }
 
     const options: RequestInit = {
@@ -99,7 +99,15 @@ async function handleRequest(req: NextRequest, method: string) {
       headers: responseHeaders,
     });
   } catch (e: any) {
-    return NextResponse.json({ error: e.message }, { status: e.status ?? 500 });
+    console.error('API Proxy Error:', e);
+    return NextResponse.json({ 
+      error: e.message,
+      details: {
+        path,
+        apiBaseUrl: process.env.API_BASE_URL,
+        hasApiKey: !!process.env.LANGSMITH_API_KEY
+      }
+    }, { status: e.status ?? 500 });
   }
 }
 
