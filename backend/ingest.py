@@ -31,6 +31,15 @@ except ImportError as e:
     BUBBLE_AVAILABLE = False
     logging.warning(f"Bubble.io loader not available: {e}")
 
+# Import enhanced training loader
+try:
+    from backend.training_loader import load_enhanced_training_data
+    TRAINING_LOADER_AVAILABLE = True
+    logging.info("Enhanced training loader imported successfully")
+except ImportError as e:
+    TRAINING_LOADER_AVAILABLE = False
+    logging.warning(f"Enhanced training loader not available: {e}")
+
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
@@ -137,6 +146,18 @@ def ingest_docs():
     PINECONE_API_KEY = os.environ["PINECONE_API_KEY"]
     PINECONE_INDEX_NAME = os.environ["PINECONE_INDEX_NAME"]
     RECORD_MANAGER_DB_URL = os.environ["RECORD_MANAGER_DB_URL"]
+    
+    # Initialize monitoring
+    stats = {
+        "langchain_docs": 0,
+        "api_docs": 0,
+        "langsmith_docs": 0,
+        "langgraph_docs": 0,
+        "bubble_docs": 0,
+        "training_docs": 0,
+        "total_docs": 0,
+        "errors": []
+    }
 
     text_splitter = RecursiveCharacterTextSplitter(chunk_size=4000, chunk_overlap=200)
     embedding = get_embeddings_model()
@@ -151,27 +172,80 @@ def ingest_docs():
     )
     record_manager.create_schema()
 
-    # Load from existing sources
-    docs_from_documentation = load_langchain_docs()
-    logger.info(f"Loaded {len(docs_from_documentation)} docs from documentation")
-    docs_from_api = load_api_docs()
-    logger.info(f"Loaded {len(docs_from_api)} docs from API")
-    docs_from_langsmith = load_langsmith_docs()
-    logger.info(f"Loaded {len(docs_from_langsmith)} docs from LangSmith")
-    docs_from_langgraph = load_langgraph_docs()
-    logger.info(f"Loaded {len(docs_from_langgraph)} docs from LangGraph")
+    # Load from existing sources with error handling
+    try:
+        docs_from_documentation = load_langchain_docs()
+        stats["langchain_docs"] = len(docs_from_documentation)
+        logger.info(f"Loaded {len(docs_from_documentation)} docs from documentation")
+    except Exception as e:
+        logger.error(f"Failed to load LangChain docs: {e}")
+        stats["errors"].append(f"LangChain docs: {str(e)}")
+        docs_from_documentation = []
+    
+    try:
+        docs_from_api = load_api_docs()
+        stats["api_docs"] = len(docs_from_api)
+        logger.info(f"Loaded {len(docs_from_api)} docs from API")
+    except Exception as e:
+        logger.error(f"Failed to load API docs: {e}")
+        stats["errors"].append(f"API docs: {str(e)}")
+        docs_from_api = []
+    
+    try:
+        docs_from_langsmith = load_langsmith_docs()
+        stats["langsmith_docs"] = len(docs_from_langsmith)
+        logger.info(f"Loaded {len(docs_from_langsmith)} docs from LangSmith")
+    except Exception as e:
+        logger.error(f"Failed to load LangSmith docs: {e}")
+        stats["errors"].append(f"LangSmith docs: {str(e)}")
+        docs_from_langsmith = []
+    
+    try:
+        docs_from_langgraph = load_langgraph_docs()
+        stats["langgraph_docs"] = len(docs_from_langgraph)
+        logger.info(f"Loaded {len(docs_from_langgraph)} docs from LangGraph")
+    except Exception as e:
+        logger.error(f"Failed to load LangGraph docs: {e}")
+        stats["errors"].append(f"LangGraph docs: {str(e)}")
+        docs_from_langgraph = []
 
     # NEW: Load from Bubble.io
     docs_from_bubble = []
     if BUBBLE_AVAILABLE:
         try:
             docs_from_bubble = load_bubble_data()
+            stats["bubble_docs"] = len(docs_from_bubble)
             logger.info(f"Loaded {len(docs_from_bubble)} docs from Bubble.io")
         except Exception as e:
             logger.error(f"Failed to load Bubble.io data: {e}")
+            stats["errors"].append(f"Bubble.io: {str(e)}")
             docs_from_bubble = []  # Continue with other sources
     else:
         logger.info("Bubble.io loader not available, skipping Bubble.io data")
+        stats["errors"].append("Bubble.io loader not available")
+    
+    # Load enhanced training data separately for better quality
+    docs_from_training = []
+    if TRAINING_LOADER_AVAILABLE and os.environ.get("USE_ENHANCED_TRAINING_LOADER", "true").lower() == "true":
+        try:
+            docs_from_training = load_enhanced_training_data()
+            stats["training_docs"] = len(docs_from_training)
+            logger.info(f"Loaded {len(docs_from_training)} enhanced training documents")
+            
+            # Don't double-count training docs if they're already in bubble docs
+            # Enhanced training loader provides better extraction, so prefer it
+            if docs_from_training:
+                logger.info("Using enhanced training documents instead of generic Bubble.io training data")
+                # Filter out generic training docs from bubble docs to avoid duplication
+                docs_from_bubble = [
+                    doc for doc in docs_from_bubble 
+                    if doc.metadata.get("source_type") != "training"
+                ]
+                stats["bubble_docs"] = len(docs_from_bubble)
+                
+        except Exception as e:
+            logger.error(f"Failed to load enhanced training data: {e}")
+            stats["errors"].append(f"Enhanced training: {str(e)}")
 
     # Combine all sources
     all_docs = (
@@ -180,12 +254,27 @@ def ingest_docs():
         + docs_from_langsmith
         + docs_from_langgraph
         + docs_from_bubble  # NEW: Include Bubble.io data
+        + docs_from_training  # NEW: Include enhanced training data
     )
 
+    # Data validation and transformation
+    logger.info(f"Total documents before splitting: {len(all_docs)}")
+    
     docs_transformed = text_splitter.split_documents(all_docs)
+    
+    # Enhanced validation - filter out low quality documents
+    docs_before_filter = len(docs_transformed)
     docs_transformed = [
-        doc for doc in docs_transformed if len(doc.page_content) > 10
+        doc for doc in docs_transformed 
+        if len(doc.page_content) > 50  # Increased minimum length
+        and not doc.page_content.isspace()  # Not just whitespace
+        and len(set(doc.page_content.split())) > 10  # At least 10 unique words
     ]
+    docs_filtered = docs_before_filter - len(docs_transformed)
+    
+    if docs_filtered > 0:
+        logger.warning(f"Filtered out {docs_filtered} low-quality documents")
+        stats["errors"].append(f"Filtered {docs_filtered} low-quality documents")
 
     for doc in docs_transformed:
         if "source" not in doc.metadata:
@@ -203,6 +292,7 @@ def ingest_docs():
     )
 
     logger.info(f"Indexing stats: {indexing_stats}")
+    stats["total_docs"] = len(docs_transformed)
     
     # Enhanced logging for Bubble.io integration
     total_docs = len(docs_transformed)
@@ -213,11 +303,35 @@ def ingest_docs():
         logger.info(f"Successfully integrated {bubble_docs} Bubble.io documents "
                    f"out of {total_docs} total documents ({bubble_docs/total_docs*100:.1f}%)")
     
-    # Pinecone does not have the same aggregate API as Weaviate, so you may want to log differently here.
-    logger.info(
-        f"LangChain ingestion to Pinecone index '{PINECONE_INDEX_NAME}' complete."
-    )
+    # Final summary report
+    logger.info("=" * 60)
+    logger.info("INGESTION SUMMARY REPORT")
+    logger.info("=" * 60)
+    logger.info(f"LangChain docs: {stats['langchain_docs']}")
+    logger.info(f"API docs: {stats['api_docs']}")
+    logger.info(f"LangSmith docs: {stats['langsmith_docs']}")
+    logger.info(f"LangGraph docs: {stats['langgraph_docs']}")
+    logger.info(f"Bubble.io docs: {stats['bubble_docs']}")
+    logger.info(f"Training docs (enhanced): {stats['training_docs']}")
+    logger.info(f"Total documents indexed: {stats['total_docs']}")
+    logger.info(f"Indexing results: {indexing_stats}")
+    
+    if stats["errors"]:
+        logger.warning(f"Errors encountered: {len(stats['errors'])}")
+        for error in stats["errors"]:
+            logger.warning(f"  - {error}")
+    else:
+        logger.info("No errors encountered during ingestion")
+    
+    logger.info("=" * 60)
+    
+    # Return stats for potential monitoring/alerting
+    return stats
 
 
 if __name__ == "__main__":
-    ingest_docs()
+    stats = ingest_docs()
+    # Exit with error code if there were critical errors
+    if stats and stats["total_docs"] == 0:
+        logger.error("No documents were indexed! Check errors above.")
+        exit(1)

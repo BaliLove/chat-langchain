@@ -34,4 +34,8 @@ jobs:
           VOYAGE_AI_MODEL: ${{ secrets.VOYAGE_AI_MODEL }}
           VOYAGE_AI_URL: ${{ secrets.VOYAGE_AI_URL }}
           VOYAGE_API_KEY: ${{ secrets.VOYAGE_API_KEY }}
+          BUBBLE_APP_URL: ${{ secrets.BUBBLE_APP_URL }}
+          BUBBLE_API_TOKEN: ${{ secrets.BUBBLE_API_TOKEN }}
+          BUBBLE_BATCH_SIZE: ${{ secrets.BUBBLE_BATCH_SIZE }}
+          BUBBLE_MAX_CONTENT_LENGTH: ${{ secrets.BUBBLE_MAX_CONTENT_LENGTH }}
           FORCE_UPDATE: ${{ github.event.inputs.force_update }}
