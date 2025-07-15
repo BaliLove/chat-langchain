@@ -130,35 +130,31 @@ const baliLoveTeams = [
   'Special Projects'
 ]
 
-// Team-specific contextual filters
+// Team-specific contextual filters (no 'All' team - shows only when specific team selected)
 const teamContextualFilters: Record<string, { label: string; options: string[] }> = {
-  'All': {
-    label: 'Filter by Type',
-    options: ['All', 'Events', 'Venues & Vendors', 'Bookings', 'Communication', 'Tasks & Issues', 'Training', 'People', 'Products']
-  },
   'Revenue': {
     label: 'Service Category',
-    options: ['All', 'Venues', 'Vendors', 'Packages', 'Add-ons', 'Products']
+    options: ['Venues', 'Vendors', 'Packages', 'Add-ons', 'Products']
   },
   'Client Experience': {
     label: 'Event Type',
-    options: ['All', 'Weddings', 'Corporate Events', 'Private Parties', 'Special Events']
+    options: ['Weddings', 'Corporate Events', 'Private Parties', 'Special Events']
   },
   'Finance': {
     label: 'Transaction Type',
-    options: ['All', 'Bookings', 'Payments', 'Invoices', 'Refunds', 'Reports']
+    options: ['Bookings', 'Payments', 'Invoices', 'Refunds', 'Reports']
   },
   'People & Culture': {
     label: 'Content Type',
-    options: ['All', 'Training Modules', 'Policies', 'Onboarding', 'Team Info']
+    options: ['Training Modules', 'Policies', 'Onboarding', 'Team Info']
   },
   'Digital': {
     label: 'Work Type',
-    options: ['All', 'Issues', 'Tasks', 'Documentation', 'Systems', 'Integrations']
+    options: ['Issues', 'Tasks', 'Documentation', 'Systems', 'Integrations']
   },
   'Special Projects': {
     label: 'Project Area',
-    options: ['All', 'Research', 'Innovation', 'Partnerships', 'New Services']
+    options: ['Research', 'Innovation', 'Partnerships', 'New Services']
   }
 }
 
@@ -180,7 +176,7 @@ export default function AgentsPage() {
   const [searchQuery, setSearchQuery] = useState('')
   const [filterType, setFilterType] = useState('all')
   const [selectedTeam, setSelectedTeam] = useState(userTeamData?.team_name || 'All')
-  const [contextualFilter, setContextualFilter] = useState('All')
+  const [contextualFilter, setContextualFilter] = useState('')
   const [prompts, setPrompts] = useState<Prompt[]>([])
   const [loading, setLoading] = useState(true)
   const [refreshing, setRefreshing] = useState(false)
@@ -199,7 +195,7 @@ export default function AgentsPage() {
 
   // Reset contextual filter when team changes
   useEffect(() => {
-    setContextualFilter('All')
+    setContextualFilter('')
   }, [selectedTeam])
 
   const fetchPrompts = async () => {
@@ -232,7 +228,7 @@ export default function AgentsPage() {
     const matchesTeam = selectedTeam === 'All' || item.team === selectedTeam
     
     // Check contextual filter based on contextTags
-    let matchesContext = contextualFilter === 'All'
+    let matchesContext = contextualFilter === '' // empty filter means show all
     if (!matchesContext && item.contextTags) {
       const teamTags = item.contextTags[selectedTeam] || []
       matchesContext = teamTags.includes('All') || teamTags.includes(contextualFilter)
@@ -320,22 +316,32 @@ export default function AgentsPage() {
               ))}
             </div>
 
-            {/* Contextual Filters Row - Shows team-specific options */}
-            <div className="flex flex-wrap gap-2">
-              <p className="text-sm font-medium w-full mb-2">
-                {teamContextualFilters[selectedTeam]?.label || 'Filter by'}:
-              </p>
-              {teamContextualFilters[selectedTeam]?.options.map(option => (
-                <Button
-                  key={option}
-                  variant={contextualFilter === option ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => setContextualFilter(option)}
-                >
-                  {option}
-                </Button>
-              ))}
-            </div>
+            {/* Contextual Filters Row - Shows only when specific team selected */}
+            {selectedTeam !== 'All' && teamContextualFilters[selectedTeam] && (
+              <div className="ml-4 p-3 bg-muted/50 rounded-lg">
+                <div className="flex flex-wrap gap-2">
+                  <Button
+                    variant={contextualFilter === '' ? "secondary" : "ghost"}
+                    size="sm"
+                    onClick={() => setContextualFilter('')}
+                    className="h-7 px-2 text-xs"
+                  >
+                    All
+                  </Button>
+                  {teamContextualFilters[selectedTeam].options.map(option => (
+                    <Button
+                      key={option}
+                      variant={contextualFilter === option ? "secondary" : "ghost"}
+                      size="sm"
+                      onClick={() => setContextualFilter(option)}
+                      className="h-7 px-2 text-xs"
+                    >
+                      {option}
+                    </Button>
+                  ))}
+                </div>
+              </div>
+            )}
 
             {/* Search and Type Filter Row */}
             <div className="flex flex-col sm:flex-row gap-4">
