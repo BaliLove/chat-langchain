@@ -102,10 +102,10 @@ export default function AgentsPage() {
       <div className="flex-1 p-8 max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">
+          <h1 className="text-3xl font-bold text-foreground mb-2">
             Agents & Prompts
           </h1>
-          <p className="text-gray-600 dark:text-gray-400">
+          <p className="text-muted-foreground">
             Manage and explore available AI agents and prompt templates
           </p>
         </div>

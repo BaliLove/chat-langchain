@@ -45,7 +45,7 @@ export default function Header() {
               variant="ghost"
               size="sm"
               onClick={signOut}
-              className="text-gray-300 hover:text-white hover:bg-gray-800"
+              className="text-muted-foreground hover:text-foreground hover:bg-accent"
             >
               <LogOut className="w-4 h-4 mr-2" />
               Sign Out

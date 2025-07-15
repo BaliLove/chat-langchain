@@ -14,7 +14,7 @@ export default function SettingsPage() {
   return (
     <ProtectedRoute>
       <div className="flex-1 p-8 max-w-4xl mx-auto">
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-8">
+        <h1 className="text-3xl font-bold text-foreground mb-8">
           Settings
         </h1>
 
@@ -70,21 +70,21 @@ export default function SettingsPage() {
             <div className="flex items-center justify-between">
               <div>
                 <Label htmlFor="notifications">Email Notifications</Label>
-                <p className="text-sm text-gray-500">Receive email updates about important messages</p>
+                <p className="text-sm text-muted-foreground">Receive email updates about important messages</p>
               </div>
               <Switch id="notifications" />
             </div>
             <div className="flex items-center justify-between">
               <div>
                 <Label htmlFor="sound">Sound Effects</Label>
-                <p className="text-sm text-gray-500">Play sounds for new messages</p>
+                <p className="text-sm text-muted-foreground">Play sounds for new messages</p>
               </div>
               <Switch id="sound" />
             </div>
             <div className="flex items-center justify-between">
               <div>
                 <Label htmlFor="theme">Dark Mode</Label>
-                <p className="text-sm text-gray-500">Use dark theme</p>
+                <p className="text-sm text-muted-foreground">Use dark theme</p>
               </div>
               <Switch id="theme" />
             </div>
@@ -100,7 +100,7 @@ export default function SettingsPage() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <p className="text-sm text-gray-500 mb-4">
+            <p className="text-sm text-muted-foreground mb-4">
               API keys allow you to access the chat system programmatically.
             </p>
             <Button variant="outline">

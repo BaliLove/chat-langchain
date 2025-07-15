@@ -23,11 +23,11 @@ const buttonVariants = cva(
         gradient: 
           "bg-gradient-to-r from-primary to-accent text-primary-foreground shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all duration-300",
         tropical: 
-          "bg-gradient-to-r from-blue-500 to-teal-500 text-white shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all duration-300",
+          "bg-gradient-to-r from-blue-500 to-teal-500 text-primary-foreground shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all duration-300",
         sunset: 
-          "bg-gradient-to-r from-orange-500 to-pink-500 text-white shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all duration-300",
+          "bg-gradient-to-r from-orange-500 to-pink-500 text-primary-foreground shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all duration-300",
         glass:
-          "backdrop-blur-md bg-white/10 border border-white/20 text-foreground shadow-lg hover:bg-white/20 transition-all duration-300",
+          "backdrop-blur-md bg-background/10 border border-border/20 text-foreground shadow-lg hover:bg-background/20 transition-all duration-300",
       },
       size: {
         default: "h-9 px-4 py-2",

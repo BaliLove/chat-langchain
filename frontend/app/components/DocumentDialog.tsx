@@ -19,7 +19,7 @@ export function DocumentDialog(props: DocumentDialogProps) {
     <TooltipIconButton
       tooltip={props.document.metadata.title}
       variant="outline"
-      className="w-6 h-6 z-50 transition-colors ease-in-out bg-transparent hover:bg-gray-500 border-gray-400 text-gray-300"
+      className="w-6 h-6 z-50 transition-colors ease-in-out bg-transparent hover:bg-muted border"
     >
       <File />
     </TooltipIconButton>
@@ -28,10 +28,10 @@ export function DocumentDialog(props: DocumentDialogProps) {
   return (
     <Dialog>
       <DialogTrigger asChild={!props.trigger}>{trigger}</DialogTrigger>
-      <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto bg-gray-700 text-gray-200">
+      <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center justify-start gap-4">
-            <p className="text-gray-100 break-words">
+            <p className="text-foreground break-words">
               {props.document.metadata.title}
             </p>
             <div className="flex flex-wrap justify-start">
@@ -39,7 +39,7 @@ export function DocumentDialog(props: DocumentDialogProps) {
                 href={props.document.metadata.source}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center text-blue-400 hover:text-blue-300 transition-colors duration-200 break-all"
+                className="flex items-center text-primary hover:text-primary/80 transition-colors duration-200 break-all"
               >
                 Source{" "}
                 <SquareArrowOutUpRight className="ml-1 h-4 w-4 flex-shrink-0" />
@@ -47,7 +47,7 @@ export function DocumentDialog(props: DocumentDialogProps) {
             </div>
           </DialogTitle>
         </DialogHeader>
-        <DialogDescription className="text-gray-300 break-words whitespace-normal">
+        <DialogDescription className="text-muted-foreground break-words whitespace-normal">
           {props.document.metadata.description}
         </DialogDescription>
 

@@ -29,7 +29,7 @@ const DebugInfo = () => {
   }
   
   return (
-    <div className="fixed top-2 right-2 bg-gray-800 text-white text-xs p-2 rounded z-50">
+    <div className="fixed top-2 right-2 bg-card text-card-foreground text-xs p-2 rounded border z-50">
       <div>API_URL: {process.env.NEXT_PUBLIC_API_URL || 'NOT SET'}</div>
       <div>ENV: {process.env.NODE_ENV}</div>
     </div>
