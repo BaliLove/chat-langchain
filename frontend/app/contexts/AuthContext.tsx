@@ -30,6 +30,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [userTeamData, setUserTeamData] = useState<UserTeamData | null>(null)
   const [loading, setLoading] = useState(true)
   const [isAuthorized, setIsAuthorized] = useState(false)
+  const [isInitialized, setIsInitialized] = useState(false)
   const [supabase] = useState(() => {
     try {
       return createClient()
@@ -112,15 +113,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const initializeAuth = async () => {
       // Set a timeout to prevent infinite loading
       const timeoutId = setTimeout(() => {
-        console.warn('Auth initialization timeout - setting loading to false')
-        console.log('Supabase URL:', process.env.NEXT_PUBLIC_SUPABASE_URL ? 'Set' : 'Missing')
-        console.log('Supabase Anon Key:', process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ? 'Set' : 'Missing')
-        
-        // Force loading to false and clear user state if timeout occurs
-        setLoading(false)
-        setUser(null)
-        setUserTeamData(null)
-        setIsAuthorized(false)
+        // Only timeout if we haven't been initialized by auth state change
+        if (!isInitialized) {
+          console.warn('Auth initialization timeout - setting loading to false')
+          console.log('Supabase URL:', process.env.NEXT_PUBLIC_SUPABASE_URL ? 'Set' : 'Missing')
+          console.log('Supabase Anon Key:', process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ? 'Set' : 'Missing')
+          
+          // Force loading to false and clear user state if timeout occurs
+          setLoading(false)
+          setUser(null)
+          setUserTeamData(null)
+          setIsAuthorized(false)
+        }
       }, 5000) // 5 second timeout
 
       try {
@@ -158,6 +162,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           if (authorized) {
             setUser({ email, id: session.user.id })
             setIsAuthorized(true)
+            setIsInitialized(true)
             
             // Fetch user team data
             const teamData = await fetchUserTeamData(email)
@@ -185,6 +190,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       } finally {
         clearTimeout(timeoutId)
         setLoading(false)
+        setIsInitialized(true)
       }
     }
 
@@ -198,9 +204,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         const email = session.user.email || ''
         const authorized = checkUserAuthorization(email)
         
+        console.log('Auth state SIGNED_IN - email:', email, 'authorized:', authorized)
+        
         if (authorized) {
           setUser({ email, id: session.user.id })
           setIsAuthorized(true)
+          setIsInitialized(true)
+          setLoading(false)
           
           // Fetch user team data
           const teamData = await fetchUserTeamData(email)
@@ -209,12 +219,40 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           }
         } else {
           setIsAuthorized(false)
+          setIsInitialized(true)
+          setLoading(false)
           await supabase?.auth.signOut()
         }
       } else if (event === 'SIGNED_OUT') {
         setUser(null)
         setUserTeamData(null)
         setIsAuthorized(false)
+        setIsInitialized(true)
+        setLoading(false)
+      } else if (event === 'INITIAL_SESSION' && session) {
+        // Handle initial session on page load
+        const email = session.user.email || ''
+        const authorized = checkUserAuthorization(email)
+        
+        console.log('Auth state INITIAL_SESSION - email:', email, 'authorized:', authorized)
+        
+        if (authorized) {
+          setUser({ email, id: session.user.id })
+          setIsAuthorized(true)
+          setIsInitialized(true)
+          setLoading(false)
+          
+          // Fetch user team data
+          const teamData = await fetchUserTeamData(email)
+          if (teamData) {
+            setUserTeamData(teamData)
+          }
+        } else {
+          setIsAuthorized(false)
+          setIsInitialized(true)
+          setLoading(false)
+          await supabase?.auth.signOut()
+        }
       }
     })
 
