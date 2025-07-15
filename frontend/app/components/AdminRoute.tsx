@@ -1,7 +1,7 @@
 'use client'
 import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { useAuth } from '@/app/contexts/AuthContext'
+import { useAuth } from '@/app/contexts/AuthContextStable'
 import { usePermissions } from '@/app/hooks/usePermissions'
 
 interface AdminRouteProps {

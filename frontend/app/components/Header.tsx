@@ -1,5 +1,5 @@
 'use client'
-import { useAuth } from '@/app/contexts/AuthContext'
+import { useAuth } from '@/app/contexts/AuthContextStable'
 import { Button } from './ui/button'
 import { LogOut, User, Shield } from 'lucide-react'
 import Link from 'next/link'

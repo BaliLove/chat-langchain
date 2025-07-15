@@ -6,7 +6,7 @@ import { Input } from '@/app/components/ui/input'
 import { Label } from '@/app/components/ui/label'
 import { Switch } from '@/app/components/ui/switch'
 import ProtectedRoute from '@/app/components/ProtectedRoute'
-import { useAuth } from '@/app/contexts/AuthContext'
+import { useAuth } from '@/app/contexts/AuthContextStable'
 
 export default function SettingsPage() {
   const { user, userTeamData } = useAuth()

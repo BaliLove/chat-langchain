@@ -1,7 +1,7 @@
 'use client'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { useAuth } from '@/app/contexts/AuthContext'
+import { useAuth } from '@/app/contexts/AuthContextStable'
 import { usePermissions } from '@/app/hooks/usePermissions'
 import { createClient } from '@/lib/supabase'
 import { Button } from '@/app/components/ui/button'
