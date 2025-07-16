@@ -51,7 +51,8 @@ describe('AdminRoute', () => {
       </AdminRoute>
     )
 
-    expect(screen.getByTestId('loading-spinner')).toBeInTheDocument()
+    const spinner = document.querySelector('.animate-spin')
+    expect(spinner).toBeInTheDocument()
     expect(screen.queryByTestId('admin-content')).not.toBeInTheDocument()
   })
 
@@ -68,7 +69,8 @@ describe('AdminRoute', () => {
       </AdminRoute>
     )
 
-    expect(screen.getByTestId('loading-spinner')).toBeInTheDocument()
+    const spinner = document.querySelector('.animate-spin')
+    expect(spinner).toBeInTheDocument()
     expect(screen.queryByTestId('admin-content')).not.toBeInTheDocument()
   })
 
@@ -167,7 +169,8 @@ describe('AdminRoute', () => {
       </AdminRoute>
     )
 
-    expect(screen.getByTestId('loading-spinner')).toBeInTheDocument()
+    const spinner = document.querySelector('.animate-spin')
+    expect(spinner).toBeInTheDocument()
 
     // Then authenticated as admin
     ;(useAuth as jest.Mock).mockReturnValue(defaultAuthState)
