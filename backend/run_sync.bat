@@ -1,6 +1,5 @@
 @echo off
-set NEXT_PUBLIC_SUPABASE_URL=https://vhwmutruvmgetbnlatal.supabase.co
-set NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZod211dHJ1dm1nZXRibmxhdGFsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE5NzczOTQsImV4cCI6MjA2NzU1MzM5NH0.A9VwnDWbe4wtoZpCGqCC8OHSG2H4zJqnhXwlaWzcoFk
-set LANGSMITH_API_KEY=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
+REM Set environment variables from .env file or system environment
+REM Do not commit API keys to version control!
 
 python sync_prompts_simple.py
