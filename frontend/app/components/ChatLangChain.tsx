@@ -119,28 +119,35 @@ function ChatLangChainComponent(): React.ReactElement {
   }, [searchParams, promptInitialized, permissionsLoading]);
 
   // Auto-start conversation for issue review prompt
+  // Commented out for now - let's debug the basic prompt loading first
+  /*
   useEffect(() => {
     if (activePrompt && 
         activePrompt.id === 'bali-love-issue-review' && 
         messages.length === 0 && 
         !isRunning &&
         userId &&
-        !permissionsLoading) {
+        !permissionsLoading &&
+        !threadId) {  // Only auto-start if there's no existing thread
       const initialMessage: AppendMessage = {
         parentId: null,
         role: "user",
         content: [{ type: "text", text: "I'd like to review issues by category" }],
       };
       
-      // Small delay to ensure everything is ready
+      // Longer delay to ensure everything is ready
       const timer = setTimeout(() => {
+        if (process.env.NODE_ENV === 'development') {
+          console.log('Auto-starting conversation with message:', initialMessage);
+        }
         onNew(initialMessage);
-      }, 100);
+      }, 1000);  // Increased delay
       
       return () => clearTimeout(timer);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activePrompt, messages.length, isRunning, userId, permissionsLoading]);
+  }, [activePrompt, messages.length, isRunning, userId, permissionsLoading, threadId]);
+  */
 
   const isSubmitDisabled = !userId || permissionsLoading || !permissions?.canCreateThreads;
 
@@ -226,9 +233,9 @@ function ChatLangChainComponent(): React.ReactElement {
     <div className="h-full w-full flex md:flex-row flex-col relative">
       <DebugInfo />
       {activePrompt && (
-        <div className="absolute top-4 right-4 z-10">
-          <Badge variant="secondary" className="px-3 py-1">
-            <span className="text-xs font-medium">Active: {activePrompt.name}</span>
+        <div className="absolute top-4 right-4 z-50 bg-background rounded-lg shadow-lg p-1">
+          <Badge variant="secondary" className="px-4 py-2">
+            <span className="text-sm font-medium">Active: {activePrompt.name}</span>
           </Badge>
         </div>
       )}
@@ -239,6 +246,12 @@ function ChatLangChainComponent(): React.ReactElement {
         <AssistantRuntimeProvider runtime={runtime}>
           <ThreadChat submitDisabled={isSubmitDisabled} messages={messages} />
         </AssistantRuntimeProvider>
+        {/* Debug info for prompt loading */}
+        {searchParams.get('prompt') && !activePrompt && (
+          <div className="absolute bottom-4 right-4 bg-yellow-100 text-yellow-800 p-2 rounded">
+            Loading prompt: {searchParams.get('prompt')}...
+          </div>
+        )}
       </div>
       <Toaster />
     </div>
