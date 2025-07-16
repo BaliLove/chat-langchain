@@ -176,7 +176,7 @@ export default function PromptDetailPage() {
               </div>
               
               <div className="flex gap-2">
-                <Button onClick={() => window.location.href = `/chat?prompt=${prompt.id}`}>
+                <Button onClick={() => window.location.href = `/?prompt=${prompt.id}`}>
                   <MessageCircle className="h-4 w-4 mr-2" />
                   Start Chat
                 </Button>

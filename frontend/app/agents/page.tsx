@@ -182,7 +182,7 @@ export default function AgentsPage() {
     }
     
     // Navigate to chat with specific prompt
-    window.location.href = `/chat?prompt=${item.id}`
+    window.location.href = `/?prompt=${item.id}`
   }
 
   const handleCopyId = (e: React.MouseEvent, item: any) => {
