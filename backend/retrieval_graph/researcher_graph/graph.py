@@ -82,11 +82,52 @@ async def retrieve_documents(
         dict[str, list[Document]]: A dictionary with a 'documents' key containing the list of retrieved documents.
     """
     try:
-        with retrieval.make_retriever(config) as retriever:
+        # Check if this is an issue category review query
+        import re
+        category_match = re.search(r'Category ID: ([0-9x]+)', state.query)
+        all_issues_match = re.search(r'all issues across all categories', state.query.lower())
+        
+        # Create a modified config with appropriate filters for issue category queries
+        modified_config = config.copy() if config else {}
+        
+        if category_match:
+            category_id = category_match.group(1)
+            # Add filters for specific issue category queries
+            search_kwargs = {
+                "filter": {
+                    "source_type": "issue",
+                    "category": category_id
+                },
+                "k": 20
+            }
+            
+            # Update the configuration to include the search filters
+            if "configurable" not in modified_config:
+                modified_config["configurable"] = {}
+            modified_config["configurable"]["search_kwargs"] = search_kwargs
+            
+            logger.info(f"Applying issue category filter: source_type=issue, category={category_id}")
+        elif all_issues_match:
+            # Filter by source_type only for "all categories" queries
+            search_kwargs = {
+                "filter": {
+                    "source_type": "issue"
+                },
+                "k": 50
+            }
+            
+            # Update the configuration to include the search filters
+            if "configurable" not in modified_config:
+                modified_config["configurable"] = {}
+            modified_config["configurable"]["search_kwargs"] = search_kwargs
+            
+            logger.info(f"Applying all issues filter: source_type=issue")
+        
+        with retrieval.make_retriever(modified_config) as retriever:
             # Retrieve documents with retry logic
             @with_retry(**RETRIEVAL_RETRY_CONFIG)
             async def retrieve_with_retry():
-                return await retriever.ainvoke(state.query, config)
+                return await retriever.ainvoke(state.query, modified_config)
             
             documents = await retrieve_with_retry()
             
