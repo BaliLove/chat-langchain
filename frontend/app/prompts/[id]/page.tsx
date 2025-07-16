@@ -275,7 +275,7 @@ export default function PromptDetailPage() {
                     <CardTitle className="text-sm">Average Response Time</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <div className="text-2xl font-bold">{prompt.analytics.avgResponseTime}ms</div>
+                    <div className="text-2xl font-bold">{prompt.analytics?.avgResponseTime || 0}ms</div>
                   </CardContent>
                 </Card>
                 
@@ -284,7 +284,7 @@ export default function PromptDetailPage() {
                     <CardTitle className="text-sm">Success Rate</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <div className="text-2xl font-bold">{prompt.analytics.successRate}%</div>
+                    <div className="text-2xl font-bold">{prompt.analytics?.successRate || 0}%</div>
                   </CardContent>
                 </Card>
                 
@@ -304,7 +304,7 @@ export default function PromptDetailPage() {
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-2">
-                    {Object.entries(prompt.analytics.byTeam).map(([team, percentage]) => (
+                    {Object.entries(prompt.analytics?.byTeam || {}).map(([team, percentage]) => (
                       <div key={team} className="flex items-center justify-between">
                         <span className="text-sm">{team}</span>
                         <div className="flex items-center gap-2">
@@ -335,7 +335,7 @@ export default function PromptDetailPage() {
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
-                    {prompt.examples.map((example: any, idx: number) => (
+                    {(prompt.examples || []).map((example: any, idx: number) => (
                       <div key={idx} className="border rounded-lg p-4">
                         <div className="flex items-center justify-between mb-2">
                           <Badge variant="outline">{example.team}</Badge>
@@ -370,7 +370,7 @@ export default function PromptDetailPage() {
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
-                    {prompt.versions.map((version: any, idx: number) => (
+                    {(prompt.versions || []).map((version: any, idx: number) => (
                       <div key={idx} className="flex items-start gap-4 pb-4 border-b last:border-0">
                         <div className="flex-shrink-0">
                           <Badge variant="outline">v{version.version}</Badge>
