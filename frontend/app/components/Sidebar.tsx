@@ -14,7 +14,8 @@ import {
   ChevronRight,
   LogOut,
   Shield,
-  MoreVertical
+  MoreVertical,
+  FileText
 } from 'lucide-react'
 import { Button } from '@/app/components/ui/button'
 import { Input } from '@/app/components/ui/input'
@@ -126,6 +127,16 @@ export function Sidebar() {
             >
               <Users className="h-4 w-4" />
               {!isCollapsed && "Agents & Prompts"}
+            </Button>
+          </Link>
+          
+          <Link href="/issues">
+            <Button
+              variant={pathname === '/issues' ? 'secondary' : 'ghost'}
+              className={cn("w-full justify-start gap-2", isCollapsed && "justify-center")}
+            >
+              <FileText className="h-4 w-4" />
+              {!isCollapsed && "Issue Reviews"}
             </Button>
           </Link>
         </div>
