@@ -81,19 +81,27 @@ function ChatLangChainComponent(): React.ReactElement {
   // Handle prompt parameter from URL
   useEffect(() => {
     const promptId = searchParams.get('prompt');
-    console.log('Prompt ID from URL:', promptId);
-    console.log('Prompt initialized:', promptInitialized);
-    console.log('Permissions loading:', permissionsLoading);
+    if (process.env.NODE_ENV === 'development') {
+      console.log('Prompt ID from URL:', promptId);
+      console.log('Prompt initialized:', promptInitialized);
+      console.log('Permissions loading:', permissionsLoading);
+    }
     
     if (promptId && !promptInitialized && !permissionsLoading) {
-      console.log('Fetching prompt details for:', promptId);
+      if (process.env.NODE_ENV === 'development') {
+        console.log('Fetching prompt details for:', promptId);
+      }
       // Fetch prompt details
       fetch(`/api/prompts/${promptId}`)
         .then(res => res.json())
         .then(data => {
-          console.log('Prompt data received:', data);
+          if (process.env.NODE_ENV === 'development') {
+            console.log('Prompt data received:', data);
+          }
           if (data.success && data.prompt) {
-            console.log('Setting active prompt:', data.prompt.name);
+            if (process.env.NODE_ENV === 'development') {
+              console.log('Setting active prompt:', data.prompt.name);
+            }
             setActivePrompt({ id: promptId, name: data.prompt.name });
             setPromptInitialized(true);
           }
@@ -209,7 +217,10 @@ function ChatLangChainComponent(): React.ReactElement {
     onNew,
   });
 
-  console.log('Render - activePrompt:', activePrompt);
+  // Debug log for active prompt
+  if (process.env.NODE_ENV === 'development') {
+    console.log('Render - activePrompt:', activePrompt);
+  }
   
   return (
     <div className="h-full w-full flex md:flex-row flex-col relative">
