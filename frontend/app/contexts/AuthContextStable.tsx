@@ -59,12 +59,11 @@ const setCachedAuthState = (user: { email: string; id: string } | null, userTeam
 }
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  // Initialize from cache if available
-  const cachedState = getCachedAuthState()
-  const [user, setUser] = useState<{ email: string; id: string } | null>(cachedState?.user || null)
-  const [userTeamData, setUserTeamData] = useState<UserTeamData | null>(cachedState?.userTeamData || null)
-  const [loading, setLoading] = useState(!cachedState) // Only load if no cache
-  const [isAuthorized, setIsAuthorized] = useState(cachedState?.isAuthorized || false)
+  // Always start with loading true to prevent hydration mismatch
+  const [user, setUser] = useState<{ email: string; id: string } | null>(null)
+  const [userTeamData, setUserTeamData] = useState<UserTeamData | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [isAuthorized, setIsAuthorized] = useState(false)
   const initRef = useRef(false)
   const [supabase] = useState(() => {
     try {
@@ -134,6 +133,29 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (initRef.current) return
     initRef.current = true
 
+    // Check for cached auth state on client side
+    const cachedState = getCachedAuthState()
+    if (cachedState) {
+      console.log('🔐 Found cached auth state')
+      setUser(cachedState.user)
+      setUserTeamData(cachedState.userTeamData)
+      setIsAuthorized(cachedState.isAuthorized)
+      setLoading(false)
+      
+      // Still verify the session is valid in the background
+      supabase?.auth.getSession().then(({ data: { session } }) => {
+        if (!session && cachedState.user) {
+          // Cache is stale, clear it
+          console.log('🔐 Cached session is stale, clearing...')
+          setCachedAuthState(null, null, false)
+          setUser(null)
+          setUserTeamData(null)
+          setIsAuthorized(false)
+        }
+      })
+      return
+    }
+
     // Add a timeout to ensure loading state is resolved
     const timeoutId = setTimeout(() => {
       if (loading) {
@@ -143,7 +165,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }, 10000) // 10 second hard timeout
 
     const initializeAuth = async () => {
-      console.log('🔐 Initializing auth...')
+      console.log('🔐 Initializing auth (no cache)...')
       
       if (!supabase) {
         console.error('❌ Supabase client not available')
