@@ -1,7 +1,7 @@
 "use client";
 
 import { ThreadPrimitive } from "@assistant-ui/react";
-import { type FC } from "react";
+import { type FC, useCallback } from "react";
 import { ArrowDownIcon } from "lucide-react";
 import { useAnswerHeaderToolUI } from "../AnswerHeaderToolUI";
 import { useGeneratingQuestionsUI } from "../GeneratingQuestionsToolUI";
@@ -12,13 +12,21 @@ import { TooltipIconButton } from "../ui/assistant-ui/tooltip-icon-button";
 import { AssistantMessage, UserMessage } from "./messages";
 import { ChatComposer, ChatComposerProps } from "./chat-composer";
 import { cn } from "@/app/utils/cn";
+import { PromptStarters } from "./prompt-starters";
 
 export interface ThreadChatProps extends ChatComposerProps {
   activePrompt?: { id: string; name: string } | null;
+  onSendMessage?: (message: string) => void;
 }
 
 export const ThreadChat: FC<ThreadChatProps> = (props: ThreadChatProps) => {
   const isEmpty = props.messages.length === 0;
+  
+  const handlePromptOption = useCallback((option: string) => {
+    if (props.onSendMessage) {
+      props.onSendMessage(option);
+    }
+  }, [props.onSendMessage]);
 
   useGeneratingQuestionsUI();
   useAnswerHeaderToolUI();
@@ -51,9 +59,15 @@ export const ThreadChat: FC<ThreadChatProps> = (props: ThreadChatProps) => {
         <div className="flex items-center justify-center flex-grow my-auto">
           <div className="flex flex-col items-center mx-4 md:mt-0 mt-24 w-full max-w-3xl">
             {props.activePrompt && (
-              <div className="mb-3 text-sm text-muted-foreground">
-                Using: <span className="font-medium text-foreground">{props.activePrompt.name}</span>
-              </div>
+              <>
+                <div className="mb-3 text-sm text-muted-foreground">
+                  Using: <span className="font-medium text-foreground">{props.activePrompt.name}</span>
+                </div>
+                <PromptStarters
+                  promptId={props.activePrompt.id}
+                  onSelectOption={handlePromptOption}
+                />
+              </>
             )}
             <ChatComposer
               submitDisabled={props.submitDisabled}

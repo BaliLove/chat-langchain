@@ -241,6 +241,14 @@ function ChatLangChainComponent(): React.ReactElement {
             submitDisabled={isSubmitDisabled} 
             messages={messages}
             activePrompt={activePrompt}
+            onSendMessage={(text) => {
+              const message: AppendMessage = {
+                parentId: null,
+                role: "user",
+                content: [{ type: "text", text }],
+              };
+              onNew(message);
+            }}
           />
         </AssistantRuntimeProvider>
         {/* Debug info for prompt loading */}
