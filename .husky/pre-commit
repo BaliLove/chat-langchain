@@ -1,0 +1,39 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+# Run linting with auto-fix before commit
+echo "🔍 Running pre-commit checks..."
+
+# Frontend linting
+if git diff --cached --name-only | grep -q "frontend/.*\.\(ts\|tsx\|js\|jsx\)$"; then
+  echo "📦 Checking frontend code..."
+  cd frontend
+  
+  # Run ESLint with auto-fix
+  yarn eslint . --fix --ext .ts,.tsx,.js,.jsx
+  
+  # Run TypeScript check
+  yarn tsc --noEmit
+  
+  # Add any fixed files back to staging
+  git add -u
+  
+  cd ..
+fi
+
+# Backend linting
+if git diff --cached --name-only | grep -q "backend/.*\.py$"; then
+  echo "🐍 Checking backend code..."
+  cd backend
+  
+  # Run ruff with auto-fix
+  poetry run ruff check . --fix
+  poetry run ruff format .
+  
+  # Add any fixed files back to staging
+  git add -u
+  
+  cd ..
+fi
+
+echo "✅ Pre-commit checks complete!"

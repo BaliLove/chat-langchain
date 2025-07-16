@@ -20,6 +20,8 @@ import { Toaster } from "./ui/toaster";
 import { useGraphContext } from "../contexts/GraphContext";
 import { useQueryState } from "nuqs";
 import { usePermissions } from "../hooks/usePermissions";
+import { useSearchParams } from "next/navigation";
+import { Badge } from "./ui/badge";
 
 // Add this debug component near the top of the file
 const DebugInfo = () => {
@@ -45,6 +47,9 @@ function ChatLangChainComponent(): React.ReactElement {
   const [isRunning, setIsRunning] = useState(false);
   const [threadId, setThreadId] = useQueryState("threadId");
   const { permissions, loading: permissionsLoading, hasAgent } = usePermissions();
+  const searchParams = useSearchParams();
+  const [activePrompt, setActivePrompt] = useState<{ id: string; name: string } | null>(null);
+  const [promptInitialized, setPromptInitialized] = useState(false);
 
   const hasCheckedThreadIdParam = useRef(false);
   useEffect(() => {
@@ -72,6 +77,53 @@ function ChatLangChainComponent(): React.ReactElement {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [threadId]);
+
+  // Handle prompt parameter from URL
+  useEffect(() => {
+    const promptId = searchParams.get('prompt');
+    if (promptId && !promptInitialized && !permissionsLoading) {
+      // Fetch prompt details
+      fetch(`/api/prompts/${promptId}`)
+        .then(res => res.json())
+        .then(data => {
+          if (data.success && data.prompt) {
+            setActivePrompt({ id: promptId, name: data.prompt.name });
+            setPromptInitialized(true);
+          }
+        })
+        .catch(err => {
+          console.error('Failed to load prompt:', err);
+          toast({
+            title: "Failed to load prompt",
+            description: "The selected prompt could not be loaded.",
+            variant: "destructive"
+          });
+        });
+    }
+  }, [searchParams, promptInitialized, loading]);
+
+  // Auto-start conversation for issue review prompt
+  useEffect(() => {
+    if (activePrompt && 
+        activePrompt.id === 'bali-love-issue-review' && 
+        messages.length === 0 && 
+        !isRunning &&
+        userId &&
+        !permissionsLoading) {
+      const initialMessage: AppendMessage = {
+        parentId: null,
+        role: "user",
+        content: [{ type: "text", text: "I'd like to review issues by category" }],
+      };
+      
+      // Small delay to ensure everything is ready
+      const timer = setTimeout(() => {
+        onNew(initialMessage);
+      }, 100);
+      
+      return () => clearTimeout(timer);
+    }
+  }, [activePrompt, messages.length, isRunning, userId, permissionsLoading]);
 
   const isSubmitDisabled = !userId || permissionsLoading || !permissions?.canCreateThreads;
 
@@ -127,6 +179,7 @@ function ChatLangChainComponent(): React.ReactElement {
 
       await streamMessage(currentThreadId, {
         messages: [convertToOpenAIFormat(humanMessage)],
+        ...(activePrompt ? { promptId: activePrompt.id } : {})
       });
     } finally {
       setIsRunning(false);
@@ -150,6 +203,13 @@ function ChatLangChainComponent(): React.ReactElement {
   return (
     <div className="h-full w-full flex md:flex-row flex-col relative">
       <DebugInfo />
+      {activePrompt && (
+        <div className="absolute top-4 right-4 z-10">
+          <Badge variant="secondary" className="px-3 py-1">
+            <span className="text-xs font-medium">Active: {activePrompt.name}</span>
+          </Badge>
+        </div>
+      )}
       <div>
         <ThreadHistory />
       </div>

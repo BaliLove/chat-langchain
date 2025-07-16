@@ -46,6 +46,7 @@ const GraphContext = createContext<GraphContentType | undefined>(undefined);
 
 export interface GraphInput {
   messages?: Record<string, any>[];
+  promptId?: string;
 }
 
 export function GraphProvider({ children }: { children: ReactNode }) {
@@ -109,6 +110,7 @@ export function GraphProvider({ children }: { children: ReactNode }) {
         configurable: {
           query_model: selectedModel,
           response_model: selectedModel,
+          ...(params.promptId ? { prompt_id: params.promptId } : {}),
         },
       },
     });

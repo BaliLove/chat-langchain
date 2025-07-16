@@ -1,0 +1,20 @@
+{
+  "name": "bali-love-chat",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Bali Love Chat Application",
+  "scripts": {
+    "test:monitor": "node scripts/test-monitor.js",
+    "test:all": "npm run test:frontend && npm run test:backend",
+    "test:frontend": "cd frontend && yarn test:ci",
+    "test:backend": "cd backend && poetry run pytest",
+    "test:e2e": "cd frontend && yarn e2e",
+    "fix:lint": "npm run fix:frontend && npm run fix:backend",
+    "fix:frontend": "cd frontend && yarn eslint . --fix",
+    "fix:backend": "cd backend && poetry run ruff check . --fix && poetry run ruff format .",
+    "prepare": "husky install"
+  },
+  "devDependencies": {
+    "husky": "^8.0.0"
+  }
+}
