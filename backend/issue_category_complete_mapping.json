@@ -1,0 +1,168 @@
+{
+  "frontend_categories": {
+    "operations": {
+      "label": "Operations",
+      "description": "Workflow, processes, and efficiency",
+      "keywords": [
+        "workflow",
+        "process",
+        "efficiency",
+        "procedure",
+        "operation",
+        "system"
+      ]
+    },
+    "venue": {
+      "label": "Venue",
+      "description": "Partner venues and locations",
+      "keywords": [
+        "venue",
+        "villa",
+        "hotel",
+        "location",
+        "resort",
+        "property",
+        "bbg",
+        "beach",
+        "glamping",
+        "package"
+      ]
+    },
+    "marketing": {
+      "label": "Marketing",
+      "description": "Campaigns and brand",
+      "keywords": [
+        "marketing",
+        "campaign",
+        "brand",
+        "social",
+        "advertising",
+        "promotion",
+        "content",
+        "seo"
+      ]
+    },
+    "finance": {
+      "label": "Finance",
+      "description": "Payments and budgets",
+      "keywords": [
+        "finance",
+        "payment",
+        "budget",
+        "invoice",
+        "accounting",
+        "revenue",
+        "cost",
+        "expense",
+        "commission"
+      ]
+    },
+    "technology": {
+      "label": "Technology",
+      "description": "Systems and tools",
+      "keywords": [
+        "tech",
+        "technology",
+        "system",
+        "bug",
+        "software",
+        "website",
+        "app",
+        "integration",
+        "api",
+        "database"
+      ]
+    },
+    "customer_service": {
+      "label": "Customer Service",
+      "description": "Guest experience",
+      "keywords": [
+        "customer",
+        "guest",
+        "service",
+        "complaint",
+        "support",
+        "experience",
+        "satisfaction",
+        "feedback"
+      ]
+    },
+    "team": {
+      "label": "Team",
+      "description": "People and culture",
+      "keywords": [
+        "team",
+        "staff",
+        "employee",
+        "hr",
+        "training",
+        "culture",
+        "hiring",
+        "performance"
+      ]
+    }
+  },
+  "bubble_category_ids": {
+    "1683764078523x515115226215481340": "venue",
+    "1683764027028x314003986352177150": "operations",
+    "1683764033628x667123255737843700": "marketing",
+    "1683764048683x626863668112916500": "finance",
+    "1698451776177x772559502883684400": "technology",
+    "1683764063723x899495422051483600": "customer_service",
+    "placeholder_team": "team"
+  },
+  "id_to_frontend_mapping": {
+    "1683764078523x515115226215481340": {
+      "value": "venue",
+      "label": "Venue",
+      "description": "Partner venues and locations"
+    },
+    "1683764027028x314003986352177150": {
+      "value": "operations",
+      "label": "Operations",
+      "description": "Workflow, processes, and efficiency"
+    },
+    "1683764033628x667123255737843700": {
+      "value": "marketing",
+      "label": "Marketing",
+      "description": "Campaigns and brand"
+    },
+    "1683764048683x626863668112916500": {
+      "value": "finance",
+      "label": "Finance",
+      "description": "Payments and budgets"
+    },
+    "1698451776177x772559502883684400": {
+      "value": "technology",
+      "label": "Technology",
+      "description": "Systems and tools"
+    },
+    "1683764063723x899495422051483600": {
+      "value": "customer_service",
+      "label": "Customer Service",
+      "description": "Guest experience"
+    },
+    "placeholder_team": {
+      "value": "team",
+      "label": "Team",
+      "description": "People and culture"
+    }
+  },
+  "usage_instructions": {
+    "description": "This file maps Bubble.io issue category IDs to frontend category values",
+    "how_to_use": [
+      "1. When ingesting issues from Bubble, use bubble_category_ids to map category field",
+      "2. The frontend uses the category values (operations, venue, etc) not the Bubble IDs",
+      "3. If new category IDs are discovered, add them to bubble_category_ids section"
+    ],
+    "frontend_values": [
+      "operations",
+      "venue",
+      "marketing",
+      "finance",
+      "technology",
+      "customer_service",
+      "team"
+    ]
+  }
+}

@@ -16,33 +16,22 @@ def sync_issue_prompts():
     """Sync all issue-related prompts to LangSmith"""
     client = Client()
     
+    # Single interactive issue review prompt
     prompts_to_sync = [
         {
-            "name": "bali-love-issue-category-review",
+            "name": "bali-love-issue-review",
             "template": ISSUE_CATEGORY_REVIEW_PROMPT,
-            "metadata": PROMPT_METADATA["issue-category-review"]
-        },
-        {
-            "name": "bali-love-category-owner-action",
-            "template": CATEGORY_OWNER_ACTION_PROMPT,
-            "metadata": PROMPT_METADATA["category-owner-action"]
-        }
-    ]
-    
-    # Add category-specific prompts
-    for category, template in CATEGORY_PROMPTS.items():
-        prompts_to_sync.append({
-            "name": f"bali-love-issue-{category}-review",
-            "template": f"{ISSUE_CATEGORY_REVIEW_PROMPT}\n\n## Category-Specific Focus:\n{template}",
             "metadata": {
-                "name": f"Issue Review - {category.title()}",
-                "description": f"Weekly issue review specific to {category} category",
+                "name": "Issue Category Review",
+                "description": "Interactive weekly issue review assistant - guides through category selection and generates comprehensive reports",
                 "version": 1,
                 "team": "Operations",
-                "tags": ["issues", "review", category, "weekly"],
-                "category": category
+                "tags": ["issues", "review", "weekly", "operations", "interactive"],
+                "category": "Operations",
+                "type": "prompt"
             }
-        })
+        }
+    ]
     
     # Sync each prompt
     for prompt_config in prompts_to_sync:

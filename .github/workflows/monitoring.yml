@@ -1,0 +1,150 @@
+name: CI/CD Monitoring
+
+on:
+  schedule:
+    # Run every 6 hours
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
+
+jobs:
+  check-workflows:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Check recent workflow runs
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { data: workflows } = await github.rest.actions.listWorkflowRuns({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              per_page: 20
+            });
+            
+            const failedRuns = workflows.workflow_runs.filter(run => 
+              run.conclusion === 'failure' && 
+              new Date(run.created_at) > new Date(Date.now() - 24 * 60 * 60 * 1000)
+            );
+            
+            if (failedRuns.length > 0) {
+              console.log(`Found ${failedRuns.length} failed runs in the last 24 hours`);
+              
+              // Check if issues already exist
+              const { data: issues } = await github.rest.issues.listForRepo({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                labels: 'test-failure',
+                state: 'open'
+              });
+              
+              const existingRuns = issues.map(issue => 
+                issue.body.match(/Run: \[(\d+)\]/)?.[1]
+              ).filter(Boolean);
+              
+              for (const run of failedRuns) {
+                if (!existingRuns.includes(run.id.toString())) {
+                  // Create new issue
+                  await github.rest.issues.create({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    title: `CI Failure: ${run.name}`,
+                    body: `## Workflow Failure
+                    
+                    **Workflow:** ${run.name}
+                    **Run:** [${run.id}](${run.html_url})
+                    **Branch:** ${run.head_branch}
+                    **Commit:** ${run.head_sha}
+                    **Failed at:** ${run.created_at}
+                    
+                    This issue was automatically created. Please investigate.`,
+                    labels: ['test-failure', 'automated', 'ci-monitoring']
+                  });
+                }
+              }
+            }
+
+  test-health-check:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Check test coverage trends
+        run: |
+          # This would integrate with your coverage reporting service
+          # For now, we'll create a simple check
+          
+          if [ -f "coverage/coverage-summary.json" ]; then
+            coverage=$(jq '.total.lines.pct' coverage/coverage-summary.json)
+            if (( $(echo "$coverage < 70" | bc -l) )); then
+              echo "::warning::Coverage dropped below 70%: $coverage%"
+            fi
+          fi
+          
+      - name: Check flaky tests
+        uses: actions/github-script@v7
+        with:
+          script: |
+            // Analyze test runs for flakiness
+            const { data: checkRuns } = await github.rest.checks.listForRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: 'master',
+              per_page: 100
+            });
+            
+            const testRuns = checkRuns.check_runs.filter(run => 
+              run.name.includes('test') || run.name.includes('Test')
+            );
+            
+            // Group by test name and count failures
+            const testStats = {};
+            testRuns.forEach(run => {
+              if (!testStats[run.name]) {
+                testStats[run.name] = { total: 0, failed: 0 };
+              }
+              testStats[run.name].total++;
+              if (run.conclusion === 'failure') {
+                testStats[run.name].failed++;
+              }
+            });
+            
+            // Identify flaky tests (fail > 20% of the time)
+            const flakyTests = Object.entries(testStats)
+              .filter(([name, stats]) => stats.failed / stats.total > 0.2)
+              .map(([name, stats]) => ({
+                name,
+                failureRate: (stats.failed / stats.total * 100).toFixed(1)
+              }));
+            
+            if (flakyTests.length > 0) {
+              const body = `## Flaky Tests Detected
+              
+              The following tests have been failing intermittently:
+              
+              ${flakyTests.map(test => 
+                `- **${test.name}**: ${test.failureRate}% failure rate`
+              ).join('\n')}
+              
+              Please investigate and fix these flaky tests.`;
+              
+              // Check if issue already exists
+              const { data: issues } = await github.rest.issues.listForRepo({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                labels: 'flaky-test',
+                state: 'open'
+              });
+              
+              if (issues.length === 0) {
+                await github.rest.issues.create({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  title: 'Flaky Tests Detected',
+                  body,
+                  labels: ['flaky-test', 'automated', 'test-health']
+                });
+              }
+            }

@@ -91,7 +91,8 @@ class PromptSyncService:
             'bali-love-research-plan-prompt',
             'bali-love-general-prompt',
             'bali-love-response-prompt',
-            'bali-love-eos-issue-prompt'
+            'bali-love-eos-issue-prompt',
+            'bali-love-issue-review'
         ]
         
         for prompt_id in bali_prompt_ids:
@@ -197,6 +198,18 @@ class PromptSyncService:
                         'Digital': ['Issues', 'Tasks'],
                         'Finance': ['Reports'],
                         'Client Experience': ['All']
+                    }
+                },
+                'bali-love-issue-review': {
+                    'name': 'Issue Category Review',
+                    'description': 'Interactive weekly issue review by category - generates comprehensive reports with actionable insights',
+                    'team': 'Operations',
+                    'category': 'Operations',
+                    'context_tags': {
+                        'All': ['Issues', 'Weekly Review'],
+                        'Operations': ['Issue Management', 'Category Review'],
+                        'Digital': ['Systems & Tools'],
+                        'Client Experience': ['Customer Service']
                     }
                 }
             }

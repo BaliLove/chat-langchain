@@ -129,16 +129,6 @@ export function Sidebar() {
               {!isCollapsed && "Agents & Prompts"}
             </Button>
           </Link>
-          
-          <Link href="/issues">
-            <Button
-              variant={pathname === '/issues' ? 'secondary' : 'ghost'}
-              className={cn("w-full justify-start gap-2", isCollapsed && "justify-center")}
-            >
-              <FileText className="h-4 w-4" />
-              {!isCollapsed && "Issue Reviews"}
-            </Button>
-          </Link>
         </div>
 
         {/* Chat History */}

@@ -1,0 +1,105 @@
+name: Auto-Fix Test Failures
+
+on:
+  workflow_run:
+    workflows: ["Frontend Tests"]
+    types:
+      - completed
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+jobs:
+  analyze-and-fix:
+    if: ${{ github.event.workflow_run.conclusion == 'failure' }}
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          
+      - name: Download test results
+        uses: actions/download-artifact@v4
+        with:
+          name: test-results
+          path: test-results
+          
+      - name: Analyze test failures
+        id: analyze
+        run: |
+          # Parse test results and identify common fixable issues
+          if grep -q "react/no-unescaped-entities" test-results/eslint-report.json 2>/dev/null; then
+            echo "issue_type=eslint-escape" >> $GITHUB_OUTPUT
+          elif grep -q "react-hooks/exhaustive-deps" test-results/eslint-report.json 2>/dev/null; then
+            echo "issue_type=hooks-deps" >> $GITHUB_OUTPUT
+          elif grep -q "Cannot find module" test-results/jest-report.json 2>/dev/null; then
+            echo "issue_type=missing-import" >> $GITHUB_OUTPUT
+          else
+            echo "issue_type=unknown" >> $GITHUB_OUTPUT
+          fi
+          
+      - name: Auto-fix ESLint issues
+        if: steps.analyze.outputs.issue_type == 'eslint-escape' || steps.analyze.outputs.issue_type == 'hooks-deps'
+        run: |
+          cd frontend
+          
+          # Install dependencies
+          yarn install --frozen-lockfile
+          
+          # Run ESLint with auto-fix
+          yarn eslint . --fix --ext .ts,.tsx,.js,.jsx
+          
+          # Check if fixes were made
+          if [[ `git status --porcelain` ]]; then
+            echo "fixes_made=true" >> $GITHUB_OUTPUT
+          fi
+          
+      - name: Create Pull Request
+        if: steps.analyze.outputs.fixes_made == 'true'
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "fix: Auto-fix ESLint issues"
+          title: "🤖 Auto-fix test failures"
+          body: |
+            This PR was automatically created to fix test failures.
+            
+            **Issue Type:** ${{ steps.analyze.outputs.issue_type }}
+            
+            Please review the changes before merging.
+          branch: auto-fix/test-failures-${{ github.run_number }}
+          delete-branch: true
+
+  notify-failures:
+    if: ${{ github.event.workflow_run.conclusion == 'failure' }}
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Create issue for test failure
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const issue = await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `Test Failure: ${context.payload.workflow_run.name}`,
+              body: `## Test Failure Detected
+              
+              **Workflow:** ${context.payload.workflow_run.name}
+              **Run:** [${context.payload.workflow_run.id}](${context.payload.workflow_run.html_url})
+              **Commit:** ${context.payload.workflow_run.head_sha}
+              
+              Please investigate and fix the failing tests.`,
+              labels: ['test-failure', 'automated']
+            });
+            
+            console.log(`Created issue #${issue.data.number}`);
