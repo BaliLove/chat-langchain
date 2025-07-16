@@ -12,7 +12,7 @@ import { Alert, AlertDescription } from '@/app/components/ui/alert'
 import { 
   ArrowLeft, Copy, ExternalLink, MessageCircle, Clock, TrendingUp, 
   Users, Calendar, TestTube, History, BarChart, AlertCircle, Edit,
-  FileText, Bot, Route, Database, MessageSquare, Hash
+  FileText, Bot, Route, Database, MessageSquare, Hash, Star
 } from 'lucide-react'
 import ProtectedRoute from '@/app/components/ProtectedRoute'
 import { format } from 'date-fns'
@@ -26,9 +26,11 @@ export default function PromptDetailPage() {
   const [testOutput, setTestOutput] = useState('')
   const [testLoading, setTestLoading] = useState(false)
   const [copySuccess, setCopySuccess] = useState(false)
+  const [isFavorite, setIsFavorite] = useState(false)
 
   useEffect(() => {
     fetchPromptDetails()
+    fetchFavoriteStatus()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [promptId])
 
@@ -48,6 +50,34 @@ export default function PromptDetailPage() {
       setPrompt(null)
     } finally {
       setLoading(false)
+    }
+  }
+
+  const fetchFavoriteStatus = async () => {
+    try {
+      const response = await fetch(`/api/favorites/${promptId}`)
+      const data = await response.json()
+      if (data.success) {
+        setIsFavorite(data.isFavorite)
+      }
+    } catch (error) {
+      console.error('Failed to fetch favorite status:', error)
+    }
+  }
+
+  const toggleFavorite = async () => {
+    try {
+      const response = await fetch('/api/favorites', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ promptId })
+      })
+      const data = await response.json()
+      if (data.success) {
+        setIsFavorite(data.isFavorite)
+      }
+    } catch (error) {
+      console.error('Failed to toggle favorite:', error)
     }
   }
 
@@ -177,6 +207,14 @@ export default function PromptDetailPage() {
               </div>
               
               <div className="flex gap-2">
+                <Button 
+                  variant="outline"
+                  size="icon"
+                  onClick={toggleFavorite}
+                  title={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
+                >
+                  <Star className={`h-4 w-4 ${isFavorite ? 'fill-yellow-400 text-yellow-400' : ''}`} />
+                </Button>
                 <Button onClick={() => window.location.href = `/?prompt=${prompt.id}`}>
                   <MessageCircle className="h-4 w-4 mr-2" />
                   Start Chat

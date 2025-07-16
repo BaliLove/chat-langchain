@@ -4,7 +4,7 @@ from langsmith import Client
 from dotenv import load_dotenv
 from retrieval_graph.issue_category_review_prompt import (
     ISSUE_CATEGORY_REVIEW_PROMPT,
-    CATEGORY_OWNER_ACTION_PROMPT,
+    HEALTH_SCORE_IMPROVEMENT_PROMPT,
     CATEGORY_PROMPTS,
     PROMPT_METADATA
 )
@@ -22,11 +22,11 @@ def sync_issue_prompts():
             "name": "bali-love-issue-review",
             "template": ISSUE_CATEGORY_REVIEW_PROMPT,
             "metadata": {
-                "name": "Issue Category Review",
-                "description": "Interactive weekly issue review assistant - guides through category selection and generates comprehensive reports",
-                "version": 1,
+                "name": "Issue Category Review with Health Score",
+                "description": "Data-driven issue review with health scoring, actionable insights, and 30-day improvement plans",
+                "version": 2,
                 "team": "Operations",
-                "tags": ["issues", "review", "weekly", "operations", "interactive"],
+                "tags": ["issues", "review", "health-score", "analytics", "operations", "interactive"],
                 "category": "Operations",
                 "type": "prompt"
             }

@@ -1,67 +1,11 @@
 'use client'
 
 import { Button } from '@/app/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/app/components/ui/card'
-import { 
-  Briefcase, 
-  Building, 
-  Megaphone, 
-  DollarSign, 
-  Cpu, 
-  HeadphonesIcon, 
-  Users,
-  ArrowRight
-} from 'lucide-react'
 
 interface PromptStartersProps {
   promptId: string
   onSelectOption: (option: string) => void
 }
-
-const ISSUE_CATEGORIES = [
-  { 
-    value: 'venue', 
-    label: 'Venue', 
-    icon: Building,
-    description: 'Partner venues and locations',
-    color: 'bg-purple-500'
-  },
-  { 
-    value: 'operations', 
-    label: 'Operations', 
-    icon: Briefcase,
-    description: 'Workflow and processes',
-    color: 'bg-blue-500'
-  },
-  { 
-    value: 'marketing', 
-    label: 'Marketing', 
-    icon: Megaphone,
-    description: 'Campaigns and brand',
-    color: 'bg-pink-500'
-  },
-  { 
-    value: 'finance', 
-    label: 'Finance', 
-    icon: DollarSign,
-    description: 'Payments and budgets',
-    color: 'bg-green-500'
-  },
-  { 
-    value: 'technology', 
-    label: 'Technology', 
-    icon: Cpu,
-    description: 'Systems and tools',
-    color: 'bg-indigo-500'
-  },
-  { 
-    value: 'customer_service', 
-    label: 'Customer Service', 
-    icon: HeadphonesIcon,
-    description: 'Guest experience',
-    color: 'bg-yellow-500'
-  }
-]
 
 export function PromptStarters({ promptId, onSelectOption }: PromptStartersProps) {
   // Only show for issue review prompt
@@ -69,49 +13,48 @@ export function PromptStarters({ promptId, onSelectOption }: PromptStartersProps
     return null
   }
 
+  const categories = [
+    { name: 'Client Exp', id: '1683764063723x899495422051483600' },
+    { name: 'Weddings', id: '1683764078523x515115226215481340' },
+    { name: 'Guests & Accom', id: '1698451776177x772559502883684400' },
+    { name: 'Event Requests', id: '1683764027028x314003986352177150' },
+    { name: 'Vendor & Product Requests', id: '1683764033628x667123255737843700' },
+    { name: 'Catalog', id: '1683764048683x626863668112916500' },
+    { name: 'Accounts', id: '1698451776177x772559502883684401' },
+    { name: 'Metabase', id: '1698451776177x772559502883684402' },
+    { name: 'App Requests', id: '1698451776177x772559502883684403' },
+    { name: 'App Updates', id: '1698451776177x772559502883684404' },
+    { name: 'Digital', id: '1698451776177x772559502883684405' },
+    { name: 'Revenue', id: '1698451776177x772559502883684406' },
+    { name: 'People', id: '1698451776177x772559502883684407' },
+    { name: 'Leaders', id: '1698451776177x772559502883684408' },
+    { name: 'AI Workflows', id: '1698451776177x772559502883684409' },
+    { name: 'Venues', id: '1698451776177x772559502883684410' },
+    { name: 'Content', id: '1698451776177x772559502883684411' },
+    { name: 'Styling', id: '1698451776177x772559502883684412' },
+    { name: 'Vehicles', id: '1698451776177x772559502883684413' }
+  ]
+
   return (
-    <Card className="mb-4 shadow-sm">
-      <CardHeader className="pb-4">
-        <CardTitle className="text-lg">Select a Category to Review</CardTitle>
-        <CardDescription>
-          Choose which issue category you&apos;d like to review this week
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-          {ISSUE_CATEGORIES.map((category) => {
-            const Icon = category.icon
-            return (
-              <Button
-                key={category.value}
-                variant="outline"
-                className="h-auto flex flex-col items-center gap-2 p-4 hover:shadow-md transition-all"
-                onClick={() => onSelectOption(`I'd like to review ${category.label.toLowerCase()} issues`)}
-              >
-                <div className={`p-2 rounded-lg ${category.color} bg-opacity-10`}>
-                  <Icon className={`h-5 w-5 ${category.color} text-opacity-100`} />
-                </div>
-                <div className="text-center">
-                  <div className="font-medium">{category.label}</div>
-                  <div className="text-xs text-muted-foreground mt-1">
-                    {category.description}
-                  </div>
-                </div>
-              </Button>
-            )
-          })}
-        </div>
-        <div className="mt-4 text-center">
+    <div className="mb-4">
+      <p className="text-sm text-muted-foreground mb-3">Select a category to review:</p>
+      <div className="flex flex-wrap gap-2">
+        {categories.map((category) => (
           <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => onSelectOption("Show me all issues across all categories")}
+            key={category.id}
+            variant="outline"
+            onClick={() => onSelectOption(`I'd like to review ${category.name} issues (Category ID: ${category.id})`)}
           >
-            Review All Categories
-            <ArrowRight className="h-4 w-4 ml-1" />
+            {category.name}
           </Button>
-        </div>
-      </CardContent>
-    </Card>
+        ))}
+        <Button
+          variant="ghost"
+          onClick={() => onSelectOption("Show me all issues across all categories")}
+        >
+          All Categories
+        </Button>
+      </div>
+    </div>
   )
 }

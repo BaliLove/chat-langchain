@@ -12,7 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/app/components/ui/select'
-import { Search, Bot, FileText, Users, Sparkles, Info, MessageSquare, Route, Database, RefreshCw, Clock, Hash, MessageCircle, Copy, CheckCircle, AlertCircle } from 'lucide-react'
+import { Search, Bot, FileText, Users, Sparkles, Info, MessageSquare, Route, Database, RefreshCw, Clock, Hash, MessageCircle, Copy, CheckCircle, AlertCircle, Star } from 'lucide-react'
 import ProtectedRoute from '@/app/components/ProtectedRoute'
 import { useAuth } from '@/app/contexts/AuthContextStable'
 import { format } from 'date-fns'
@@ -81,11 +81,14 @@ export default function AgentsPage() {
   const [loading, setLoading] = useState(true)
   const [refreshing, setRefreshing] = useState(false)
   const [syncStatus, setSyncStatus] = useState<any>(null)
+  const [favorites, setFavorites] = useState<Set<string>>(new Set())
+  const [showFavoritesOnly, setShowFavoritesOnly] = useState(false)
 
   // Fetch prompts from API
   useEffect(() => {
     fetchPrompts()
     fetchSyncStatus()
+    fetchFavorites()
   }, [])
 
   // Keep selected team as 'All' by default
@@ -124,10 +127,46 @@ export default function AgentsPage() {
     }
   }
 
+  const fetchFavorites = async () => {
+    try {
+      const response = await fetch('/api/favorites')
+      const data = await response.json()
+      if (data.success) {
+        const favoriteIds = new Set(data.favorites.map((f: any) => f.prompt_id))
+        setFavorites(favoriteIds)
+      }
+    } catch (error) {
+      console.error('Failed to fetch favorites:', error)
+    }
+  }
+
+  const toggleFavorite = async (promptId: string) => {
+    try {
+      const response = await fetch('/api/favorites', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ promptId })
+      })
+      const data = await response.json()
+      if (data.success) {
+        const newFavorites = new Set(favorites)
+        if (data.isFavorite) {
+          newFavorites.add(promptId)
+        } else {
+          newFavorites.delete(promptId)
+        }
+        setFavorites(newFavorites)
+      }
+    } catch (error) {
+      console.error('Failed to toggle favorite:', error)
+    }
+  }
+
   const refreshPrompts = async () => {
     setRefreshing(true)
     await fetchPrompts()
     await fetchSyncStatus()
+    await fetchFavorites()
     setRefreshing(false)
   }
 
@@ -138,6 +177,7 @@ export default function AgentsPage() {
                          item.description.toLowerCase().includes(searchQuery.toLowerCase())
     const matchesType = filterType === 'all' || item.type === filterType
     const matchesTeam = selectedTeam === 'All' || item.team === selectedTeam
+    const matchesFavorites = !showFavoritesOnly || favorites.has(item.id)
     
     // Check contextual filter based on contextTags
     let matchesContext = contextualFilter === '' // empty filter means show all
@@ -146,7 +186,7 @@ export default function AgentsPage() {
       matchesContext = teamTags.includes('All') || teamTags.includes(contextualFilter)
     }
     
-    return matchesSearch && matchesType && matchesTeam && matchesContext
+    return matchesSearch && matchesType && matchesTeam && matchesContext && matchesFavorites
   })
 
   const getIcon = (item: any) => {
@@ -257,18 +297,36 @@ export default function AgentsPage() {
           <div className="space-y-4 mb-6">
             {/* Team Filter - Primary filter as buttons */}
             <div className="flex flex-wrap gap-2">
-              {baliLoveTeams.map(team => (
-                <Button
-                  key={team}
-                  variant={selectedTeam === team ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => setSelectedTeam(team)}
-                >
-                  {team}
-                  {team === userTeamData?.team_name && (
-                    <span className="ml-1 text-xs">(Your Team)</span>
+              {baliLoveTeams.map((team, index) => (
+                <>
+                  {/* Add star filter button after "All" */}
+                  {index === 1 && (
+                    <Button
+                      key="favorites"
+                      variant={showFavoritesOnly ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => setShowFavoritesOnly(!showFavoritesOnly)}
+                      className="gap-1"
+                    >
+                      <Star className={`h-4 w-4 ${showFavoritesOnly ? 'fill-current' : ''}`} />
+                      Favorites
+                    </Button>
                   )}
-                </Button>
+                  <Button
+                    key={team}
+                    variant={selectedTeam === team && !showFavoritesOnly ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => {
+                      setSelectedTeam(team)
+                      setShowFavoritesOnly(false)
+                    }}
+                  >
+                    {team}
+                    {team === userTeamData?.team_name && (
+                      <span className="ml-1 text-xs">(Your Team)</span>
+                    )}
+                  </Button>
+                </>
               ))}
             </div>
 
@@ -346,9 +404,22 @@ export default function AgentsPage() {
                       <div className="p-2 bg-primary/10 rounded-lg">
                         {getIcon(item)}
                       </div>
-                      <Badge variant="outline" className="text-xs">
-                        {item.team}
-                      </Badge>
+                      <div className="flex items-center gap-1">
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          className="h-7 w-7 p-0"
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            toggleFavorite(item.id)
+                          }}
+                        >
+                          <Star className={`h-4 w-4 ${favorites.has(item.id) ? 'fill-yellow-400 text-yellow-400' : 'text-muted-foreground'}`} />
+                        </Button>
+                        <Badge variant="outline" className="text-xs">
+                          {item.team}
+                        </Badge>
+                      </div>
                     </div>
                     <CardTitle className="text-sm font-medium line-clamp-1">
                       {item.name}
