@@ -13,7 +13,9 @@ import { AssistantMessage, UserMessage } from "./messages";
 import { ChatComposer, ChatComposerProps } from "./chat-composer";
 import { cn } from "@/app/utils/cn";
 
-export interface ThreadChatProps extends ChatComposerProps {}
+export interface ThreadChatProps extends ChatComposerProps {
+  activePrompt?: { id: string; name: string } | null;
+}
 
 export const ThreadChat: FC<ThreadChatProps> = (props: ThreadChatProps) => {
   const isEmpty = props.messages.length === 0;
@@ -48,6 +50,11 @@ export const ThreadChat: FC<ThreadChatProps> = (props: ThreadChatProps) => {
       {isEmpty ? (
         <div className="flex items-center justify-center flex-grow my-auto">
           <div className="flex flex-col items-center mx-4 md:mt-0 mt-24 w-full max-w-3xl">
+            {props.activePrompt && (
+              <div className="mb-3 text-sm text-muted-foreground">
+                Using: <span className="font-medium text-foreground">{props.activePrompt.name}</span>
+              </div>
+            )}
             <ChatComposer
               submitDisabled={props.submitDisabled}
               messages={props.messages}
@@ -55,10 +62,17 @@ export const ThreadChat: FC<ThreadChatProps> = (props: ThreadChatProps) => {
           </div>
         </div>
       ) : (
-        <ChatComposer
-          submitDisabled={props.submitDisabled}
-          messages={props.messages}
-        />
+        <div className="w-full">
+          {props.activePrompt && (
+            <div className="text-center mb-2 text-sm text-muted-foreground">
+              Using: <span className="font-medium text-foreground">{props.activePrompt.name}</span>
+            </div>
+          )}
+          <ChatComposer
+            submitDisabled={props.submitDisabled}
+            messages={props.messages}
+          />
+        </div>
       )}
     </ThreadPrimitive.Root>
   );

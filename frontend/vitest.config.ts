@@ -8,6 +8,8 @@ export default defineConfig({
     environment: 'happy-dom',
     globals: true,
     setupFiles: './vitest.setup.ts',
+    include: ['**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
+    exclude: ['e2e/**', '**/node_modules/**', '**/dist/**', '**/*.spec.ts'],
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html', 'lcov'],
@@ -21,6 +23,8 @@ export default defineConfig({
         '**/types/**',
         '.next/**',
         'coverage/**',
+        'e2e/**',
+        '**/*.spec.ts',
       ],
       thresholds: {
         branches: 60,

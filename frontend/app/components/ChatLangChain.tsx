@@ -232,19 +232,16 @@ function ChatLangChainComponent(): React.ReactElement {
   return (
     <div className="h-full w-full flex md:flex-row flex-col relative">
       <DebugInfo />
-      {activePrompt && (
-        <div className="absolute top-4 right-4 z-50 bg-background rounded-lg shadow-lg p-1">
-          <Badge variant="secondary" className="px-4 py-2">
-            <span className="text-sm font-medium">Active: {activePrompt.name}</span>
-          </Badge>
-        </div>
-      )}
       <div>
         <ThreadHistory />
       </div>
       <div className="flex-1 overflow-hidden">
         <AssistantRuntimeProvider runtime={runtime}>
-          <ThreadChat submitDisabled={isSubmitDisabled} messages={messages} />
+          <ThreadChat 
+            submitDisabled={isSubmitDisabled} 
+            messages={messages}
+            activePrompt={activePrompt}
+          />
         </AssistantRuntimeProvider>
         {/* Debug info for prompt loading */}
         {searchParams.get('prompt') && !activePrompt && (
