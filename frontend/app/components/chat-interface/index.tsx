@@ -26,7 +26,7 @@ export const ThreadChat: FC<ThreadChatProps> = (props: ThreadChatProps) => {
     if (props.onSendMessage) {
       props.onSendMessage(option);
     }
-  }, [props.onSendMessage]);
+  }, [props.onSendMessage]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useGeneratingQuestionsUI();
   useAnswerHeaderToolUI();

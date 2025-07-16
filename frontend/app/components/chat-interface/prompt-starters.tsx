@@ -74,7 +74,7 @@ export function PromptStarters({ promptId, onSelectOption }: PromptStartersProps
       <CardHeader className="pb-4">
         <CardTitle className="text-lg">Select a Category to Review</CardTitle>
         <CardDescription>
-          Choose which issue category you'd like to review this week
+          Choose which issue category you&apos;d like to review this week
         </CardDescription>
       </CardHeader>
       <CardContent>

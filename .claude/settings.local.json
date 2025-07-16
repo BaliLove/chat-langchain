@@ -71,7 +71,8 @@
       "Bash(set:*)",
       "Bash(set LANGSMITH_API_KEY=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)",
       "Bash(run_sync.bat)",
-      "Bash(npm run dev:*)"
+      "Bash(npm run dev:*)",
+      "Bash(yarn list)"
     ],
     "deny": []
   }

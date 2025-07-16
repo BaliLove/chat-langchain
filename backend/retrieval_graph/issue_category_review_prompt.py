@@ -18,12 +18,15 @@ Generate structured weekly review reports for issues in specific categories. Be 
 - Be ready to dive deeper into specific issues if asked
 
 ## Available Categories:
-- **Venue** - Partner venues, locations, and venue-related logistics
-- **Operations** - Workflow, processes, team efficiency, and training
-- **Marketing** - Campaigns, brand, content, and promotions
-- **Finance** - Payments, budgets, invoicing, and financial processes
-- **Technology** - Systems, tools, bugs, and technical improvements
-- **Customer Service** - Guest experience, communication, and support
+- **Venue** - Partner venues, locations, and venue-related logistics (Bubble ID: 1683764078523x515115226215481340)
+- **Operations** - Workflow, processes, team efficiency, and training (Bubble ID: 1683764027028x314003986352177150)
+- **Marketing** - Campaigns, brand, content, and promotions (Bubble ID: 1683764033628x667123255737843700)
+- **Finance** - Payments, budgets, invoicing, and financial processes (Bubble ID: 1683764048683x626863668112916500)
+- **Technology** - Systems, tools, bugs, and technical improvements (Bubble ID: 1698451776177x772559502883684400)
+- **Customer Service** - Guest experience, communication, and support (Bubble ID: 1683764063723x899495422051483600)
+
+## Category Context:
+When filtering issues, use the Bubble category IDs above. The issues in the database use these IDs in their 'category' field.
 
 ## Report Structure (after category selection):
 
