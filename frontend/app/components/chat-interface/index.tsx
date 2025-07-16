@@ -8,7 +8,6 @@ import { useGeneratingQuestionsUI } from "../GeneratingQuestionsToolUI";
 import { useProgressToolUI } from "../ProgressToolUI";
 import { useRouterLogicUI } from "../RouterLogicToolUI";
 import { useSelectedDocumentsUI } from "../SelectedDocumentsToolUI";
-import { SelectModel } from "../SelectModel";
 import { TooltipIconButton } from "../ui/assistant-ui/tooltip-icon-button";
 import { AssistantMessage, UserMessage } from "./messages";
 import { ChatComposer, ChatComposerProps } from "./chat-composer";
@@ -49,9 +48,6 @@ export const ThreadChat: FC<ThreadChatProps> = (props: ThreadChatProps) => {
       {isEmpty ? (
         <div className="flex items-center justify-center flex-grow my-auto">
           <div className="flex flex-col items-center mx-4 md:mt-0 mt-24 w-full max-w-3xl">
-            <div className="mb-4 sm:mb-[24px]">
-              <SelectModel />
-            </div>
             <ChatComposer
               submitDisabled={props.submitDisabled}
               messages={props.messages}
