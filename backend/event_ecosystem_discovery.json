@@ -1,0 +1,1486 @@
+{
+  "found_types": [
+    "event",
+    "Event",
+    "eventsatellite",
+    "EventSatellite",
+    "eventreview",
+    "EventReview",
+    "eventrsvp",
+    "EventRSVP",
+    "eventtype",
+    "EventType",
+    "guest",
+    "Guest",
+    "guestlist",
+    "GuestList",
+    "guestevent",
+    "GuestEvent",
+    "contact",
+    "Contact",
+    "client",
+    "Client",
+    "comment",
+    "Comment",
+    "commentthread",
+    "CommentThread",
+    "timeline",
+    "Timeline",
+    "payment",
+    "Payment",
+    "task",
+    "Task",
+    "team",
+    "Team",
+    "eventteam",
+    "EventTeam"
+  ],
+  "ecosystem": {
+    "event": {
+      "count": 5,
+      "fields": [
+        "bookingCount",
+        "eventCoverImage",
+        "hosts",
+        "satellite",
+        "Modified Date",
+        "eventType",
+        "Created By",
+        "creationDate",
+        "status",
+        "realEventImage",
+        "contactName",
+        "_id",
+        "name",
+        "isWedding",
+        "xeroContactId",
+        "planningGuide",
+        "leadInformation",
+        "team",
+        "Created Date",
+        "code"
+      ],
+      "event_fields": [
+        "eventCoverImage",
+        "eventType",
+        "realEventImage"
+      ],
+      "key_fields": [
+        "hosts",
+        "Modified Date",
+        "creationDate",
+        "status",
+        "contactName",
+        "name",
+        "Created Date",
+        "code"
+      ],
+      "sample": {
+        "bookingCount": 0,
+        "eventCoverImage": "1725701576261x503464007657688200",
+        "hosts": [
+          "1725699120585x211704318194876400"
+        ],
+        "satellite": "1725701756225x511797642407454400",
+        "Modified Date": "2025-01-06T10:57:40.643Z",
+        "eventType": "1725701630094x128340982699917310",
+        "Created By": "admin_user_meta_live",
+        "creationDate": "2024-09-07T08:52:00.554Z",
+        "status": "Lead",
+        "realEventImage": "1725699120585x304342465779597300",
+        "contactName": "Sarah_Gutierrez Setoca & _",
+        "_id": "1725701756049x984935468465162100",
+        "name": "Wedding",
+        "isWedding": true,
+        "xeroContactId": "52a384ec-352c-4d71-bc09-b7034c8c4825",
+        "planningGuide": "1725699122643x802927843331515900",
+        "leadInformation": "1725699120585x274981333619179520",
+        "team": "1725699120585x642851785202729000",
+        "Created Date": "2024-09-07T09:35:56.059Z",
+        "code": "SARLEAD"
+      },
+      "has_event_reference": true
+    },
+    "Event": {
+      "count": 5,
+      "fields": [
+        "Created Date",
+        "xeroContactId",
+        "_id",
+        "name",
+        "creationDate",
+        "bookingCount",
+        "contactName",
+        "eventType",
+        "code",
+        "planningGuide",
+        "Created By",
+        "isWedding",
+        "leadInformation",
+        "status",
+        "realEventImage",
+        "team",
+        "eventCoverImage",
+        "Modified Date",
+        "satellite",
+        "hosts"
+      ],
+      "event_fields": [
+        "eventType",
+        "realEventImage",
+        "eventCoverImage"
+      ],
+      "key_fields": [
+        "Created Date",
+        "name",
+        "creationDate",
+        "contactName",
+        "code",
+        "status",
+        "Modified Date",
+        "hosts"
+      ],
+      "sample": {
+        "Created Date": "2024-09-07T09:35:56.059Z",
+        "xeroContactId": "52a384ec-352c-4d71-bc09-b7034c8c4825",
+        "_id": "1725701756049x984935468465162100",
+        "name": "Wedding",
+        "creationDate": "2024-09-07T08:52:00.554Z",
+        "bookingCount": 0,
+        "contactName": "Sarah_Gutierrez Setoca & _",
+        "eventType": "1725701630094x128340982699917310",
+        "code": "SARLEAD",
+        "planningGuide": "1725699122643x802927843331515900",
+        "Created By": "admin_user_meta_live",
+        "isWedding": true,
+        "leadInformation": "1725699120585x274981333619179520",
+        "status": "Lead",
+        "realEventImage": "1725699120585x304342465779597300",
+        "team": "1725699120585x642851785202729000",
+        "eventCoverImage": "1725701576261x503464007657688200",
+        "Modified Date": "2025-01-06T10:57:40.643Z",
+        "satellite": "1725701756225x511797642407454400",
+        "hosts": [
+          "1725699120585x211704318194876400"
+        ]
+      },
+      "has_event_reference": true
+    },
+    "eventsatellite": {
+      "count": 5,
+      "fields": [
+        "event",
+        "Created Date",
+        "Modified Date",
+        "clientTZOffset",
+        "_id",
+        "Created By"
+      ],
+      "event_fields": [
+        "event"
+      ],
+      "key_fields": [
+        "Created Date",
+        "Modified Date",
+        "clientTZOffset"
+      ],
+      "sample": {
+        "event": "1725701756049x984935468465162100",
+        "Created Date": "2024-09-07T09:35:56.245Z",
+        "Modified Date": "2025-01-06T00:10:08.672Z",
+        "clientTZOffset": -11,
+        "_id": "1725701756225x511797642407454400",
+        "Created By": "admin_user_meta_live"
+      },
+      "has_event_reference": true
+    },
+    "EventSatellite": {
+      "count": 5,
+      "fields": [
+        "Created Date",
+        "_id",
+        "clientTZOffset",
+        "event",
+        "Created By",
+        "Modified Date"
+      ],
+      "event_fields": [
+        "event"
+      ],
+      "key_fields": [
+        "Created Date",
+        "clientTZOffset",
+        "Modified Date"
+      ],
+      "sample": {
+        "Created Date": "2024-09-07T09:35:56.245Z",
+        "_id": "1725701756225x511797642407454400",
+        "clientTZOffset": -11,
+        "event": "1725701756049x984935468465162100",
+        "Created By": "admin_user_meta_live",
+        "Modified Date": "2025-01-06T00:10:08.672Z"
+      },
+      "has_event_reference": true
+    },
+    "eventreview": {
+      "count": 5,
+      "fields": [
+        "event",
+        "Created By",
+        "reviewEmailSentDate",
+        "reviewStatus",
+        "_id",
+        "flow",
+        "reviewSubmittedDate",
+        "Modified Date",
+        "Created Date"
+      ],
+      "event_fields": [
+        "event"
+      ],
+      "key_fields": [
+        "reviewEmailSentDate",
+        "reviewStatus",
+        "reviewSubmittedDate",
+        "Modified Date",
+        "Created Date"
+      ],
+      "sample": {
+        "event": "1725701834938x671747685523001700",
+        "Created By": "admin_user_meta_live",
+        "reviewEmailSentDate": "2024-10-31T08:37:14.172Z",
+        "reviewStatus": "Review Complete",
+        "_id": "1727434389414x623809169007483900",
+        "flow": "1734995889539x288297716046888960",
+        "reviewSubmittedDate": "2025-02-10T09:48:06.327Z",
+        "Modified Date": "2025-02-10T09:48:06.798Z",
+        "Created Date": "2024-09-27T10:53:09.429Z"
+      },
+      "has_event_reference": true
+    },
+    "EventReview": {
+      "count": 5,
+      "fields": [
+        "reviewStatus",
+        "Created Date",
+        "flow",
+        "reviewEmailSentDate",
+        "reviewSubmittedDate",
+        "event",
+        "Modified Date",
+        "_id",
+        "Created By"
+      ],
+      "event_fields": [
+        "event"
+      ],
+      "key_fields": [
+        "reviewStatus",
+        "Created Date",
+        "reviewEmailSentDate",
+        "reviewSubmittedDate",
+        "Modified Date"
+      ],
+      "sample": {
+        "reviewStatus": "Review Complete",
+        "Created Date": "2024-09-27T10:53:09.429Z",
+        "flow": "1734995889539x288297716046888960",
+        "reviewEmailSentDate": "2024-10-31T08:37:14.172Z",
+        "reviewSubmittedDate": "2025-02-10T09:48:06.327Z",
+        "event": "1725701834938x671747685523001700",
+        "Modified Date": "2025-02-10T09:48:06.798Z",
+        "_id": "1727434389414x623809169007483900",
+        "Created By": "admin_user_meta_live"
+      },
+      "has_event_reference": true
+    },
+    "eventrsvp": {
+      "count": 5,
+      "fields": [
+        "Created By",
+        "Created Date",
+        "rsvpQuestion",
+        "event",
+        "Modified Date",
+        "_id",
+        "flow"
+      ],
+      "event_fields": [
+        "event"
+      ],
+      "key_fields": [
+        "Created Date",
+        "Modified Date"
+      ],
+      "sample": {
+        "Created By": "1675046171524x156615452772767900",
+        "Created Date": "2025-03-18T05:28:39.934Z",
+        "rsvpQuestion": [
+          "1742275720204x568509184846622400",
+          "1742275720603x745130616853823200"
+        ],
+        "event": "1725701871261x313116785961351940",
+        "Modified Date": "2025-03-18T05:28:40.762Z",
+        "_id": "1742275719927x229193432932509820",
+        "flow": "1742274388359x611992227080044500"
+      },
+      "has_event_reference": true
+    },
+    "EventRSVP": {
+      "count": 5,
+      "fields": [
+        "Created Date",
+        "_id",
+        "event",
+        "rsvpQuestion",
+        "flow",
+        "Created By",
+        "Modified Date"
+      ],
+      "event_fields": [
+        "event"
+      ],
+      "key_fields": [
+        "Created Date",
+        "Modified Date"
+      ],
+      "sample": {
+        "Created Date": "2025-03-18T05:28:39.934Z",
+        "_id": "1742275719927x229193432932509820",
+        "event": "1725701871261x313116785961351940",
+        "rsvpQuestion": [
+          "1742275720204x568509184846622400",
+          "1742275720603x745130616853823200"
+        ],
+        "flow": "1742274388359x611992227080044500",
+        "Created By": "1675046171524x156615452772767900",
+        "Modified Date": "2025-03-18T05:28:40.762Z"
+      },
+      "has_event_reference": true
+    },
+    "eventtype": {
+      "count": 5,
+      "fields": [
+        "Created By",
+        "planningHelperText",
+        "isPublished",
+        "code",
+        "eventCoverImage",
+        "isWedding?",
+        "name",
+        "Modified Date",
+        "Created Date",
+        "_id",
+        "lastSequence",
+        "rosterRole"
+      ],
+      "event_fields": [
+        "eventCoverImage"
+      ],
+      "key_fields": [
+        "code",
+        "name",
+        "Modified Date",
+        "Created Date"
+      ],
+      "sample": {
+        "Created By": "1665057490662x869948921559859200",
+        "planningHelperText": "Your complete guide to planning your Bali wedding",
+        "isPublished": true,
+        "code": "WED",
+        "eventCoverImage": "1725701576261x503464007657688200",
+        "isWedding?": true,
+        "name": "Wedding",
+        "Modified Date": "2025-07-15T03:02:19.228Z",
+        "Created Date": "2024-09-07T09:33:50.829Z",
+        "_id": "1725701630094x128340982699917310",
+        "lastSequence": 987,
+        "rosterRole": [
+          "1741086279351x668465426893456300",
+          "1741086296802x900090352491490700",
+          "1741086317072x678087649570630000",
+          "1741086338776x405959125015241660",
+          "1741086357707x848076717741045500",
+          "1741086743401x190772903807298050"
+        ]
+      },
+      "has_event_reference": true
+    },
+    "EventType": {
+      "count": 5,
+      "fields": [
+        "eventCoverImage",
+        "Modified Date",
+        "name",
+        "_id",
+        "Created Date",
+        "planningHelperText",
+        "rosterRole",
+        "isWedding?",
+        "isPublished",
+        "Created By",
+        "code",
+        "lastSequence"
+      ],
+      "event_fields": [
+        "eventCoverImage"
+      ],
+      "key_fields": [
+        "Modified Date",
+        "name",
+        "Created Date",
+        "code"
+      ],
+      "sample": {
+        "eventCoverImage": "1725701576261x503464007657688200",
+        "Modified Date": "2025-07-15T03:02:19.228Z",
+        "name": "Wedding",
+        "_id": "1725701630094x128340982699917310",
+        "Created Date": "2024-09-07T09:33:50.829Z",
+        "planningHelperText": "Your complete guide to planning your Bali wedding",
+        "rosterRole": [
+          "1741086279351x668465426893456300",
+          "1741086296802x900090352491490700",
+          "1741086317072x678087649570630000",
+          "1741086338776x405959125015241660",
+          "1741086357707x848076717741045500",
+          "1741086743401x190772903807298050"
+        ],
+        "isWedding?": true,
+        "isPublished": true,
+        "Created By": "1665057490662x869948921559859200",
+        "code": "WED",
+        "lastSequence": 987
+      },
+      "has_event_reference": true
+    },
+    "guest": {
+      "count": 5,
+      "fields": [
+        "guestEvents",
+        "email",
+        "client",
+        "Created Date",
+        "Created By",
+        "firstName",
+        "guestLists",
+        "Modified Date",
+        "phone",
+        "guestGroups",
+        "_id",
+        "lastName"
+      ],
+      "event_fields": [
+        "guestEvents"
+      ],
+      "key_fields": [
+        "guestEvents",
+        "client",
+        "Created Date",
+        "firstName",
+        "guestLists",
+        "Modified Date",
+        "guestGroups",
+        "lastName"
+      ],
+      "sample": {
+        "guestEvents": [
+          "1729684483063x214352597373432600"
+        ],
+        "email": "prajjwal+testguest@upify.ai",
+        "client": "1729682960574x629980179467599900",
+        "Created Date": "2024-10-23T11:29:22.048Z",
+        "Created By": "1729682654346x736851040320288400",
+        "firstName": "Test Guest",
+        "guestLists": [
+          "1729682961822x310067584861774460"
+        ],
+        "Modified Date": "2025-04-21T11:58:00.379Z",
+        "phone": "+919810476823",
+        "guestGroups": [
+          "1745236680368x392751609785212400"
+        ],
+        "_id": "1729682962042x203917962708031870",
+        "lastName": "Prajjwal"
+      },
+      "has_event_reference": true
+    },
+    "Guest": {
+      "count": 5,
+      "fields": [
+        "Created By",
+        "lastName",
+        "Created Date",
+        "email",
+        "guestEvents",
+        "firstName",
+        "phone",
+        "guestLists",
+        "client",
+        "guestGroups",
+        "Modified Date",
+        "_id"
+      ],
+      "event_fields": [
+        "guestEvents"
+      ],
+      "key_fields": [
+        "lastName",
+        "Created Date",
+        "guestEvents",
+        "firstName",
+        "guestLists",
+        "client",
+        "guestGroups",
+        "Modified Date"
+      ],
+      "sample": {
+        "Created By": "1729682654346x736851040320288400",
+        "lastName": "Prajjwal",
+        "Created Date": "2024-10-23T11:29:22.048Z",
+        "email": "prajjwal+testguest@upify.ai",
+        "guestEvents": [
+          "1729684483063x214352597373432600"
+        ],
+        "firstName": "Test Guest",
+        "phone": "+919810476823",
+        "guestLists": [
+          "1729682961822x310067584861774460"
+        ],
+        "client": "1729682960574x629980179467599900",
+        "guestGroups": [
+          "1745236680368x392751609785212400"
+        ],
+        "Modified Date": "2025-04-21T11:58:00.379Z",
+        "_id": "1729682962042x203917962708031870"
+      },
+      "has_event_reference": true
+    },
+    "guestlist": {
+      "count": 5,
+      "fields": [
+        "Modified Date",
+        "Created By",
+        "_id",
+        "client",
+        "Created Date",
+        "guests"
+      ],
+      "event_fields": [],
+      "key_fields": [
+        "Modified Date",
+        "client",
+        "Created Date",
+        "guests"
+      ],
+      "sample": {
+        "Modified Date": "2025-05-21T04:28:54.380Z",
+        "Created By": "1729682654346x736851040320288400",
+        "_id": "1729682961822x310067584861774460",
+        "client": "1729682960574x629980179467599900",
+        "Created Date": "2024-10-23T11:29:21.833Z",
+        "guests": [
+          "1729682962042x203917962708031870",
+          "1729693266750x122285736346829710",
+          "1738926161418x684261166550785800",
+          "1742279260699x800598335209300000",
+          "1747801733265x886372706400337900"
+        ]
+      },
+      "has_event_reference": false
+    },
+    "GuestList": {
+      "count": 5,
+      "fields": [
+        "guests",
+        "Created Date",
+        "Created By",
+        "client",
+        "Modified Date",
+        "_id"
+      ],
+      "event_fields": [],
+      "key_fields": [
+        "guests",
+        "Created Date",
+        "client",
+        "Modified Date"
+      ],
+      "sample": {
+        "guests": [
+          "1729682962042x203917962708031870",
+          "1729693266750x122285736346829710",
+          "1738926161418x684261166550785800",
+          "1742279260699x800598335209300000",
+          "1747801733265x886372706400337900"
+        ],
+        "Created Date": "2024-10-23T11:29:21.833Z",
+        "Created By": "1729682654346x736851040320288400",
+        "client": "1729682960574x629980179467599900",
+        "Modified Date": "2025-05-21T04:28:54.380Z",
+        "_id": "1729682961822x310067584861774460"
+      },
+      "has_event_reference": false
+    },
+    "guestevent": {
+      "count": 5,
+      "fields": [
+        "guest",
+        "invitationStatus",
+        "rsvpStatus",
+        "_id",
+        "specialRole",
+        "Modified Date",
+        "Created Date",
+        "Created By",
+        "event"
+      ],
+      "event_fields": [
+        "event"
+      ],
+      "key_fields": [
+        "guest",
+        "invitationStatus",
+        "rsvpStatus",
+        "Modified Date",
+        "Created Date"
+      ],
+      "sample": {
+        "guest": "1729682962042x203917962708031870",
+        "invitationStatus": "Sent",
+        "rsvpStatus": "Attending",
+        "_id": "1729684483063x214352597373432600",
+        "specialRole": "Groom",
+        "Modified Date": "2025-03-18T04:14:56.705Z",
+        "Created Date": "2024-10-23T11:54:43.063Z",
+        "Created By": "admin_user_baliwedding_live",
+        "event": "1729682961320x463263258557184960"
+      },
+      "has_event_reference": true
+    },
+    "GuestEvent": {
+      "count": 5,
+      "fields": [
+        "guest",
+        "invitationStatus",
+        "rsvpStatus",
+        "specialRole",
+        "Created Date",
+        "Created By",
+        "Modified Date",
+        "_id",
+        "event"
+      ],
+      "event_fields": [
+        "event"
+      ],
+      "key_fields": [
+        "guest",
+        "invitationStatus",
+        "rsvpStatus",
+        "Created Date",
+        "Modified Date"
+      ],
+      "sample": {
+        "guest": "1729682962042x203917962708031870",
+        "invitationStatus": "Sent",
+        "rsvpStatus": "Attending",
+        "specialRole": "Groom",
+        "Created Date": "2024-10-23T11:54:43.063Z",
+        "Created By": "admin_user_baliwedding_live",
+        "Modified Date": "2025-03-18T04:14:56.705Z",
+        "_id": "1729684483063x214352597373432600",
+        "event": "1729682961320x463263258557184960"
+      },
+      "has_event_reference": true
+    },
+    "contact": {
+      "count": 5,
+      "fields": [
+        "fullName",
+        "Created Date",
+        "email",
+        "_id",
+        "firstName",
+        "invitationStatus",
+        "client",
+        "Created By",
+        "Modified Date",
+        "code"
+      ],
+      "event_fields": [],
+      "key_fields": [
+        "fullName",
+        "Created Date",
+        "firstName",
+        "invitationStatus",
+        "client",
+        "Modified Date",
+        "code"
+      ],
+      "sample": {
+        "fullName": "Mel ",
+        "Created Date": "2024-01-19T10:40:06.478Z",
+        "email": "omelissa1706@gmail.con",
+        "_id": "1705660806470x719916113957734400",
+        "firstName": "Mel",
+        "invitationStatus": "Signed Up",
+        "client": "1705660806533x731071425286578000",
+        "Created By": "admin_user_meta_live",
+        "Modified Date": "2024-01-19T13:49:52.749Z",
+        "code": "QQDPM"
+      },
+      "has_event_reference": false
+    },
+    "Contact": {
+      "count": 5,
+      "fields": [
+        "invitationStatus",
+        "Modified Date",
+        "code",
+        "Created By",
+        "firstName",
+        "fullName",
+        "_id",
+        "Created Date",
+        "client",
+        "email"
+      ],
+      "event_fields": [],
+      "key_fields": [
+        "invitationStatus",
+        "Modified Date",
+        "code",
+        "firstName",
+        "fullName",
+        "Created Date",
+        "client"
+      ],
+      "sample": {
+        "invitationStatus": "Signed Up",
+        "Modified Date": "2024-01-19T13:49:52.749Z",
+        "code": "QQDPM",
+        "Created By": "admin_user_meta_live",
+        "firstName": "Mel",
+        "fullName": "Mel ",
+        "_id": "1705660806470x719916113957734400",
+        "Created Date": "2024-01-19T10:40:06.478Z",
+        "client": "1705660806533x731071425286578000",
+        "email": "omelissa1706@gmail.con"
+      },
+      "has_event_reference": false
+    },
+    "client": {
+      "count": 5,
+      "fields": [
+        "Created By",
+        "type",
+        "Created Date",
+        "_id",
+        "events",
+        "Modified Date",
+        "contact"
+      ],
+      "event_fields": [
+        "events"
+      ],
+      "key_fields": [
+        "Created Date",
+        "Modified Date"
+      ],
+      "sample": {
+        "Created By": "admin_user_meta_live",
+        "type": "Bride",
+        "Created Date": "2024-01-19T10:40:06.542Z",
+        "_id": "1705660806533x731071425286578000",
+        "events": [
+          "1725702264084x552153593689600700"
+        ],
+        "Modified Date": "2024-09-07T10:11:13.338Z",
+        "contact": "1705660806470x719916113957734400"
+      },
+      "has_event_reference": true
+    },
+    "Client": {
+      "count": 5,
+      "fields": [
+        "events",
+        "_id",
+        "contact",
+        "Modified Date",
+        "type",
+        "Created Date",
+        "Created By"
+      ],
+      "event_fields": [
+        "events"
+      ],
+      "key_fields": [
+        "Modified Date",
+        "Created Date"
+      ],
+      "sample": {
+        "events": [
+          "1725702264084x552153593689600700"
+        ],
+        "_id": "1705660806533x731071425286578000",
+        "contact": "1705660806470x719916113957734400",
+        "Modified Date": "2024-09-07T10:11:13.338Z",
+        "type": "Bride",
+        "Created Date": "2024-01-19T10:40:06.542Z",
+        "Created By": "admin_user_meta_live"
+      },
+      "has_event_reference": true
+    },
+    "comment": {
+      "count": 5,
+      "fields": [
+        "Parent Comment Thread",
+        "Modified Date",
+        "Comment Satellite ",
+        "Created Date",
+        "Comment Text",
+        "_id",
+        "Created By",
+        "Read(o)"
+      ],
+      "event_fields": [],
+      "key_fields": [
+        "Modified Date",
+        "Created Date"
+      ],
+      "sample": {
+        "Parent Comment Thread": "1690248225452x597968891746724100",
+        "Modified Date": "2023-10-18T03:09:00.239Z",
+        "Comment Satellite ": "1690248439083x470994317697525950",
+        "Created Date": "2023-07-25T01:27:18.996Z",
+        "Comment Text": "[font=\"Abeezee\"]Hello, can anyone please give me an update on the catering booking?[/font]\n[font=\"Abeezee\"]Someone changed the kids menu to 0[/font]\n[font=\"Abeezee\"]@talitha@bali.love\u00a0@bagus@bali.love\u00a0[/font]",
+        "_id": "1690248438980x355623919470998460",
+        "Created By": "1673835812446x133699842573991040",
+        "Read(o)": [
+          "1673835812446x133699842573991040",
+          "1665071758539x863306934722732400",
+          "1665104206100x361072671784520300"
+        ]
+      },
+      "has_event_reference": false
+    },
+    "Comment": {
+      "count": 5,
+      "fields": [
+        "Read(o)",
+        "Comment Text",
+        "Created Date",
+        "_id",
+        "Created By",
+        "Modified Date",
+        "Parent Comment Thread",
+        "Comment Satellite "
+      ],
+      "event_fields": [],
+      "key_fields": [
+        "Created Date",
+        "Modified Date"
+      ],
+      "sample": {
+        "Read(o)": [
+          "1673835812446x133699842573991040",
+          "1665071758539x863306934722732400",
+          "1665104206100x361072671784520300"
+        ],
+        "Comment Text": "[font=\"Abeezee\"]Hello, can anyone please give me an update on the catering booking?[/font]\n[font=\"Abeezee\"]Someone changed the kids menu to 0[/font]\n[font=\"Abeezee\"]@talitha@bali.love\u00a0@bagus@bali.love\u00a0[/font]",
+        "Created Date": "2023-07-25T01:27:18.996Z",
+        "_id": "1690248438980x355623919470998460",
+        "Created By": "1673835812446x133699842573991040",
+        "Modified Date": "2023-10-18T03:09:00.239Z",
+        "Parent Comment Thread": "1690248225452x597968891746724100",
+        "Comment Satellite ": "1690248439083x470994317697525950"
+      },
+      "has_event_reference": false
+    },
+    "commentthread": {
+      "count": 5,
+      "fields": [
+        "followedBy",
+        "Created By",
+        "itemType ",
+        "Created Date",
+        "Modified Date",
+        "_id",
+        "issue"
+      ],
+      "event_fields": [],
+      "key_fields": [
+        "Created Date",
+        "Modified Date"
+      ],
+      "sample": {
+        "followedBy": [
+          "1675046171524x156615452772767900"
+        ],
+        "Created By": "1675046171524x156615452772767900",
+        "itemType ": "Issue",
+        "Created Date": "2023-07-24T06:34:34.458Z",
+        "Modified Date": "2023-07-24T06:34:34.506Z",
+        "_id": "1690180474410x216772262436402140",
+        "issue": "1690180453523x324528199447347200"
+      },
+      "has_event_reference": false
+    },
+    "CommentThread": {
+      "count": 5,
+      "fields": [
+        "followedBy",
+        "issue",
+        "Created By",
+        "Modified Date",
+        "_id",
+        "Created Date",
+        "itemType "
+      ],
+      "event_fields": [],
+      "key_fields": [
+        "Modified Date",
+        "Created Date"
+      ],
+      "sample": {
+        "followedBy": [
+          "1675046171524x156615452772767900"
+        ],
+        "issue": "1690180453523x324528199447347200",
+        "Created By": "1675046171524x156615452772767900",
+        "Modified Date": "2023-07-24T06:34:34.506Z",
+        "_id": "1690180474410x216772262436402140",
+        "Created Date": "2023-07-24T06:34:34.458Z",
+        "itemType ": "Issue"
+      },
+      "has_event_reference": false
+    },
+    "timeline": {
+      "count": 5,
+      "fields": [
+        "Created By",
+        "Modified Date",
+        "Created Date",
+        "eventType",
+        "isTemplate?",
+        "timelineDays",
+        "eventReference",
+        "_id",
+        "isArchived"
+      ],
+      "event_fields": [
+        "eventType",
+        "eventReference"
+      ],
+      "key_fields": [
+        "Modified Date",
+        "Created Date"
+      ],
+      "sample": {
+        "Created By": "admin_user_meta_live",
+        "Modified Date": "2024-09-07T10:19:27.214Z",
+        "Created Date": "2024-04-26T02:15:43.131Z",
+        "eventType": "1725701630094x128340982699917310",
+        "isTemplate?": false,
+        "timelineDays": [
+          "1714098716426x675610459501048300"
+        ],
+        "eventReference": "1725701950190x924299610093064700",
+        "_id": "1714097743125x291708393898458400",
+        "isArchived": false
+      },
+      "has_event_reference": true
+    },
+    "Timeline": {
+      "count": 5,
+      "fields": [
+        "timelineDays",
+        "isArchived",
+        "eventReference",
+        "Created Date",
+        "Created By",
+        "Modified Date",
+        "eventType",
+        "_id",
+        "isTemplate?"
+      ],
+      "event_fields": [
+        "eventReference",
+        "eventType"
+      ],
+      "key_fields": [
+        "Created Date",
+        "Modified Date"
+      ],
+      "sample": {
+        "timelineDays": [
+          "1714098716426x675610459501048300"
+        ],
+        "isArchived": false,
+        "eventReference": "1725701950190x924299610093064700",
+        "Created Date": "2024-04-26T02:15:43.131Z",
+        "Created By": "admin_user_meta_live",
+        "Modified Date": "2024-09-07T10:19:27.214Z",
+        "eventType": "1725701630094x128340982699917310",
+        "_id": "1714097743125x291708393898458400",
+        "isTemplate?": false
+      },
+      "has_event_reference": true
+    },
+    "payment": {
+      "count": 5,
+      "fields": [
+        "paymentDate",
+        "paymentStatus",
+        "paidAmountUSD",
+        "Created By",
+        "Modified Date",
+        "_id",
+        "currency",
+        "Created Date"
+      ],
+      "event_fields": [],
+      "key_fields": [
+        "paymentDate",
+        "paymentStatus",
+        "Modified Date",
+        "Created Date"
+      ],
+      "sample": {
+        "paymentDate": "2024-01-19T07:43:31.857Z",
+        "paymentStatus": "Deposit Initializied",
+        "paidAmountUSD": 0,
+        "Created By": "admin_user_meta_live",
+        "Modified Date": "2024-01-19T12:52:55.579Z",
+        "_id": "1705668775562x883632640565838100",
+        "currency": "AUD",
+        "Created Date": "2024-01-19T12:52:55.569Z"
+      },
+      "has_event_reference": false
+    },
+    "Payment": {
+      "count": 5,
+      "fields": [
+        "Created Date",
+        "paidAmountUSD",
+        "_id",
+        "paymentDate",
+        "Modified Date",
+        "paymentStatus",
+        "Created By",
+        "currency"
+      ],
+      "event_fields": [],
+      "key_fields": [
+        "Created Date",
+        "paymentDate",
+        "Modified Date",
+        "paymentStatus"
+      ],
+      "sample": {
+        "Created Date": "2024-01-19T12:52:55.569Z",
+        "paidAmountUSD": 0,
+        "_id": "1705668775562x883632640565838100",
+        "paymentDate": "2024-01-19T07:43:31.857Z",
+        "Modified Date": "2024-01-19T12:52:55.579Z",
+        "paymentStatus": "Deposit Initializied",
+        "Created By": "admin_user_meta_live",
+        "currency": "AUD"
+      },
+      "has_event_reference": false
+    },
+    "task": {
+      "count": 5,
+      "fields": [
+        "Created By",
+        "readStatus",
+        "Modified Date",
+        "lastStatus",
+        "status",
+        "description",
+        "dueDate",
+        "_id",
+        "Created Date",
+        "relatedItem",
+        "event",
+        "isArchived(outdated)",
+        "taskCode",
+        "assignee",
+        "orderNumberUser(o)",
+        "orderNumber(o)",
+        "taskName"
+      ],
+      "event_fields": [
+        "event"
+      ],
+      "key_fields": [
+        "readStatus",
+        "Modified Date",
+        "lastStatus",
+        "status",
+        "dueDate",
+        "Created Date",
+        "isArchived(outdated)",
+        "taskCode",
+        "taskName"
+      ],
+      "sample": {
+        "Created By": "1665071758539x863306934722732400",
+        "readStatus": "1665105875884x694309257321365900",
+        "Modified Date": "2024-09-07T10:29:35.478Z",
+        "lastStatus": "To Do",
+        "status": "Archived",
+        "description": "Order Catering, sound, lighting, party lights, styling ( update first) include some local coconuts.\n",
+        "dueDate": "2022-10-10T14:00:00.000Z",
+        "_id": "1665128895515x525563607752114200",
+        "Created Date": "2022-10-07T07:48:17.580Z",
+        "relatedItem": "1725701981335x192069660312445440",
+        "event": "1725701977967x878510041424784000",
+        "isArchived(outdated)": false,
+        "taskCode": "Final order 10/07/22",
+        "assignee": "1665105875884x694309257321365900",
+        "orderNumberUser(o)": 1,
+        "orderNumber(o)": 1,
+        "taskName": "Final order"
+      },
+      "has_event_reference": true
+    },
+    "Task": {
+      "count": 5,
+      "fields": [
+        "status",
+        "Created By",
+        "lastStatus",
+        "relatedItem",
+        "assignee",
+        "Modified Date",
+        "orderNumberUser(o)",
+        "readStatus",
+        "dueDate",
+        "description",
+        "orderNumber(o)",
+        "taskName",
+        "isArchived(outdated)",
+        "event",
+        "taskCode",
+        "_id",
+        "Created Date"
+      ],
+      "event_fields": [
+        "event"
+      ],
+      "key_fields": [
+        "status",
+        "lastStatus",
+        "Modified Date",
+        "readStatus",
+        "dueDate",
+        "taskName",
+        "isArchived(outdated)",
+        "taskCode",
+        "Created Date"
+      ],
+      "sample": {
+        "status": "Archived",
+        "Created By": "1665071758539x863306934722732400",
+        "lastStatus": "To Do",
+        "relatedItem": "1725701981335x192069660312445440",
+        "assignee": "1665105875884x694309257321365900",
+        "Modified Date": "2024-09-07T10:29:35.478Z",
+        "orderNumberUser(o)": 1,
+        "readStatus": "1665105875884x694309257321365900",
+        "dueDate": "2022-10-10T14:00:00.000Z",
+        "description": "Order Catering, sound, lighting, party lights, styling ( update first) include some local coconuts.\n",
+        "orderNumber(o)": 1,
+        "taskName": "Final order",
+        "isArchived(outdated)": false,
+        "event": "1725701977967x878510041424784000",
+        "taskCode": "Final order 10/07/22",
+        "_id": "1665128895515x525563607752114200",
+        "Created Date": "2022-10-07T07:48:17.580Z"
+      },
+      "has_event_reference": true
+    },
+    "team": {
+      "count": 5,
+      "fields": [
+        "_id",
+        "alias",
+        "designations",
+        "members(o)",
+        "leader",
+        "name",
+        "Modified Date",
+        "Created By",
+        "Created Date"
+      ],
+      "event_fields": [],
+      "key_fields": [
+        "name",
+        "Modified Date",
+        "Created Date"
+      ],
+      "sample": {
+        "_id": "1720587962667x853438423770595300",
+        "alias": "all",
+        "designations": [
+          "1731540045770x228899478388867070"
+        ],
+        "members(o)": [
+          "1688430577264x541362575826782600",
+          "1679883432312x469717067755337500",
+          "1719209290788x196597335999603170",
+          "1716774985818x568241681061563100",
+          "1727740352313x992715016243377300",
+          "1730081435819x196160022107324320",
+          "1677808631198x823716521989077600",
+          "1665105875884x694309257321365900",
+          "1724813285444x476923721242469300",
+          "1665104206100x361072671784520300",
+          "1680218558377x253351199594366700",
+          "1725943851622x357734500259965240",
+          "1677808483762x223753968919161440",
+          "1677924628394x304936611312633000",
+          "1730081396523x642659392302418200",
+          "1712033636413x843446899676466300",
+          "1728869196828x791798941688598400",
+          "1665105690750x391513219662731140",
+          "1677808581414x791709482689659400",
+          "1675046171524x156615452772767900",
+          "1727854330131x984494169491723100",
+          "1730684835477x172627074056873820",
+          "1724810274408x235958902340058340",
+          "1726537970741x197166942005303940",
+          "1724813306296x459519138096502500",
+          "1724812971444x578088816774674000",
+          "1719819774384x427996681558356700",
+          "1719226954559x490222169636239900",
+          "1680484926948x621155390851774500",
+          "1677992102827x314289559200954240",
+          "1682917254358x592169943531357400",
+          "1672269558997x650259603718563100",
+          "1715047586962x437212262876899700",
+          "1673835812446x133699842573991040",
+          "1665093512423x266110174612502750",
+          "1670378094683x820105337172333000",
+          "1707097678044x664527068152565900",
+          "1723009548227x986438870366832800",
+          "1726537874581x129194153016087800",
+          "1677644283974x891177532116251800",
+          "1730075113767x303012606393796350",
+          "1696563193572x699461241291293000",
+          "1728262635326x505870950728190460",
+          "1709003592907x474086510322172540",
+          "1665071758539x863306934722732400",
+          "1724813338777x993004512605403400",
+          "1730081422183x560680129802622900",
+          "1665057490662x869948921559859200",
+          "1711336434972x641169875376707200",
+          "1730105952087x333369598538187260",
+          "1725255103164x444042151476443900",
+          "1678172586584x992419742335801600"
+        ],
+        "leader": "1731540045770x228899478388867070",
+        "name": "All",
+        "Modified Date": "2025-02-25T00:47:29.332Z",
+        "Created By": "1665057490662x869948921559859200",
+        "Created Date": "2024-07-10T05:06:04.861Z"
+      },
+      "has_event_reference": false
+    },
+    "Team": {
+      "count": 5,
+      "fields": [
+        "Created Date",
+        "Modified Date",
+        "members(o)",
+        "alias",
+        "_id",
+        "name",
+        "Created By",
+        "leader",
+        "designations"
+      ],
+      "event_fields": [],
+      "key_fields": [
+        "Created Date",
+        "Modified Date",
+        "name"
+      ],
+      "sample": {
+        "Created Date": "2024-07-10T05:06:04.861Z",
+        "Modified Date": "2025-02-25T00:47:29.332Z",
+        "members(o)": [
+          "1688430577264x541362575826782600",
+          "1679883432312x469717067755337500",
+          "1719209290788x196597335999603170",
+          "1716774985818x568241681061563100",
+          "1727740352313x992715016243377300",
+          "1730081435819x196160022107324320",
+          "1677808631198x823716521989077600",
+          "1665105875884x694309257321365900",
+          "1724813285444x476923721242469300",
+          "1665104206100x361072671784520300",
+          "1680218558377x253351199594366700",
+          "1725943851622x357734500259965240",
+          "1677808483762x223753968919161440",
+          "1677924628394x304936611312633000",
+          "1730081396523x642659392302418200",
+          "1712033636413x843446899676466300",
+          "1728869196828x791798941688598400",
+          "1665105690750x391513219662731140",
+          "1677808581414x791709482689659400",
+          "1675046171524x156615452772767900",
+          "1727854330131x984494169491723100",
+          "1730684835477x172627074056873820",
+          "1724810274408x235958902340058340",
+          "1726537970741x197166942005303940",
+          "1724813306296x459519138096502500",
+          "1724812971444x578088816774674000",
+          "1719819774384x427996681558356700",
+          "1719226954559x490222169636239900",
+          "1680484926948x621155390851774500",
+          "1677992102827x314289559200954240",
+          "1682917254358x592169943531357400",
+          "1672269558997x650259603718563100",
+          "1715047586962x437212262876899700",
+          "1673835812446x133699842573991040",
+          "1665093512423x266110174612502750",
+          "1670378094683x820105337172333000",
+          "1707097678044x664527068152565900",
+          "1723009548227x986438870366832800",
+          "1726537874581x129194153016087800",
+          "1677644283974x891177532116251800",
+          "1730075113767x303012606393796350",
+          "1696563193572x699461241291293000",
+          "1728262635326x505870950728190460",
+          "1709003592907x474086510322172540",
+          "1665071758539x863306934722732400",
+          "1724813338777x993004512605403400",
+          "1730081422183x560680129802622900",
+          "1665057490662x869948921559859200",
+          "1711336434972x641169875376707200",
+          "1730105952087x333369598538187260",
+          "1725255103164x444042151476443900",
+          "1678172586584x992419742335801600"
+        ],
+        "alias": "all",
+        "_id": "1720587962667x853438423770595300",
+        "name": "All",
+        "Created By": "1665057490662x869948921559859200",
+        "leader": "1731540045770x228899478388867070",
+        "designations": [
+          "1731540045770x228899478388867070"
+        ]
+      },
+      "has_event_reference": false
+    },
+    "eventteam": {
+      "count": 5,
+      "fields": [
+        "Created Date",
+        "_id",
+        "Modified Date",
+        "Created By",
+        "event",
+        "planner"
+      ],
+      "event_fields": [
+        "event"
+      ],
+      "key_fields": [
+        "Created Date",
+        "Modified Date"
+      ],
+      "sample": {
+        "Created Date": "2024-01-19T12:03:38.762Z",
+        "_id": "1705665818742x957039931838623700",
+        "Modified Date": "2024-09-07T10:47:28.244Z",
+        "Created By": "admin_user_meta_live",
+        "event": "1725701974429x655966331842800600",
+        "planner": "1665071758539x863306934722732400"
+      },
+      "has_event_reference": true
+    },
+    "EventTeam": {
+      "count": 5,
+      "fields": [
+        "Modified Date",
+        "event",
+        "planner",
+        "Created Date",
+        "_id",
+        "Created By"
+      ],
+      "event_fields": [
+        "event"
+      ],
+      "key_fields": [
+        "Modified Date",
+        "Created Date"
+      ],
+      "sample": {
+        "Modified Date": "2024-09-07T10:47:28.244Z",
+        "event": "1725701974429x655966331842800600",
+        "planner": "1665071758539x863306934722732400",
+        "Created Date": "2024-01-19T12:03:38.762Z",
+        "_id": "1705665818742x957039931838623700",
+        "Created By": "admin_user_meta_live"
+      },
+      "has_event_reference": true
+    }
+  },
+  "categories": {
+    "core_events": [
+      "event",
+      "Event"
+    ],
+    "guest_contact": [
+      "guest",
+      "Guest",
+      "guestlist",
+      "GuestList",
+      "guestevent",
+      "GuestEvent",
+      "contact",
+      "Contact",
+      "client",
+      "Client"
+    ],
+    "communication": [
+      "comment",
+      "Comment",
+      "commentthread",
+      "CommentThread"
+    ],
+    "tasks": [
+      "task",
+      "Task"
+    ],
+    "event_linked": [
+      "event",
+      "Event",
+      "eventsatellite",
+      "EventSatellite",
+      "eventreview",
+      "EventReview",
+      "eventrsvp",
+      "EventRSVP",
+      "eventtype",
+      "EventType",
+      "guest",
+      "Guest",
+      "guestevent",
+      "GuestEvent",
+      "client",
+      "Client",
+      "timeline",
+      "Timeline",
+      "task",
+      "Task",
+      "eventteam",
+      "EventTeam"
+    ]
+  }
+}

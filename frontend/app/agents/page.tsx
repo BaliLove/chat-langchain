@@ -12,112 +12,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/app/components/ui/select'
-import { Search, Bot, FileText, Users, Sparkles, Info, MessageSquare, Route, Database, RefreshCw, Clock, Hash } from 'lucide-react'
+import { Search, Bot, FileText, Users, Sparkles, Info, MessageSquare, Route, Database, RefreshCw, Clock, Hash, MessageCircle, Copy, CheckCircle, AlertCircle } from 'lucide-react'
 import ProtectedRoute from '@/app/components/ProtectedRoute'
 import { useAuth } from '@/app/contexts/AuthContextStable'
 import { format } from 'date-fns'
 
-// Real agents/assistants with contextual tags
-const baliLoveAgents = [
-  {
-    id: 'main-assistant',
-    name: 'Bali Love Main Assistant',
-    description: 'Primary chat assistant that routes queries and provides comprehensive answers',
-    team: 'All',
-    type: 'agent',
-    contextTags: {
-      'All': ['All'],
-      'Revenue': ['All'],
-      'Client Experience': ['All'],
-      'Finance': ['All'],
-      'People & Culture': ['All'],
-      'Digital': ['All'],
-      'Special Projects': ['All']
-    },
-    features: ['Query Routing', 'Context Retrieval', 'Multi-step Research'],
-    usage: 25432,
-    lastUpdated: '2025-01-10T10:00:00Z'
-  },
-  {
-    id: 'venue-specialist',
-    name: 'Venue Research Specialist',
-    description: 'Specialized in finding and recommending venues based on event requirements',
-    team: 'Revenue',
-    type: 'agent',
-    contextTags: {
-      'All': ['Venues & Vendors'],
-      'Revenue': ['Venues', 'Packages'],
-      'Client Experience': ['Weddings', 'Corporate Events'],
-      'Finance': ['Bookings', 'Invoices']
-    },
-    features: ['Venue Search', 'Availability Check', 'Price Comparison'],
-    usage: 8765,
-    lastUpdated: '2025-01-08T14:30:00Z'
-  },
-  {
-    id: 'event-planner',
-    name: 'Event Planning Assistant',
-    description: 'Helps with event coordination, vendor management, and timeline planning',
-    team: 'Client Experience',
-    type: 'agent',
-    contextTags: {
-      'All': ['Events', 'Venues & Vendors', 'Bookings'],
-      'Client Experience': ['Weddings', 'Corporate Events', 'Private Parties'],
-      'Revenue': ['Venues', 'Vendors', 'Packages'],
-      'Finance': ['Bookings', 'Payments']
-    },
-    features: ['Timeline Creation', 'Vendor Coordination', 'Budget Management'],
-    usage: 6543,
-    lastUpdated: '2025-01-07T09:15:00Z'
-  },
-  {
-    id: 'training-bot',
-    name: 'Training & Onboarding Bot',
-    description: 'Assists new team members with training materials and company policies',
-    team: 'People & Culture',
-    type: 'agent',
-    contextTags: {
-      'All': ['Training', 'People'],
-      'People & Culture': ['Training Modules', 'Policies', 'Onboarding'],
-      'Digital': ['Documentation', 'Systems']
-    },
-    features: ['Policy Q&A', 'Training Modules', 'Onboarding Guidance'],
-    usage: 3210,
-    lastUpdated: '2025-01-05T16:45:00Z'
-  },
-  {
-    id: 'finance-assistant',
-    name: 'Finance & Booking Assistant',
-    description: 'Manages bookings, payments, invoices and financial reporting',
-    team: 'Finance',
-    type: 'agent',
-    contextTags: {
-      'All': ['Bookings', 'Finance'],
-      'Finance': ['Bookings', 'Payments', 'Invoices', 'Reports'],
-      'Revenue': ['Packages', 'Add-ons'],
-      'Client Experience': ['Weddings']
-    },
-    features: ['Booking Status', 'Payment Tracking', 'Invoice Generation', 'Financial Reports'],
-    usage: 12890,
-    lastUpdated: '2025-01-12T11:30:00Z'
-  },
-  {
-    id: 'wedding-specialist',
-    name: 'Wedding Specialist Assistant',
-    description: 'Dedicated assistant for wedding planning, vendor coordination, and guest management',
-    team: 'Client Experience',
-    type: 'agent',
-    contextTags: {
-      'All': ['Events'],
-      'Client Experience': ['Weddings', 'Private Parties'],
-      'Revenue': ['Venues', 'Vendors', 'Packages'],
-      'Finance': ['Bookings', 'Payments']
-    },
-    features: ['Wedding Timeline', 'Guest Management', 'Vendor Coordination', 'RSVP Tracking'],
-    usage: 18234,
-    lastUpdated: '2025-01-14T08:45:00Z'
-  }
-]
+// No placeholder agents - only real prompts from LangSmith will be shown
 
 // Teams - removed duplicate 'All'
 const baliLoveTeams = [
@@ -175,23 +75,21 @@ export default function AgentsPage() {
   const { userTeamData } = useAuth()
   const [searchQuery, setSearchQuery] = useState('')
   const [filterType, setFilterType] = useState('all')
-  const [selectedTeam, setSelectedTeam] = useState(userTeamData?.team_name || 'All')
+  const [selectedTeam, setSelectedTeam] = useState('All')
   const [contextualFilter, setContextualFilter] = useState('')
   const [prompts, setPrompts] = useState<Prompt[]>([])
   const [loading, setLoading] = useState(true)
   const [refreshing, setRefreshing] = useState(false)
+  const [syncStatus, setSyncStatus] = useState<any>(null)
 
   // Fetch prompts from API
   useEffect(() => {
     fetchPrompts()
+    fetchSyncStatus()
   }, [])
 
-  // Update selected team when user data loads
-  useEffect(() => {
-    if (userTeamData?.team_name && baliLoveTeams.includes(userTeamData.team_name)) {
-      setSelectedTeam(userTeamData.team_name)
-    }
-  }, [userTeamData])
+  // Keep selected team as 'All' by default
+  // Remove auto-selection based on user's team
 
   // Reset contextual filter when team changes
   useEffect(() => {
@@ -205,6 +103,7 @@ export default function AgentsPage() {
       const data = await response.json()
       if (data.success) {
         setPrompts(data.prompts)
+        console.log(`Loaded ${data.prompts.length} prompts from ${data.source || 'API'}`)
       }
     } catch (error) {
       console.error('Failed to fetch prompts:', error)
@@ -213,13 +112,26 @@ export default function AgentsPage() {
     }
   }
 
+  const fetchSyncStatus = async () => {
+    try {
+      const response = await fetch('/api/prompts/sync-status')
+      const data = await response.json()
+      if (data.success) {
+        setSyncStatus(data.syncStatus)
+      }
+    } catch (error) {
+      console.error('Failed to fetch sync status:', error)
+    }
+  }
+
   const refreshPrompts = async () => {
     setRefreshing(true)
     await fetchPrompts()
+    await fetchSyncStatus()
     setRefreshing(false)
   }
 
-  const allItems = [...baliLoveAgents, ...prompts]
+  const allItems = [...prompts] // Only show real prompts from LangSmith
 
   const filteredItems = allItems.filter(item => {
     const matchesSearch = item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -255,21 +167,41 @@ export default function AgentsPage() {
     }
   }
 
-  const handleUseThis = (item: any) => {
-    if (item.type === 'agent') {
-      // Navigate to chat with specific agent
-      window.location.href = `/chat?agent=${item.id}`
-    } else {
-      // Copy prompt ID to clipboard
-      navigator.clipboard.writeText(item.id)
-      alert(`Prompt ID "${item.id}" copied to clipboard!`)
+  const handleStartChat = async (e: React.MouseEvent, item: any) => {
+    e.stopPropagation()
+    
+    // Track usage
+    try {
+      await fetch(`/api/prompts/${item.id}/track-usage`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ team: userTeamData?.team_name || 'Unknown' })
+      })
+    } catch (error) {
+      console.error('Failed to track usage:', error)
+    }
+    
+    // Navigate to chat with specific prompt
+    window.location.href = `/chat?prompt=${item.id}`
+  }
+
+  const handleCopyId = (e: React.MouseEvent, item: any) => {
+    e.stopPropagation()
+    navigator.clipboard.writeText(item.id)
+    // Show a subtle notification instead of alert
+    const button = e.currentTarget
+    const originalText = button.querySelector('span')?.textContent
+    if (originalText) {
+      button.querySelector('span')!.textContent = 'Copied!'
+      setTimeout(() => {
+        button.querySelector('span')!.textContent = originalText
+      }, 1000)
     }
   }
 
-  const handleDetails = (item: any) => {
-    // In production, this would open a modal or navigate to details page
-    console.log('View details for:', item)
-    alert(`Details for ${item.name}:\n\nID: ${item.id}\nTeam: ${item.team}\nUsage: ${item.usage.toLocaleString()}\nLast Updated: ${format(new Date(item.lastUpdated), 'PPp')}`)
+  const handleCardClick = (item: any) => {
+    // Navigate to detail page
+    window.location.href = `/prompts/${item.id}`
   }
 
   return (
@@ -280,20 +212,44 @@ export default function AgentsPage() {
           <div className="mb-8">
             <div className="flex items-center justify-between mb-2">
               <h1 className="text-3xl font-bold text-foreground">
-                Agents & Prompts
+                Prompts
               </h1>
-              <Button 
-                onClick={refreshPrompts} 
-                disabled={refreshing}
-                size="sm"
-                variant="outline"
-              >
-                <RefreshCw className={`h-4 w-4 mr-2 ${refreshing ? 'animate-spin' : ''}`} />
-                Refresh
-              </Button>
+              <div className="flex items-center gap-4">
+                {syncStatus && (
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    {syncStatus.sync_status === 'success' ? (
+                      <CheckCircle className="h-4 w-4 text-green-500" />
+                    ) : syncStatus.sync_status === 'error' ? (
+                      <AlertCircle className="h-4 w-4 text-red-500" />
+                    ) : syncStatus.sync_status === 'tables_not_created' ? (
+                      <AlertCircle className="h-4 w-4 text-yellow-500" />
+                    ) : (
+                      <Clock className="h-4 w-4" />
+                    )}
+                    <span>
+                      {syncStatus.sync_status === 'tables_not_created' ? (
+                        'Database setup required'
+                      ) : syncStatus.last_sync_at ? (
+                        <>Synced {format(new Date(syncStatus.last_sync_at), 'PPp')}</>
+                      ) : (
+                        'Never synced'
+                      )}
+                    </span>
+                  </div>
+                )}
+                <Button 
+                  onClick={refreshPrompts} 
+                  disabled={refreshing}
+                  size="sm"
+                  variant="outline"
+                >
+                  <RefreshCw className={`h-4 w-4 mr-2 ${refreshing ? 'animate-spin' : ''}`} />
+                  Refresh
+                </Button>
+              </div>
             </div>
             <p className="text-muted-foreground">
-              Explore AI agents and dynamically loaded LangSmith prompts
+              LangSmith prompts for your AI assistant
             </p>
           </div>
 
@@ -378,90 +334,72 @@ export default function AgentsPage() {
               <p className="text-muted-foreground mt-4">Loading prompts from LangSmith...</p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
               {filteredItems.map(item => (
                 <Card 
                   key={item.id} 
-                  className="hover:shadow-lg transition-shadow"
+                  className="hover:shadow-md transition-all hover:scale-[1.02] cursor-pointer relative"
+                  onClick={() => handleCardClick(item)}
                 >
-                  <CardHeader>
-                    <div className="flex items-start justify-between mb-2">
-                      <div className="flex items-center gap-2">
+                  <CardHeader className="pb-3">
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="p-2 bg-primary/10 rounded-lg">
                         {getIcon(item)}
-                        <CardTitle className="text-lg">{item.name}</CardTitle>
                       </div>
-                      <Badge variant="secondary" className="text-xs">
+                      <Badge variant="outline" className="text-xs">
                         {item.team}
                       </Badge>
                     </div>
-                    <CardDescription className="mt-2">
+                    <CardTitle className="text-sm font-medium line-clamp-1">
+                      {item.name}
+                    </CardTitle>
+                    <CardDescription className="text-xs line-clamp-2 mt-1">
                       {item.description}
                     </CardDescription>
                   </CardHeader>
-                  <CardContent>
-                    {item.type === 'agent' && (
-                      <div className="mb-3">
-                        <p className="text-sm text-muted-foreground mb-2">Features:</p>
-                        <div className="flex flex-wrap gap-1">
-                          {(item as any).features?.map((feature: string, idx: number) => (
-                            <Badge key={idx} variant="outline" className="text-xs">
-                              {feature}
-                            </Badge>
-                          ))}
-                        </div>
-                      </div>
-                    )}
+                  <CardContent className="pt-0">
+                    <div className="flex items-center justify-between text-xs text-muted-foreground mb-3">
+                      <span>{(item as any).category}</span>
+                      <span>{item.usage.toLocaleString()}</span>
+                    </div>
                     
-                    {item.type === 'prompt' && (
-                      <div className="mb-3">
-                        <p className="text-sm text-muted-foreground mb-1">
-                          Category: {(item as any).category}
-                        </p>
-                        <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                          <Clock className="h-3 w-3" />
-                          <span>Updated {format(new Date(item.lastUpdated), 'PP')}</span>
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Contextual Tags for current team */}
+                    {/* Action buttons */}
+                    <div className="flex gap-2">
+                      <Button
+                        size="sm"
+                        className="flex-1 h-7 text-xs"
+                        onClick={(e) => handleStartChat(e, item)}
+                      >
+                        <MessageCircle className="h-3 w-3 mr-1" />
+                        Start Chat
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="h-7 px-2"
+                        onClick={(e) => handleCopyId(e, item)}
+                      >
+                        <Copy className="h-3 w-3" />
+                        <span className="sr-only">Copy ID</span>
+                      </Button>
+                    </div>
+                    
+                    {/* Show contextual tags only if they exist for selected team */}
                     {(item as any).contextTags && (item as any).contextTags[selectedTeam] && 
                      !(item as any).contextTags[selectedTeam].includes('All') && (
-                      <div className="mb-3">
-                        <p className="text-sm text-muted-foreground mb-1">Best for:</p>
-                        <div className="flex flex-wrap gap-1">
-                          {(item as any).contextTags[selectedTeam].map((tag: string, idx: number) => (
-                            <Badge key={idx} variant="secondary" className="text-xs">
-                              {tag}
-                            </Badge>
-                          ))}
-                        </div>
+                      <div className="mt-3 flex flex-wrap gap-1">
+                        {(item as any).contextTags[selectedTeam].slice(0, 2).map((tag: string, idx: number) => (
+                          <Badge key={idx} variant="secondary" className="text-xs px-1.5 py-0">
+                            {tag}
+                          </Badge>
+                        ))}
+                        {(item as any).contextTags[selectedTeam].length > 2 && (
+                          <span className="text-xs text-muted-foreground">
+                            +{(item as any).contextTags[selectedTeam].length - 2}
+                          </span>
+                        )}
                       </div>
                     )}
-                    
-                    <div className="flex items-center justify-between text-sm text-muted-foreground mb-4">
-                      <span>{item.usage.toLocaleString()} uses</span>
-                    </div>
-                    
-                    <div className="flex gap-2">
-                      <Button 
-                        size="sm" 
-                        variant="outline" 
-                        className="flex-1"
-                        onClick={() => handleDetails(item)}
-                      >
-                        <Info className="h-3 w-3 mr-1" />
-                        Details
-                      </Button>
-                      <Button 
-                        size="sm" 
-                        className="flex-1"
-                        onClick={() => handleUseThis(item)}
-                      >
-                        <Sparkles className="h-3 w-3 mr-1" />
-                        Use This
-                      </Button>
-                    </div>
                   </CardContent>
                 </Card>
               ))}

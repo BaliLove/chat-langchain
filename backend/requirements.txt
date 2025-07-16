@@ -1,6 +1,4 @@
 # Backend-specific requirements for LangGraph deployment
-supabase>=2.4.0
-# Include all other dependencies from root requirements.txt
 langchain>=0.3.0,<0.4.0
 langsmith>=0.3.42
 langchain-google-genai>=2.1.2,<3.0.0
@@ -10,9 +8,13 @@ langchain-openai>=0.3.12,<0.4.0
 langchain-anthropic>=0.3.10,<0.4.0
 langchain-pinecone>=0.1.2
 langgraph>=0.4.5
-beautifulsoup4>=4.12.2
+beautifulsoup4==4.12.2
 pinecone>=5.0.0
-lxml>=4.9.3
-voyageai>=0.1.4
-pillow>=10.2.0
-psycopg2-binary>=2.9.9
+lxml==4.9.3
+voyageai==0.1.4
+pillow==10.2.0
+psycopg2-binary==2.9.9
+supabase==2.4.0
+# Email notifications
+sendgrid==6.11.0
+# Alternative: resend==2.0.0

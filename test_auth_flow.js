@@ -1,8 +1,8 @@
 // Test auth flow locally
 const { createClient } = require('@supabase/supabase-js');
 
-const supabaseUrl = 'https://zgxvanaavvkttoohzwpo.supabase.co';
-const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpneHZhbmFhdnZrdHRvb2h6d3BvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjA3OTQ2MzIsImV4cCI6MjAzNjM3MDYzMn0.tNDkY7bOI3f-QuTl1XMr9D_6jFEOHB8nVZEO6I_OAOI';
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
 

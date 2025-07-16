@@ -1,0 +1,332 @@
+{
+  "found_types": [
+    "issue",
+    "Issue",
+    "task",
+    "Task",
+    "comment",
+    "Comment",
+    "CommentThread",
+    "commentthread"
+  ],
+  "summary": {
+    "issue": {
+      "count": 5,
+      "fields": [
+        "Modified Date",
+        "priorityNumber",
+        "lead",
+        "readStatus",
+        "_id",
+        "team",
+        "name",
+        "Created By",
+        "estimatedDoneDate",
+        "category",
+        "archived",
+        "descriptionJson",
+        "Created Date",
+        "orderNumberUser",
+        "priority",
+        "orderNumber",
+        "status",
+        "code",
+        "description"
+      ],
+      "sample": {
+        "Modified Date": "2024-09-29T00:24:43.455Z",
+        "priorityNumber": 3,
+        "lead": "1665057490662x869948921559859200",
+        "readStatus": [
+          "1665057490662x869948921559859200",
+          "1665093512423x266110174612502750"
+        ],
+        "_id": "1667884697098x717034967571890200",
+        "team": [
+          "1665093512423x266110174612502750"
+        ],
+        "name": "BBG Package Buyout",
+        "Created By": "1665057490662x869948921559859200",
+        "estimatedDoneDate": "2024-09-28T23:48:55.533Z",
+        "category": "1683764078523x515115226215481340",
+        "archived": false,
+        "descriptionJson": "{\"time\":1727569467223,\"blocks\":[{\"id\":\"pP1hWo9CiV\",\"type\":\"paragraph\",\"data\":{\"text\":\"\"},\"tunes\":{\"anyTuneName\":{\"alignment\":\"left\"}}}],\"version\":\"2.30.5\"}",
+        "Created Date": "2022-11-08T05:18:18.872Z",
+        "orderNumberUser": 2,
+        "priority": "Medium",
+        "orderNumber": 21,
+        "status": "Archive",
+        "code": "aadsfasdfasdf11/08/22",
+        "description": "Goal:\nSell only buyouts\nUsual wedding inclusions. \n\nAdditions\nRecovery day\netc\n\nFull Package\n2 days full buyout. 3rd day option. \nWedding\nRecovery / Welcome Dinner\n\nFull buyout\nBuy whole resort for the one day of the wedding\n\nPartial buyout \nBuy some of the tents on the wedding day. Only available on dates that are already showing some rooms booked. - Suggest minimum 10 tents behind Hemingway \n\n\nDisclaimer - on days that there is np event booked but partial venue booking for tents from other events either side "
+      },
+      "issue_fields": [
+        "priorityNumber",
+        "readStatus",
+        "category",
+        "priority",
+        "status"
+      ]
+    },
+    "Issue": {
+      "count": 5,
+      "fields": [
+        "readStatus",
+        "status",
+        "Modified Date",
+        "lead",
+        "description",
+        "category",
+        "Created Date",
+        "code",
+        "priorityNumber",
+        "name",
+        "descriptionJson",
+        "_id",
+        "archived",
+        "Created By",
+        "orderNumber",
+        "estimatedDoneDate",
+        "orderNumberUser",
+        "priority",
+        "team"
+      ],
+      "sample": {
+        "readStatus": [
+          "1665057490662x869948921559859200",
+          "1665093512423x266110174612502750"
+        ],
+        "status": "Archive",
+        "Modified Date": "2024-09-29T00:24:43.455Z",
+        "lead": "1665057490662x869948921559859200",
+        "description": "Goal:\nSell only buyouts\nUsual wedding inclusions. \n\nAdditions\nRecovery day\netc\n\nFull Package\n2 days full buyout. 3rd day option. \nWedding\nRecovery / Welcome Dinner\n\nFull buyout\nBuy whole resort for the one day of the wedding\n\nPartial buyout \nBuy some of the tents on the wedding day. Only available on dates that are already showing some rooms booked. - Suggest minimum 10 tents behind Hemingway \n\n\nDisclaimer - on days that there is np event booked but partial venue booking for tents from other events either side ",
+        "category": "1683764078523x515115226215481340",
+        "Created Date": "2022-11-08T05:18:18.872Z",
+        "code": "aadsfasdfasdf11/08/22",
+        "priorityNumber": 3,
+        "name": "BBG Package Buyout",
+        "descriptionJson": "{\"time\":1727569467223,\"blocks\":[{\"id\":\"pP1hWo9CiV\",\"type\":\"paragraph\",\"data\":{\"text\":\"\"},\"tunes\":{\"anyTuneName\":{\"alignment\":\"left\"}}}],\"version\":\"2.30.5\"}",
+        "_id": "1667884697098x717034967571890200",
+        "archived": false,
+        "Created By": "1665057490662x869948921559859200",
+        "orderNumber": 21,
+        "estimatedDoneDate": "2024-09-28T23:48:55.533Z",
+        "orderNumberUser": 2,
+        "priority": "Medium",
+        "team": [
+          "1665093512423x266110174612502750"
+        ]
+      },
+      "issue_fields": [
+        "readStatus",
+        "status",
+        "category",
+        "priorityNumber",
+        "priority"
+      ]
+    },
+    "task": {
+      "count": 5,
+      "fields": [
+        "_id",
+        "status",
+        "taskCode",
+        "lastStatus",
+        "taskName",
+        "orderNumber(o)",
+        "Created Date",
+        "event",
+        "relatedItem",
+        "orderNumberUser(o)",
+        "Created By",
+        "assignee",
+        "description",
+        "dueDate",
+        "Modified Date",
+        "readStatus",
+        "isArchived(outdated)"
+      ],
+      "sample": {
+        "_id": "1665128895515x525563607752114200",
+        "status": "Archived",
+        "taskCode": "Final order 10/07/22",
+        "lastStatus": "To Do",
+        "taskName": "Final order",
+        "orderNumber(o)": 1,
+        "Created Date": "2022-10-07T07:48:17.580Z",
+        "event": "1725701977967x878510041424784000",
+        "relatedItem": "1725701981335x192069660312445440",
+        "orderNumberUser(o)": 1,
+        "Created By": "1665071758539x863306934722732400",
+        "assignee": "1665105875884x694309257321365900",
+        "description": "Order Catering, sound, lighting, party lights, styling ( update first) include some local coconuts.\n",
+        "dueDate": "2022-10-10T14:00:00.000Z",
+        "Modified Date": "2024-09-07T10:29:35.478Z",
+        "readStatus": "1665105875884x694309257321365900",
+        "isArchived(outdated)": false
+      },
+      "issue_fields": [
+        "status",
+        "lastStatus",
+        "assignee",
+        "readStatus"
+      ]
+    },
+    "Task": {
+      "count": 5,
+      "fields": [
+        "isArchived(outdated)",
+        "event",
+        "taskCode",
+        "relatedItem",
+        "Created By",
+        "assignee",
+        "readStatus",
+        "_id",
+        "orderNumber(o)",
+        "description",
+        "Created Date",
+        "orderNumberUser(o)",
+        "dueDate",
+        "Modified Date",
+        "lastStatus",
+        "taskName",
+        "status"
+      ],
+      "sample": {
+        "isArchived(outdated)": false,
+        "event": "1725701977967x878510041424784000",
+        "taskCode": "Final order 10/07/22",
+        "relatedItem": "1725701981335x192069660312445440",
+        "Created By": "1665071758539x863306934722732400",
+        "assignee": "1665105875884x694309257321365900",
+        "readStatus": "1665105875884x694309257321365900",
+        "_id": "1665128895515x525563607752114200",
+        "orderNumber(o)": 1,
+        "description": "Order Catering, sound, lighting, party lights, styling ( update first) include some local coconuts.\n",
+        "Created Date": "2022-10-07T07:48:17.580Z",
+        "orderNumberUser(o)": 1,
+        "dueDate": "2022-10-10T14:00:00.000Z",
+        "Modified Date": "2024-09-07T10:29:35.478Z",
+        "lastStatus": "To Do",
+        "taskName": "Final order",
+        "status": "Archived"
+      },
+      "issue_fields": [
+        "assignee",
+        "readStatus",
+        "lastStatus",
+        "status"
+      ]
+    },
+    "comment": {
+      "count": 5,
+      "fields": [
+        "Comment Text",
+        "Created Date",
+        "Comment Satellite ",
+        "Read(o)",
+        "Parent Comment Thread",
+        "_id",
+        "Modified Date",
+        "Created By"
+      ],
+      "sample": {
+        "Comment Text": "[font=\"Abeezee\"]Hello, can anyone please give me an update on the catering booking?[/font]\n[font=\"Abeezee\"]Someone changed the kids menu to 0[/font]\n[font=\"Abeezee\"]@talitha@bali.love\u00a0@bagus@bali.love\u00a0[/font]",
+        "Created Date": "2023-07-25T01:27:18.996Z",
+        "Comment Satellite ": "1690248439083x470994317697525950",
+        "Read(o)": [
+          "1673835812446x133699842573991040",
+          "1665071758539x863306934722732400",
+          "1665104206100x361072671784520300"
+        ],
+        "Parent Comment Thread": "1690248225452x597968891746724100",
+        "_id": "1690248438980x355623919470998460",
+        "Modified Date": "2023-10-18T03:09:00.239Z",
+        "Created By": "1673835812446x133699842573991040"
+      },
+      "issue_fields": []
+    },
+    "Comment": {
+      "count": 5,
+      "fields": [
+        "Comment Satellite ",
+        "Created By",
+        "Parent Comment Thread",
+        "Modified Date",
+        "Comment Text",
+        "Read(o)",
+        "Created Date",
+        "_id"
+      ],
+      "sample": {
+        "Comment Satellite ": "1690248439083x470994317697525950",
+        "Created By": "1673835812446x133699842573991040",
+        "Parent Comment Thread": "1690248225452x597968891746724100",
+        "Modified Date": "2023-10-18T03:09:00.239Z",
+        "Comment Text": "[font=\"Abeezee\"]Hello, can anyone please give me an update on the catering booking?[/font]\n[font=\"Abeezee\"]Someone changed the kids menu to 0[/font]\n[font=\"Abeezee\"]@talitha@bali.love\u00a0@bagus@bali.love\u00a0[/font]",
+        "Read(o)": [
+          "1673835812446x133699842573991040",
+          "1665071758539x863306934722732400",
+          "1665104206100x361072671784520300"
+        ],
+        "Created Date": "2023-07-25T01:27:18.996Z",
+        "_id": "1690248438980x355623919470998460"
+      },
+      "issue_fields": []
+    },
+    "CommentThread": {
+      "count": 5,
+      "fields": [
+        "followedBy",
+        "itemType ",
+        "Modified Date",
+        "_id",
+        "Created Date",
+        "Created By",
+        "issue"
+      ],
+      "sample": {
+        "followedBy": [
+          "1675046171524x156615452772767900"
+        ],
+        "itemType ": "Issue",
+        "Modified Date": "2023-07-24T06:34:34.506Z",
+        "_id": "1690180474410x216772262436402140",
+        "Created Date": "2023-07-24T06:34:34.458Z",
+        "Created By": "1675046171524x156615452772767900",
+        "issue": "1690180453523x324528199447347200"
+      },
+      "issue_fields": [
+        "itemType ",
+        "issue"
+      ]
+    },
+    "commentthread": {
+      "count": 5,
+      "fields": [
+        "_id",
+        "itemType ",
+        "Created Date",
+        "issue",
+        "Modified Date",
+        "Created By",
+        "followedBy"
+      ],
+      "sample": {
+        "_id": "1690180474410x216772262436402140",
+        "itemType ": "Issue",
+        "Created Date": "2023-07-24T06:34:34.458Z",
+        "issue": "1690180453523x324528199447347200",
+        "Modified Date": "2023-07-24T06:34:34.506Z",
+        "Created By": "1675046171524x156615452772767900",
+        "followedBy": [
+          "1675046171524x156615452772767900"
+        ]
+      },
+      "issue_fields": [
+        "itemType ",
+        "issue"
+      ]
+    }
+  }
+}
