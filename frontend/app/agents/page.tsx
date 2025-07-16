@@ -132,7 +132,7 @@ export default function AgentsPage() {
       const response = await fetch('/api/favorites')
       const data = await response.json()
       if (data.success) {
-        const favoriteIds = new Set(data.favorites.map((f: any) => f.prompt_id))
+        const favoriteIds = new Set<string>(data.favorites.map((f: any) => f.prompt_id))
         setFavorites(favoriteIds)
       }
     } catch (error) {

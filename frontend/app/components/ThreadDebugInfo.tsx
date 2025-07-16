@@ -16,7 +16,7 @@ export function ThreadDebugInfo() {
 
   useEffect(() => {
     const cookieId = getCookie(USER_ID_COOKIE_NAME)
-    setCookieUserId(cookieId)
+    setCookieUserId(cookieId || null)
   }, [])
 
   if (!showDebug) {
