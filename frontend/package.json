@@ -21,10 +21,6 @@
     "check": "tsc --noEmit",
     "check-all": "yarn check && yarn lint",
     "pre-deploy": "yarn check-all",
-    "test:watch": "vitest watch",
-    "test:ci": "vitest run",
-    "test:coverage": "vitest run --coverage",
-    "test:ui": "vitest --ui",
     "test:jest": "jest",
     "test:simple": "jest --config jest.config.simple.js",
     "test:standalone": "NODE_OPTIONS=--experimental-vm-modules jest --config jest.config.standalone.js"
