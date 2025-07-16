@@ -57,86 +57,90 @@ When filtering issues, use the Bubble category IDs above. The issues in the data
 
 ## Report Structure (Generate Immediately After Category Selection):
 
-### 🏥 {Category} Health Report
-**Review Period**: {start_date} to {end_date}
-**Category Health Score**: {score}/100 {emoji}
+### 🏥 Category Health Report
+Generate a comprehensive health report following this structure:
+
+**Review Period**: [Calculate from last 30 days]
+**Category Health Score**: [Calculate score]/100 [Add appropriate emoji]
 
 ### 📊 Health Score Breakdown:
-- Response Time: {X}/25 pts
-- Ownership: {X}/20 pts  
-- Age Distribution: {X}/20 pts
-- Priority Balance: {X}/15 pts
-- Resolution Rate: {X}/20 pts
+Calculate and display:
+- Response Time: [Score]/25 pts
+- Ownership: [Score]/20 pts  
+- Age Distribution: [Score]/20 pts
+- Priority Balance: [Score]/15 pts
+- Resolution Rate: [Score]/20 pts
 
 ### 🚨 CRITICAL ISSUES (Immediate Action Required)
-Issues that are damaging business performance:
-1. **[Issue Title]** (ID: #XXX) - {Days without update} days stale
-   - Owner: {Name or "⚠️ UNASSIGNED"}
-   - Impact: {Describe business impact}
-   - Required Action: {Specific next step}
-   - 🔗 [Fix Now](bubble_url)
+List the most critical issues that are damaging business performance:
+1. **[Issue Title]** (ID: #[ID]) - [Days] days stale
+   - Owner: [Name or "⚠️ UNASSIGNED"]
+   - Impact: [Describe business impact]
+   - Required Action: [Specific next step]
+   - 🔗 [Fix Now](https://app.bali.love/issue/[issue_id])
 
 ### 📈 Performance Metrics
-- **Response Time**: Avg {X} days (Target: <2 days)
-- **Ownership Rate**: {X}% assigned (Target: 100%)
-- **Weekly Velocity**: {X} resolved / {Y} created
-- **Backlog Growth**: {+/-X} issues this week
+Calculate and display:
+- **Response Time**: Avg [X] days (Target: <2 days)
+- **Ownership Rate**: [X]% assigned (Target: 100%)
+- **Weekly Velocity**: [X] resolved / [Y] created
+- **Backlog Growth**: [+/-X] issues this week
 
 ### 🎯 Prioritized Action Plan
 
 #### 1. STOP THE BLEEDING (Do Today)
 **Goal**: Prevent further degradation
-- [ ] Assign owners to {X} unassigned issues
-- [ ] Update {X} issues not touched in >14 days
-- [ ] Close {X} issues that are actually resolved
+- [ ] Assign owners to [X] unassigned issues
+- [ ] Update [X] issues not touched in >14 days
+- [ ] Close [X] issues that are actually resolved
 
 #### 2. QUICK WINS (This Week)
-**Goal**: Build momentum and improve score by {X} points
-- [ ] Resolve {list of 3-5 specific low-effort issues}
-- [ ] Merge {X} duplicate issues
-- [ ] Clarify requirements on {X} blocked issues
+**Goal**: Build momentum and improve score by [X] points
+- [ ] Resolve [list specific low-effort issues]
+- [ ] Merge [X] duplicate issues
+- [ ] Clarify requirements on [X] blocked issues
 
 #### 3. SYSTEMIC FIXES (Next Sprint)
 **Goal**: Prevent future issues
-- [ ] Implement {specific process improvement}
-- [ ] Create template for {recurring issue type}
-- [ ] Set up automation for {repetitive task}
+- [ ] Implement [specific process improvement]
+- [ ] Create template for [recurring issue type]
+- [ ] Set up automation for [repetitive task]
 
 ### 📋 Issue Triage List
 
 #### 🔴 RED FLAGS (Business Risk)
 Issues that could impact revenue, reputation, or relationships:
-{List with specific business impact for each}
+[List with specific business impact for each]
 
 #### 🟡 AGING ISSUES (Becoming Stale)
 Good issues going bad - act before they become critical:
-{List with days since last update and next required action}
+[List with days since last update and next required action]
 
 #### 🟢 ON TRACK (Monitor Only)
-{Count only, unless user requests details}
+[Count only, unless user requests details]
 
 ### 💡 Strategic Insights
 
 #### Pattern Analysis:
-1. **Root Cause**: {Most common issue theme} appearing in {X}% of issues
-2. **Bottleneck**: {Process or person} involved in {X} blocked issues
-3. **Opportunity**: {Identified improvement} could prevent {X} future issues
+1. **Root Cause**: [Most common issue theme] appearing in [X]% of issues
+2. **Bottleneck**: [Process or person] involved in [X] blocked issues
+3. **Opportunity**: [Identified improvement] could prevent [X] future issues
 
 #### Recommended Process Changes:
-1. {Specific process change with expected impact}
-2. {Tool or automation opportunity}
-3. {Team structure or responsibility adjustment}
+1. [Specific process change with expected impact]
+2. [Tool or automation opportunity]
+3. [Team structure or responsibility adjustment]
 
 ### 📈 Path to Excellence
-**Current Score**: {X}/100
+**Current Score**: [X]/100
 **Target Score**: 85/100
-**Gap**: {Y} points
+**Gap**: [Y] points
 
 **To reach target this month**:
-- Reduce average response time by {X} days
-- Assign owners to all issues (+{X} points)
-- Resolve {X} stale issues (+{X} points)
-- Rebalance priorities (+{X} points)
+- Reduce average response time by [X] days
+- Assign owners to all issues (+[X] points)
+- Resolve [X] stale issues (+[X] points)
+- Rebalance priorities (+[X] points)
 
 ### 📚 Issue Quality Standards
 Assess each issue against these criteria:
@@ -162,7 +166,7 @@ Remember to:
 
 ## FALLBACK MESSAGE:
 If no issue data is found after querying, respond with:
-"I cannot find any issues in the vector database for the {category} category. This could mean:
+"I cannot find any issues in the vector database for the selected category. This could mean:
 1. No issues exist in this category
 2. Issue data has not been indexed into the vector database yet
 
@@ -287,31 +291,31 @@ CATEGORY_PROMPTS = {
 }
 
 # Health score improvement prompt
-HEALTH_SCORE_IMPROVEMENT_PROMPT = """Based on the health score analysis for {category}, create a 30-day improvement plan:
+HEALTH_SCORE_IMPROVEMENT_PROMPT = """Based on the health score analysis for the selected category, create a 30-day improvement plan:
 
 ## Week 1: Stop the Bleeding
 - Address all unassigned issues
 - Update all stale issues (>14 days)
 - Close resolved but open issues
-- Expected Score Increase: +{points} points
+- Expected Score Increase: +[calculate] points
 
 ## Week 2-3: Build Momentum  
 - Implement quick wins from backlog
 - Establish daily review rhythm
 - Clear blockers on high-priority items
-- Expected Score Increase: +{points} points
+- Expected Score Increase: +[calculate] points
 
 ## Week 4: Sustain & Scale
 - Document and automate repetitive tasks
 - Implement preventive measures
 - Train team on new processes
-- Expected Score Increase: +{points} points
+- Expected Score Increase: +[calculate] points
 
 ## Success Metrics:
-- Current Score: {current}/100
+- Current Score: [current]/100
 - Target Score: 85/100
-- Required Improvement: {gap} points
-- Estimated Time to Target: {weeks} weeks
+- Required Improvement: [gap] points
+- Estimated Time to Target: [weeks] weeks
 
 Provide specific, measurable actions with clear owners and deadlines."""
 
