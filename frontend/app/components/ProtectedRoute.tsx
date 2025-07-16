@@ -32,13 +32,6 @@ export default function ProtectedRoute({ children }: ProtectedRouteProps) {
         <div className="flex flex-col items-center gap-4">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900"></div>
           <p className="text-sm text-gray-600">Loading authentication...</p>
-          {/* Add a manual refresh option after 3 seconds */}
-          <button 
-            onClick={() => window.location.reload()} 
-            className="mt-4 text-sm text-blue-600 hover:text-blue-800 underline"
-          >
-            Taking too long? Click to refresh
-          </button>
         </div>
       </div>
     )

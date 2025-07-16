@@ -25,11 +25,46 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined)
 // Configure allowed email domains for your organization
 const ALLOWED_EMAIL_DOMAINS = process.env.NEXT_PUBLIC_ALLOWED_EMAIL_DOMAINS?.split(',') || ['bali.love']
 
+// Helper to get cached auth state
+const getCachedAuthState = () => {
+  if (typeof window === 'undefined') return null
+  try {
+    const cached = sessionStorage.getItem('auth_state')
+    if (cached) {
+      const parsed = JSON.parse(cached)
+      // Check if cache is still valid (24 hours)
+      if (Date.now() - parsed.timestamp < 24 * 60 * 60 * 1000) {
+        return parsed
+      }
+    }
+  } catch (e) {
+    console.error('Error reading cached auth state:', e)
+  }
+  return null
+}
+
+// Helper to cache auth state
+const setCachedAuthState = (user: { email: string; id: string } | null, userTeamData: UserTeamData | null, isAuthorized: boolean) => {
+  if (typeof window === 'undefined') return
+  try {
+    sessionStorage.setItem('auth_state', JSON.stringify({
+      user,
+      userTeamData,
+      isAuthorized,
+      timestamp: Date.now()
+    }))
+  } catch (e) {
+    console.error('Error caching auth state:', e)
+  }
+}
+
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<{ email: string; id: string } | null>(null)
-  const [userTeamData, setUserTeamData] = useState<UserTeamData | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [isAuthorized, setIsAuthorized] = useState(false)
+  // Initialize from cache if available
+  const cachedState = getCachedAuthState()
+  const [user, setUser] = useState<{ email: string; id: string } | null>(cachedState?.user || null)
+  const [userTeamData, setUserTeamData] = useState<UserTeamData | null>(cachedState?.userTeamData || null)
+  const [loading, setLoading] = useState(!cachedState) // Only load if no cache
+  const [isAuthorized, setIsAuthorized] = useState(cachedState?.isAuthorized || false)
   const initRef = useRef(false)
   const [supabase] = useState(() => {
     try {
@@ -132,18 +167,25 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           const authorized = checkUserAuthorization(email)
           
           if (authorized) {
-            setUser({ email, id: session.user.id })
+            const userData = { email, id: session.user.id }
+            setUser(userData)
             setIsAuthorized(true)
             const teamData = await fetchUserTeamData(email)
             if (teamData) {
               setUserTeamData(teamData)
             }
+            // Cache the auth state
+            setCachedAuthState(userData, teamData, true)
           } else {
             console.log('❌ User not authorized for this domain')
             await supabase.auth.signOut()
+            // Clear cache
+            setCachedAuthState(null, null, false)
           }
         } else {
           console.log('ℹ️ No active session')
+          // Clear cache if no session
+          setCachedAuthState(null, null, false)
         }
       } catch (error) {
         console.error('❌ Auth initialization error:', error)
@@ -165,23 +207,30 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         const authorized = checkUserAuthorization(email)
         
         if (authorized) {
-          setUser({ email, id: session.user.id })
+          const userData = { email, id: session.user.id }
+          setUser(userData)
           setIsAuthorized(true)
           const teamData = await fetchUserTeamData(email)
           if (teamData) {
             setUserTeamData(teamData)
           }
+          // Cache the auth state
+          setCachedAuthState(userData, teamData, true)
         } else {
           setUser(null)
           setUserTeamData(null)
           setIsAuthorized(false)
           await supabase?.auth.signOut()
+          // Clear cache
+          setCachedAuthState(null, null, false)
         }
       } else {
         // No session
         setUser(null)
         setUserTeamData(null)
         setIsAuthorized(false)
+        // Clear cache
+        setCachedAuthState(null, null, false)
       }
       
       setLoading(false)
@@ -201,6 +250,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setUser(null)
       setUserTeamData(null)
       setIsAuthorized(false)
+      // Clear cache
+      setCachedAuthState(null, null, false)
       
       if (typeof window !== 'undefined') {
         window.location.href = '/login'
