@@ -17,6 +17,7 @@ export function useUser() {
       setUserId(newUserId);
       setCookie(USER_ID_COOKIE_NAME, newUserId);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return {

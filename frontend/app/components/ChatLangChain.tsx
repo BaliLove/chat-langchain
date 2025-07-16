@@ -70,6 +70,7 @@ function ChatLangChainComponent(): React.ReactElement {
       console.error("Failed to fetch thread in query param", e);
       setThreadId(null);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [threadId]);
 
   const isSubmitDisabled = !userId || permissionsLoading || !permissions?.canCreateThreads;

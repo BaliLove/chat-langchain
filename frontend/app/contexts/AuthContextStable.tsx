@@ -262,6 +262,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       clearTimeout(timeoutId)
       authListener?.data?.subscription?.unsubscribe()
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []) // Empty deps, only run once
 
   const signOut = async () => {

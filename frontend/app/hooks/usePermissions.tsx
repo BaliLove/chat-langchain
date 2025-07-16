@@ -74,6 +74,7 @@ export function usePermissions() {
     }
 
     fetchPermissions()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, userTeamData])
 
   const hasAgent = (agentName: string): boolean => {

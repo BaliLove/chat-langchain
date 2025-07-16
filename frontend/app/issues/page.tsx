@@ -95,14 +95,14 @@ export default function IssuesPage() {
               <CardContent className="space-y-2 text-sm">
                 <p>1. Select your issue category</p>
                 <p>2. Choose the review period (default: last 7 days)</p>
-                <p>3. Click "Start Review" to generate your report</p>
+                <p>3. Click &quot;Start Review&quot; to generate your report</p>
                 <p>4. The AI will analyze all issues and provide actionable insights</p>
               </CardContent>
             </Card>
             
             <Card>
               <CardHeader>
-                <CardTitle className="text-lg">What You'll Get</CardTitle>
+                <CardTitle className="text-lg">What You&apos;ll Get</CardTitle>
               </CardHeader>
               <CardContent className="space-y-2 text-sm">
                 <p>• Priority issues requiring immediate attention</p>

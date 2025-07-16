@@ -114,7 +114,7 @@ export default function IssueCategorySelector({
       <div className="text-center">
         <h2 className="text-2xl font-bold text-foreground">Issue Category Review</h2>
         <p className="text-muted-foreground mt-2">
-          Select a category to review your team's issues
+          Select a category to review your team&apos;s issues
         </p>
       </div>
 

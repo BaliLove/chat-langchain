@@ -29,6 +29,7 @@ export default function PromptDetailPage() {
 
   useEffect(() => {
     fetchPromptDetails()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [promptId])
 
   const fetchPromptDetails = async () => {
