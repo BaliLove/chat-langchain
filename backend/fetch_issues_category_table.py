@@ -5,7 +5,8 @@ import requests
 from dotenv import load_dotenv
 import logging
 
-load_dotenv()
+# Load from root .env file
+load_dotenv(dotenv_path="../.env")
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

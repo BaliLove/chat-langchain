@@ -1,13 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs'
-import { cookies } from 'next/headers'
+import { createServerClient } from '@/lib/supabase'
 
 export async function GET(
   request: NextRequest,
   { params }: { params: { promptId: string } }
 ) {
   try {
-    const supabase = createRouteHandlerClient({ cookies })
+    const supabase = createServerClient()
     const promptId = params.promptId
 
     // Get authenticated user

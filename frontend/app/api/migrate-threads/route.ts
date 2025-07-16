@@ -1,13 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs'
-import { cookies } from 'next/headers'
+import { createServerClient } from '@/lib/supabase'
 
 // This endpoint helps migrate threads from cookie-based user IDs to auth-based user IDs
 // Only accessible by authenticated users to migrate their own threads
 
 export async function POST(request: NextRequest) {
   try {
-    const supabase = createRouteHandlerClient({ cookies })
+    const supabase = createServerClient()
     
     // Get authenticated user
     const { data: { user }, error: authError } = await supabase.auth.getUser()
