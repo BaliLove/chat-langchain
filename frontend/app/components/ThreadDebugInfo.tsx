@@ -78,7 +78,7 @@ export function ThreadDebugInfo() {
           <Alert>
             <AlertCircle className="h-4 w-4" />
             <AlertDescription>
-              Your authentication ID doesn't match your cookie ID. This may cause threads to not appear.
+              Your authentication ID doesn&apos;t match your cookie ID. This may cause threads to not appear.
               Try refreshing the page to sync the IDs.
             </AlertDescription>
           </Alert>

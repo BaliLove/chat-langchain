@@ -62,15 +62,19 @@ class PromptSyncService:
             prompts = self.fetch_langsmith_prompts()
             logger.info(f"Fetched {len(prompts)} prompts from LangSmith")
             
-            # Update database
+            # Update database with fetched prompts
             updated_count = self.update_database(prompts)
             
+            # Remove prompts that no longer exist in LangSmith
+            deleted_count = self.remove_deleted_prompts(prompts)
+            
             # Update sync status to success
-            self.update_sync_status('success', f'Successfully synced {updated_count} prompts')
+            self.update_sync_status('success', f'Successfully synced {updated_count} prompts, removed {deleted_count} deleted prompts')
             
             return {
                 'fetched': len(prompts),
                 'updated': updated_count,
+                'deleted': deleted_count,
                 'status': 'success'
             }
             
@@ -265,6 +269,44 @@ class PromptSyncService:
                 continue
                 
         return updated_count
+        
+    def remove_deleted_prompts(self, existing_prompts: List[Dict]) -> int:
+        """Remove prompts from database that no longer exist in LangSmith"""
+        try:
+            # Get list of prompt IDs that exist in LangSmith
+            langsmith_prompt_ids = {prompt['id'] for prompt in existing_prompts}
+            
+            # Get all prompts from database  
+            all_db_prompts = self.supabase.table('prompts').select('id').execute()
+            
+            deleted_count = 0
+            if all_db_prompts.data:
+                for db_prompt in all_db_prompts.data:
+                    prompt_id = db_prompt['id']
+                    
+                    # If prompt exists in database but not in LangSmith, delete it
+                    if prompt_id not in langsmith_prompt_ids:
+                        # Only delete Bali Love prompts (to avoid deleting user-created prompts)
+                        if prompt_id.startswith('bali-love-'):
+                            try:
+                                # Set is_active to false instead of deleting for audit trail
+                                self.supabase.table('prompts').update({
+                                    'is_active': False,
+                                    'updated_at': datetime.now().isoformat()
+                                }).eq('id', prompt_id).execute()
+                                
+                                deleted_count += 1
+                                logger.info(f"Deactivated deleted prompt: {prompt_id}")
+                                
+                            except Exception as e:
+                                logger.error(f"Failed to deactivate prompt {prompt_id}: {str(e)}")
+                                continue
+                        
+            return deleted_count
+            
+        except Exception as e:
+            logger.error(f"Failed to remove deleted prompts: {str(e)}")
+            return 0
         
     def update_sync_status(self, status: str, message: str = None):
         """Update sync status in database"""

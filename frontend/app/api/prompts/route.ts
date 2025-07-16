@@ -14,10 +14,11 @@ export async function GET() {
     console.log('Fetching prompts from Supabase...')
     console.log('Supabase URL:', supabaseUrl)
     
-    // Fetch prompts from Supabase
+    // Fetch only active prompts from Supabase
     const { data: prompts, error } = await supabase
       .from('prompts')
       .select('*')
+      .eq('is_active', true)
       .order('name')
     
     console.log('Query result:', { data: prompts?.length, error })
