@@ -100,7 +100,7 @@ function ChatLangChainComponent(): React.ReactElement {
           });
         });
     }
-  }, [searchParams, promptInitialized, loading]);
+  }, [searchParams, promptInitialized, permissionsLoading]);
 
   // Auto-start conversation for issue review prompt
   useEffect(() => {
