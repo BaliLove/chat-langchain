@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/app/components/ui/card'
 import { Button } from '@/app/components/ui/button'
 import { Input } from '@/app/components/ui/input'
@@ -298,11 +298,10 @@ export default function AgentsPage() {
             {/* Team Filter - Primary filter as buttons */}
             <div className="flex flex-wrap gap-2">
               {baliLoveTeams.map((team, index) => (
-                <>
+                <React.Fragment key={team}>
                   {/* Add star filter button after "All" */}
                   {index === 1 && (
                     <Button
-                      key="favorites"
                       variant={showFavoritesOnly ? "default" : "outline"}
                       size="sm"
                       onClick={() => setShowFavoritesOnly(!showFavoritesOnly)}
@@ -313,7 +312,6 @@ export default function AgentsPage() {
                     </Button>
                   )}
                   <Button
-                    key={team}
                     variant={selectedTeam === team && !showFavoritesOnly ? "default" : "outline"}
                     size="sm"
                     onClick={() => {
@@ -326,7 +324,7 @@ export default function AgentsPage() {
                       <span className="ml-1 text-xs">(Your Team)</span>
                     )}
                   </Button>
-                </>
+                </React.Fragment>
               ))}
             </div>
 
