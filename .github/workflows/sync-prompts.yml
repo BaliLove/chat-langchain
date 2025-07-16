@@ -1,0 +1,78 @@
+name: Sync Prompts from LangSmith
+
+on:
+  schedule:
+    # Run every 4 hours
+    - cron: '0 */4 * * *'
+  workflow_dispatch:
+    # Allow manual triggering
+    inputs:
+      force_sync:
+        description: 'Force sync all prompts'
+        required: false
+        default: false
+        type: boolean
+
+jobs:
+  sync-prompts:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+        
+    - name: Install dependencies
+      run: |
+        cd backend
+        pip install -r requirements.txt
+        
+    - name: Sync prompts
+      env:
+        LANGSMITH_API_KEY: ${{ secrets.LANGSMITH_API_KEY }}
+        NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+        SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+      run: |
+        cd backend
+        python sync_prompts_simple.py
+        
+    - name: Create commit if changes
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        
+        # Check if there are any changes in the sync logs
+        if [ -f backend/sync_log.txt ]; then
+          git add backend/sync_log.txt
+          git commit -m "Update prompt sync log [skip ci]" || exit 0
+        fi
+        
+    - name: Push changes
+      uses: ad-m/github-push-action@master
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        branch: ${{ github.ref }}
+        force: false
+      if: success()
+        
+    - name: Notify on failure
+      if: failure()
+      uses: actions/github-script@v6
+      with:
+        script: |
+          github.rest.issues.create({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            title: 'Prompt Sync Failed',
+            body: `The automatic prompt sync from LangSmith failed. Please check the logs and sync manually if needed.
+            
+            **Workflow Run**: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+            **Time**: ${new Date().toISOString()}
+            
+            To sync manually, run: \`python backend/sync_prompts_simple.py\``,
+            labels: ['sync-failure', 'automation']
+          })
