@@ -100,6 +100,7 @@ function ChatLangChainComponent(): React.ReactElement {
           });
         });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams, promptInitialized, permissionsLoading]);
 
   // Auto-start conversation for issue review prompt
@@ -123,6 +124,7 @@ function ChatLangChainComponent(): React.ReactElement {
       
       return () => clearTimeout(timer);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activePrompt, messages.length, isRunning, userId, permissionsLoading]);
 
   const isSubmitDisabled = !userId || permissionsLoading || !permissions?.canCreateThreads;
