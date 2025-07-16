@@ -15,7 +15,6 @@ import {
   convertLangchainMessages,
 } from "../utils/convert_messages";
 import { ThreadChat } from "./chat-interface";
-import { SelectModel } from "./SelectModel";
 import { ThreadHistory } from "./thread-history";
 import { Toaster } from "./ui/toaster";
 import { useGraphContext } from "../contexts/GraphContext";
@@ -150,11 +149,6 @@ function ChatLangChainComponent(): React.ReactElement {
   return (
     <div className="h-full w-full flex md:flex-row flex-col relative">
       <DebugInfo />
-      {messages.length > 0 ? (
-        <div className="absolute top-4 right-4 z-10">
-          <SelectModel />
-        </div>
-      ) : null}
       <div>
         <ThreadHistory />
       </div>
