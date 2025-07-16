@@ -33,15 +33,10 @@ export function useThreads(userId: string | undefined) {
     const client = createClient();
     let thread;
     try {
-      console.log("[DEBUG] Creating thread for user:", id);
       thread = await client.threads.create({
         metadata: {
           user_id: id,
         },
-      });
-      console.log("[DEBUG] Thread created:", {
-        thread_id: thread?.thread_id,
-        metadata: thread?.metadata,
       });
       if (!thread || !thread.thread_id) {
         throw new Error("Thread creation failed.");
@@ -63,8 +58,6 @@ export function useThreads(userId: string | undefined) {
     try {
       const client = createClient();
 
-      console.log("[DEBUG] Fetching threads for user:", id);
-
       const userThreads = (await client.threads.search({
         metadata: {
           user_id: id,
@@ -72,29 +65,18 @@ export function useThreads(userId: string | undefined) {
         limit: 100,
       })) as Awaited<Thread[]>;
 
-      console.log("[DEBUG] Raw threads fetched:", userThreads.length);
-      console.log("[DEBUG] Thread details:", userThreads.map(t => ({
-        id: t.thread_id,
-        hasValues: !!t.values,
-        valuesCount: t.values ? Object.keys(t.values).length : 0,
-        metadata: t.metadata
-      })));
-
       if (userThreads.length > 0) {
         const lastInArray = userThreads[0];
         const allButLast = userThreads.slice(1, userThreads.length);
         const filteredThreads = allButLast.filter(
           (thread) => thread.values && Object.keys(thread.values).length > 0,
         );
-        console.log("[DEBUG] Filtered threads (excluding last):", filteredThreads.length);
-        console.log("[DEBUG] Final thread list length:", [...filteredThreads, lastInArray].length);
         setUserThreads([...filteredThreads, lastInArray]);
       } else {
-        console.log("[DEBUG] No threads found for user");
         setUserThreads([]);
       }
     } catch (error) {
-      console.error("[DEBUG] Error fetching threads:", error);
+      console.error("Error fetching threads:", error);
     } finally {
       setIsUserThreadsLoading(false);
     }

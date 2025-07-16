@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createServerClient } from '@/lib/supabase'
+import { createServerClient } from '@/lib/supabase-server'
 
 // This endpoint helps migrate threads from cookie-based user IDs to auth-based user IDs
 // Only accessible by authenticated users to migrate their own threads
