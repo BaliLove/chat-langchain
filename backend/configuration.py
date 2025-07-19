@@ -17,7 +17,9 @@ def _update_configurable_for_backwards_compatibility(
 ) -> dict[str, Any]:
     update = {}
     if "k" in configurable:
-        update["search_kwargs"] = {"k": configurable["k"]}
+        # Merge with existing search_kwargs if present
+        existing_search_kwargs = configurable.get("search_kwargs", {})
+        update["search_kwargs"] = {**existing_search_kwargs, "k": configurable["k"]}
 
     if "model_name" in configurable:
         update["response_model"] = MODEL_NAME_TO_RESPONSE_MODEL.get(
@@ -57,7 +59,7 @@ class BaseConfiguration:
     )
 
     search_kwargs: dict[str, Any] = field(
-        default_factory=dict,
+        default_factory=lambda: {"k": 6},
         metadata={
             "description": "Additional keyword arguments to pass to the search function of the retriever."
         },
@@ -88,6 +90,13 @@ class BaseConfiguration:
         configurable = config.get("configurable") or {}
         configurable = _update_configurable_for_backwards_compatibility(configurable)
         _fields = {f.name for f in fields(cls) if f.init}
+        
+        # Debug logging
+        import logging
+        logger = logging.getLogger(__name__)
+        logger.info(f"from_runnable_config - configurable: {configurable}")
+        logger.info(f"from_runnable_config - available fields: {_fields}")
+        
         return cls(**{k: v for k, v in configurable.items() if k in _fields})
 
 

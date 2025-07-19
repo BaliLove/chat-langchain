@@ -1,4 +1,5 @@
 import os
+import logging
 from contextlib import contextmanager
 from typing import Iterator
 
@@ -12,6 +13,9 @@ from langchain_pinecone import PineconeVectorStore
 
 from backend.configuration import BaseConfiguration
 from backend.constants import WEAVIATE_DOCS_INDEX_NAME
+
+# Set up logging
+logger = logging.getLogger(__name__)
 
 
 def make_text_encoder(model: str) -> Embeddings:
@@ -38,7 +42,20 @@ def make_pinecone_retriever(
     # Use the modern constructor style for langchain-pinecone
     store = PineconeVectorStore(index=index, embedding=embedding_model)
     search_kwargs = {**configuration.search_kwargs}
-    yield store.as_retriever(search_kwargs=search_kwargs)
+    
+    # Log the search_kwargs to debug filtering
+    logger.info(f"Creating Pinecone retriever with search_kwargs: {search_kwargs}")
+    
+    # Create the retriever
+    retriever = store.as_retriever(search_kwargs=search_kwargs)
+    
+    # WORKAROUND: Due to a LangChain bug, we need to ensure search_kwargs are properly set
+    # See: https://github.com/langchain-ai/langchain/issues/21492
+    if search_kwargs:
+        retriever.search_kwargs = search_kwargs
+        logger.info(f"Applied workaround - set retriever.search_kwargs directly: {retriever.search_kwargs}")
+    
+    yield retriever
 
 
 @contextmanager
@@ -46,7 +63,14 @@ def make_retriever(
     config: RunnableConfig,
 ) -> Iterator[BaseRetriever]:
     """Create a retriever for the agent, based on the current configuration."""
+    # Log the incoming config to debug
+    logger.info(f"make_retriever called with config: {config}")
+    
     configuration = BaseConfiguration.from_runnable_config(config)
+    
+    # Log the parsed configuration
+    logger.info(f"Parsed configuration - search_kwargs: {configuration.search_kwargs}")
+    
     embedding_model = make_text_encoder(configuration.embedding_model)
     match configuration.retriever_provider:
         case "pinecone":

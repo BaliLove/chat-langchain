@@ -127,9 +127,21 @@ async def retrieve_documents(
             # Retrieve documents with retry logic
             @with_retry(**RETRIEVAL_RETRY_CONFIG)
             async def retrieve_with_retry():
-                return await retriever.ainvoke(state.query, modified_config)
+                # For issue category queries, we need to ensure the filter is applied
+                # The retriever should already have the search_kwargs from the configuration
+                return await retriever.ainvoke(state.query)
             
             documents = await retrieve_with_retry()
+            
+            # Log the retrieved documents for debugging
+            if category_match or all_issues_match:
+                logger.info(f"Retrieved {len(documents)} documents for issue query")
+                if documents:
+                    # Log the first few to check source_type
+                    for i, doc in enumerate(documents[:3]):
+                        logger.info(f"  Doc {i}: source_type={doc.metadata.get('source_type', 'N/A')}, "
+                                  f"category={doc.metadata.get('category', 'N/A')}, "
+                                  f"title={doc.metadata.get('title', 'N/A')[:50]}...")
             
             # Get user email from config (this should be passed from the main graph)
             user_email = config.get("configurable", {}).get("user_email", "")
