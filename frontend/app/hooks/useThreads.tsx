@@ -33,11 +33,18 @@ export function useThreads(userId: string | undefined) {
     const client = createClient();
     let thread;
     try {
+      console.log("[THREAD DEBUG] Creating thread for user_id:", id);
       thread = await client.threads.create({
         metadata: {
           user_id: id,
         },
       });
+      console.log("[THREAD DEBUG] Thread created successfully:", {
+        thread_id: thread?.thread_id,
+        metadata: thread?.metadata,
+        created_at: thread?.created_at
+      });
+      
       if (!thread || !thread.thread_id) {
         throw new Error("Thread creation failed.");
       }
@@ -45,7 +52,7 @@ export function useThreads(userId: string | undefined) {
       // Refresh the thread list after creating a new thread
       await getUserThreads(id);
     } catch (e) {
-      console.error("Error creating thread", e);
+      console.error("[THREAD DEBUG] Error creating thread:", e);
       toast({
         title: "Error creating thread.",
       });
@@ -58,6 +65,9 @@ export function useThreads(userId: string | undefined) {
     try {
       const client = createClient();
 
+      console.log("[THREAD DEBUG] Searching for threads with user_id:", id);
+      console.log("[THREAD DEBUG] API URL being used:", client.apiUrl);
+
       const userThreads = (await client.threads.search({
         metadata: {
           user_id: id,
@@ -65,18 +75,31 @@ export function useThreads(userId: string | undefined) {
         limit: 100,
       })) as Awaited<Thread[]>;
 
+      console.log("[THREAD DEBUG] Raw threads response:", userThreads.length, "threads found");
+      console.log("[THREAD DEBUG] Thread details:", userThreads.map(t => ({
+        id: t.thread_id,
+        hasValues: !!t.values,
+        valuesCount: t.values ? Object.keys(t.values).length : 0,
+        metadata: t.metadata,
+        created_at: t.created_at,
+        updated_at: t.updated_at
+      })));
+
       if (userThreads.length > 0) {
         const lastInArray = userThreads[0];
         const allButLast = userThreads.slice(1, userThreads.length);
         const filteredThreads = allButLast.filter(
           (thread) => thread.values && Object.keys(thread.values).length > 0,
         );
+        console.log("[THREAD DEBUG] Filtered threads:", filteredThreads.length);
+        console.log("[THREAD DEBUG] Final thread list:", [...filteredThreads, lastInArray].length);
         setUserThreads([...filteredThreads, lastInArray]);
       } else {
+        console.log("[THREAD DEBUG] No threads found for user_id:", id);
         setUserThreads([]);
       }
     } catch (error) {
-      console.error("Error fetching threads:", error);
+      console.error("[THREAD DEBUG] Error fetching threads:", error);
     } finally {
       setIsUserThreadsLoading(false);
     }

@@ -9,22 +9,28 @@ export function useUser() {
   const [userId, setUserId] = useState<string>();
 
   useEffect(() => {
+    console.log("[USER DEBUG] useUser effect triggered. user?.id:", user?.id, "current userId:", userId);
+    
     // If we have an authenticated user, use their Supabase ID
     if (user?.id) {
+      console.log("[USER DEBUG] Using authenticated user ID:", user.id);
       setUserId(user.id);
       return;
     }
 
     // Fallback to cookie-based ID for unauthenticated users
     if (userId) {
+      console.log("[USER DEBUG] User ID already set:", userId);
       return;
     }
 
     const userIdCookie = getCookie(USER_ID_COOKIE_NAME);
     if (userIdCookie) {
+      console.log("[USER DEBUG] Using cookie user ID:", userIdCookie);
       setUserId(userIdCookie);
     } else {
       const newUserId = uuidv4();
+      console.log("[USER DEBUG] Creating new user ID:", newUserId);
       setUserId(newUserId);
       setCookie(USER_ID_COOKIE_NAME, newUserId);
     }

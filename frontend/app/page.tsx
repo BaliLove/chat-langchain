@@ -3,6 +3,7 @@
 import React from "react";
 import { ChatLangChain } from "./components/ChatLangChain";
 import ProtectedRoute from "./components/ProtectedRoute";
+import { ThreadDebugInfo } from "./components/ThreadDebugInfo";
 
 export default function Page(): React.ReactElement {
   return (
@@ -11,6 +12,7 @@ export default function Page(): React.ReactElement {
         <React.Suspense fallback={null}>
           <ChatLangChain />
         </React.Suspense>
+        <ThreadDebugInfo />
       </main>
     </ProtectedRoute>
   );
