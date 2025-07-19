@@ -6,12 +6,16 @@ import { Client, Thread } from "@langchain/langgraph-sdk";
 import { useToast } from "./use-toast";
 import { useQueryState } from "nuqs";
 
-export const createClient = () => {
+export const getApiUrl = () => {
   // Always use the API proxy for authentication
   // Use full URL instead of relative path
-  const apiUrl = typeof window !== "undefined" 
+  return typeof window !== "undefined" 
     ? `${window.location.origin}/api`
     : "http://localhost:3000/api";
+};
+
+export const createClient = () => {
+  const apiUrl = getApiUrl();
   
   return new Client({
     apiUrl,
@@ -66,7 +70,7 @@ export function useThreads(userId: string | undefined) {
       const client = createClient();
 
       console.log("[THREAD DEBUG] Searching for threads with user_id:", id);
-      console.log("[THREAD DEBUG] API URL being used:", client.apiUrl);
+      console.log("[THREAD DEBUG] API URL being used:", getApiUrl());
 
       const userThreads = (await client.threads.search({
         metadata: {
