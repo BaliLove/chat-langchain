@@ -45,6 +45,13 @@ export const ThreadChat: FC<ThreadChatProps> = (props: ThreadChatProps) => {
           )}
         >
           <div className="md:pl-8 lg:pl-24 mt-2 max-w-full">
+            {props.activePrompt && (
+              <div className="mb-4 p-3 bg-muted/50 rounded-lg border-l-4 border-primary">
+                <div className="text-sm text-muted-foreground">
+                  Started <span className="font-medium text-foreground">{props.activePrompt.name}</span>
+                </div>
+              </div>
+            )}
             <ThreadPrimitive.Messages
               components={{
                 UserMessage: UserMessage,
@@ -59,15 +66,10 @@ export const ThreadChat: FC<ThreadChatProps> = (props: ThreadChatProps) => {
         <div className="flex items-center justify-center flex-grow my-auto">
           <div className="flex flex-col items-center mx-4 md:mt-0 mt-24 w-full max-w-3xl">
             {props.activePrompt && (
-              <>
-                <div className="mb-3 text-sm text-muted-foreground">
-                  Using: <span className="font-medium text-foreground">{props.activePrompt.name}</span>
-                </div>
-                <PromptStarters
-                  promptId={props.activePrompt.id}
-                  onSelectOption={handlePromptOption}
-                />
-              </>
+              <PromptStarters
+                promptId={props.activePrompt.id}
+                onSelectOption={handlePromptOption}
+              />
             )}
             <ChatComposer
               submitDisabled={props.submitDisabled}
@@ -77,11 +79,6 @@ export const ThreadChat: FC<ThreadChatProps> = (props: ThreadChatProps) => {
         </div>
       ) : (
         <div className="w-full">
-          {props.activePrompt && (
-            <div className="text-center mb-2 text-sm text-muted-foreground">
-              Using: <span className="font-medium text-foreground">{props.activePrompt.name}</span>
-            </div>
-          )}
           <ChatComposer
             submitDisabled={props.submitDisabled}
             messages={props.messages}
