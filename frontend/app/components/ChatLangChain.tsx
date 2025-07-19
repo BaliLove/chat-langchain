@@ -22,6 +22,7 @@ import { useQueryState } from "nuqs";
 import { usePermissions } from "../hooks/usePermissions";
 import { useSearchParams } from "next/navigation";
 import { Badge } from "./ui/badge";
+import { ThreadDebugPanel } from "./ThreadDebugPanel";
 
 // Add this debug component near the top of the file
 const DebugInfo = () => {
@@ -50,6 +51,7 @@ function ChatLangChainComponent(): React.ReactElement {
   const searchParams = useSearchParams();
   const [activePrompt, setActivePrompt] = useState<{ id: string; name: string } | null>(null);
   const [promptInitialized, setPromptInitialized] = useState(false);
+  const [showDebugPanel, setShowDebugPanel] = useState(false);
 
   const hasCheckedThreadIdParam = useRef(false);
   useEffect(() => {
@@ -228,6 +230,20 @@ function ChatLangChainComponent(): React.ReactElement {
   if (process.env.NODE_ENV === 'development') {
     console.log('Render - activePrompt:', activePrompt);
   }
+
+  // Add keyboard shortcut for debug panel
+  useEffect(() => {
+    const handleKeyPress = (e: KeyboardEvent) => {
+      // Ctrl/Cmd + Shift + D to toggle debug panel
+      if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'D') {
+        e.preventDefault();
+        setShowDebugPanel(prev => !prev);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyPress);
+    return () => window.removeEventListener('keydown', handleKeyPress);
+  }, []);
   
   return (
     <div className="h-full w-full flex md:flex-row flex-col relative">
@@ -258,6 +274,21 @@ function ChatLangChainComponent(): React.ReactElement {
           </div>
         )}
       </div>
+      
+      {/* Debug Panel - Toggle with Ctrl+Shift+D */}
+      {showDebugPanel && (
+        <div className="absolute top-0 right-0 w-96 h-full bg-background border-l overflow-y-auto z-50">
+          <ThreadDebugPanel />
+        </div>
+      )}
+      
+      {/* Debug hint */}
+      {!showDebugPanel && process.env.NODE_ENV === 'development' && (
+        <div className="absolute bottom-4 left-4 text-xs text-muted-foreground">
+          Press Ctrl+Shift+D for debug panel
+        </div>
+      )}
+      
       <Toaster />
     </div>
   );

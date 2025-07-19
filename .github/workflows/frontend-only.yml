@@ -1,0 +1,46 @@
+name: Frontend Deployment Check
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - 'frontend/**'
+      - '!backend/**'
+
+jobs:
+  check-changes:
+    runs-on: ubuntu-latest
+    outputs:
+      frontend-only: ${{ steps.check.outputs.frontend-only }}
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 2
+      
+      - name: Check if only frontend changed
+        id: check
+        run: |
+          # Get list of changed files
+          CHANGED=$(git diff --name-only HEAD~1 HEAD)
+          
+          # Check if any backend files changed
+          if echo "$CHANGED" | grep -q "^backend/"; then
+            echo "frontend-only=false" >> $GITHUB_OUTPUT
+          else
+            echo "frontend-only=true" >> $GITHUB_OUTPUT
+          fi
+          
+          # Log for debugging
+          echo "Changed files:"
+          echo "$CHANGED"
+
+  notify:
+    needs: check-changes
+    if: needs.check-changes.outputs.frontend-only == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Frontend-Only Deployment
+        run: |
+          echo "Only frontend files changed - Vercel will deploy automatically"
+          echo "Backend deployment skipped"

@@ -73,7 +73,8 @@
       "Bash(run_sync.bat)",
       "Bash(npm run dev:*)",
       "Bash(yarn list)",
-      "Bash(rg:*)"
+      "Bash(rg:*)",
+      "Bash(git checkout:*)"
     ],
     "deny": []
   }
