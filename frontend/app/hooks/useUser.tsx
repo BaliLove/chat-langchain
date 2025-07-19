@@ -15,6 +15,13 @@ export function useUser() {
     if (user?.id) {
       console.log("[USER DEBUG] Using authenticated user ID:", user.id);
       setUserId(user.id);
+      
+      // Sync the cookie with the authenticated user ID to prevent mismatches
+      const currentCookie = getCookie(USER_ID_COOKIE_NAME);
+      if (currentCookie !== user.id) {
+        console.log("[USER DEBUG] Syncing cookie from", currentCookie, "to", user.id);
+        setCookie(USER_ID_COOKIE_NAME, user.id);
+      }
       return;
     }
 

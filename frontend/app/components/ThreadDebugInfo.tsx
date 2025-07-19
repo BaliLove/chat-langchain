@@ -17,7 +17,7 @@ export function ThreadDebugInfo() {
   useEffect(() => {
     const cookieId = getCookie(USER_ID_COOKIE_NAME)
     setCookieUserId(cookieId || null)
-  }, [])
+  }, [user?.id]) // Re-check cookie when user auth state changes
 
   if (!showDebug) {
     return (
@@ -78,8 +78,8 @@ export function ThreadDebugInfo() {
           <Alert>
             <AlertCircle className="h-4 w-4" />
             <AlertDescription>
-              Your authentication ID doesn&apos;t match your cookie ID. This may cause threads to not appear.
-              Try refreshing the page to sync the IDs.
+              Your authentication ID doesn&apos;t match your cookie ID. The system should automatically sync these IDs.
+              If threads are still missing, try refreshing the page.
             </AlertDescription>
           </Alert>
         )}
